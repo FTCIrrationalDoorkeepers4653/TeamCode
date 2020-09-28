@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.Programs.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.Systems.Movement.IDKRobot;
 
 @TeleOp(name = "IDKTeleOp")
+//@Disabled
 public class IDKTeleOp extends OpMode {
+  /* TELEOP VARIABLES */
+
   //Runtime Object:
   private ElapsedTime runtime = new ElapsedTime();
   IDKRobot robot = new IDKRobot();
@@ -20,18 +20,21 @@ public class IDKTeleOp extends OpMode {
   boolean runType = false;
   double clawClosed = -1;
 
-  //Runs code once upon INIT:
+  /* TELEOP METHODS */
+
+  //Runs on INIT:
   @Override
   public void init() {
     //Init Robot:
     robot.init(hardwareMap, runType);
+    robot.imageInit.disableVuforia();
 
     //Sets Status:
     telemetry.addData("Status: ", "Initalized");
     telemetry.update();
   }
 
-  //Runs code repeatedly upon START:
+  //Runs on START:
   @Override
   public void loop() {
     //Movement Method Calls:
@@ -44,7 +47,15 @@ public class IDKTeleOp extends OpMode {
     telemetry.update();
   }
 
-  /* Motor Methods: */
+  //Runs on STOP:
+  @Override
+  public void stop() {
+    //Sets Status:
+    telemetry.addData("Status: ", "Stopped");
+    telemetry.update();
+  }
+
+  /* CONTROL METHODS */
 
   //Code responsible for the movement of the whole robot:
   public void moveRobot() {
@@ -154,8 +165,6 @@ public class IDKTeleOp extends OpMode {
     }
   }
 
-  /* Servo Methods */
-
   //Code responsible for claw servos:
   public void grabWobble() {
     //Setting Values:
@@ -173,13 +182,5 @@ public class IDKTeleOp extends OpMode {
         robot.clawServo.setPosition(robot.clawServoEndPosition);
       }
     }
-  }
-
-  //Runs code once upon STOP:
-  @Override
-  public void stop() {
-    //Sets Status:
-    telemetry.addData("Status: ", "Stopped");
-    telemetry.update();
   }
 }

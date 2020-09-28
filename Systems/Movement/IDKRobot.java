@@ -50,6 +50,11 @@ public class IDKRobot {
   public static final double clawServoEndPosition = 1.0;
   public static final double holdServoEndPosition = 0.6;
 
+  //Powers:
+  public static final double slowPower = 0.4;
+  public static final double mainPower = 0.6;
+  public static final double fastPower = 0.8;
+
   //Objects:
   HardwareMap hardwareMap;
   public VuforiaImageInit imageInit = new VuforiaImageInit();
