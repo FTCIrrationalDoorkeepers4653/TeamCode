@@ -10,7 +10,7 @@ public class PositionMovement extends LinearOpMode {
 
   //Final Set Variables:
   private static final double POSITION_RATIO = (144 / 760); //Inches to Pixel Position
-  private static final double WHEEL_DIAM = (3.9);
+  private static final double WHEEL_DIAM = 3.9;
   private static final double WHEEL_CIRC = (Math.PI * WHEEL_DIAM);
   private static final double secondsRatio = (1.5 / 0.8); //(Rotations * time)/(power)
 

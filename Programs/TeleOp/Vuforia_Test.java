@@ -29,6 +29,7 @@ public class Vuforia_Test extends LinearOpMode {
     //Hardware INITS:
     robot.init(hardwareMap, false);
 
+    //Waits for Start:
     waitForStart();
     runtime.reset();
 
@@ -44,6 +45,10 @@ public class Vuforia_Test extends LinearOpMode {
 
     //Disables Vuforia:
     robot.imageInit.disableVuforia();
+
+    //Status Update:
+    telemetry.addData("Status: ", "Stopped");
+    telemetry.update();
   }
 }
 
