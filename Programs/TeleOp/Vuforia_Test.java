@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Programs.TeleOp;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,7 +17,7 @@ public class Vuforia_Test extends LinearOpMode {
   IDKRobot robot = new IDKRobot();
   private ElapsedTime runtime = new ElapsedTime();
 
-  //Variables (w/ Default Values):
+  //Variables:
   int position = 1;
   boolean runType = false;
 
@@ -23,31 +25,26 @@ public class Vuforia_Test extends LinearOpMode {
 
   @Override
   public void runOpMode() {
+    //Status Updates:
     telemetry.addData("Status", "Initialized");
     telemetry.update();
 
-    //Hardware INITS:
-    robot.init(hardwareMap, false);
+    //Hardware Initialization:
+    robot.init(hardwareMap, runType);
 
     //Waits for Start:
     waitForStart();
     runtime.reset();
 
-    //Loop for Detector:
+    //Loops Until Stop:
     while (!isStopRequested()) {
-      //Gets the Position:
-      position = robot.getPixelsPosition();
-
       //Telemetry Data:
-      telemetry.addData("Position: ", position);
+      telemetry.addData("Position", position);
       telemetry.update();
     }
 
-    //Disables Vuforia:
-    robot.imageInit.disableVuforia();
-
     //Status Update:
-    telemetry.addData("Status: ", "Stopped");
+    telemetry.addData("Status", "Stopped");
     telemetry.update();
   }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Programs.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -7,13 +9,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Systems.Movement.IDKRobot;
 import org.firstinspires.ftc.teamcode.Systems.Movement.PositionMovement;
 
+@Autonomous(name="AutoBlue")
+//@Disabled
 public class AutoBlue extends LinearOpMode {
   /* AUTO BLUE VARIABLES */
 
   //Robot Objects:
   IDKRobot robot = new IDKRobot();
   PositionMovement positionMovement = new PositionMovement();
-  HardwareMap hwMap;
   ElapsedTime runtime = new ElapsedTime();
 
   //Movement Variables:
@@ -27,12 +30,12 @@ public class AutoBlue extends LinearOpMode {
 
   @Override
   public void runOpMode() {
-    //Status Update:
-    telemetry.addData("Status: ", "Initialized");
+    //Status Updates:
+    telemetry.addData("Status", "Initialized");
     telemetry.update();
 
-    //Initializes the Robot:
-    robot.init(hwMap, runType);
+    //Hardware Initialization:
+    robot.init(hardwareMap, runType);
 
     //Waits for Start:
     waitForStart();
@@ -41,11 +44,11 @@ public class AutoBlue extends LinearOpMode {
     /* Moves to Pivot */
 
     //Grabs the Wobble:
-    robot.operateClaw("close");
-    idle();
-    sleep(2000);
-    robot.finishRun();
-    idle();
+    //robot.operateClaw("close");
+    //idle();
+    //sleep(1000);
+    //robot.finishRun();
+    //idle();
 
     //Gets the Ring Position:
     position = robot.getPixelsPosition();
@@ -130,11 +133,8 @@ public class AutoBlue extends LinearOpMode {
 
     /* End */
 
-    //Disables Vuforia:
-    robot.imageInit.disableVuforia();
-
     //Status Update:
-    telemetry.addData("Status: ", "Stopped");
+    telemetry.addData("Status", "Stopped");
     telemetry.update();
   }
 }

@@ -16,7 +16,6 @@ public class IDKTeleOp extends OpMode {
   IDKRobot robot = new IDKRobot();
 
   //Motor Variables:
-  public static final double zeroPower = 0.0;
   boolean runType = false;
   double clawClosed = -1;
 
@@ -27,10 +26,9 @@ public class IDKTeleOp extends OpMode {
   public void init() {
     //Init Robot:
     robot.init(hardwareMap, runType);
-    robot.imageInit.disableVuforia();
 
     //Sets Status:
-    telemetry.addData("Status: ", "Initalized");
+    telemetry.addData("Status", "Initialized");
     telemetry.update();
   }
 
@@ -43,7 +41,7 @@ public class IDKTeleOp extends OpMode {
     grabWobble();
 
     //Sets Status:
-    telemetry.addData("Status: ", "Running");
+    telemetry.addData("Status", "Running");
     telemetry.update();
   }
 
@@ -51,37 +49,44 @@ public class IDKTeleOp extends OpMode {
   @Override
   public void stop() {
     //Sets Status:
-    telemetry.addData("Status: ", "Stopped");
+    telemetry.addData("Status", "Stopped");
     telemetry.update();
   }
 
   /* CONTROL METHODS */
 
-  //Code responsible for the movement of the whole robot:
+  //Moves the Robot:
   public void moveRobot() {
-    //Cubes the gamepad values so motors do not get stressed:
+    /* Powers */
+
+    //Cubes the Gamepad Values:
     double leftPower = (gamepad1.left_stick_y * gamepad1.left_stick_y * gamepad1.left_stick_y);
     double rightPower = (gamepad1.right_stick_y * gamepad1.right_stick_y * gamepad1.right_stick_y);
-
-    //Strafe values (also cubed):
     double leftStrafe = (gamepad1.left_stick_x * gamepad1.left_stick_x * gamepad1.left_stick_x);
     double rightStrafe = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
 
+    /* Slow Mode */
+
     //Slow Mode Boolean:
     boolean slowMode = false;
+    double divisor = 3.0;
 
     //Setting Slow Mode:
     if (gamepad1.left_bumper) {
+      //Sets the Slow Mode:
       slowMode = true;
     }
 
     //Checks the Slow Mode Boolean Powers:
     if (slowMode == true) {
-      leftPower /= 3.0;
-      rightPower /= 3.0;
-      leftStrafe /= 3.0;
-      rightStrafe /= 3.0;
+      //Corrects the Speed:
+      leftPower /= divisor;
+      rightPower /= divisor;
+      leftStrafe /= divisor;
+      rightStrafe /= divisor;
     }
+
+    /* Robot Movement */
 
     //Forward and Backward:
     if (gamepad1.left_stick_y != 0.0 || gamepad1.right_stick_y != 0.0 && gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0) {
@@ -93,7 +98,7 @@ public class IDKTeleOp extends OpMode {
     }
 
     //Left and Right:
-    if (gamepad1.left_stick_x != 0.0 || gamepad1.right_stick_x != 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
+    else if (gamepad1.left_stick_x != 0.0 || gamepad1.right_stick_x != 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
       //Sets the power to the motors:
       robot.leftFrontMotor.setPower(-leftStrafe);
       robot.leftBackMotor.setPower(leftStrafe);
@@ -101,53 +106,43 @@ public class IDKTeleOp extends OpMode {
       robot.rightBackMotor.setPower(-rightStrafe);
     }
 
-    //Diagonal:
-    if (gamepad1.left_stick_y > 0.0 && gamepad1.left_stick_x > 0.0 || gamepad1.right_stick_y > 0.0 && gamepad1.right_stick_x > 0.0 ||
-        gamepad1.left_stick_y < 0.0 && gamepad1.left_stick_x < 0.0 || gamepad1.right_stick_y < 0.0 && gamepad1.right_stick_x < 0.0) {
-      robot.leftFrontMotor.setPower(leftPower);
-      robot.rightBackMotor.setPower(rightPower);
-    }
-
-    if (gamepad1.left_stick_y < 0.0 && gamepad1.left_stick_x > 0.0 || gamepad1.right_stick_y < 0.0 && gamepad1.right_stick_x > 0.0 ||
-        gamepad1.left_stick_y > 0.0 && gamepad1.left_stick_x < 0.0 || gamepad1.right_stick_y > 0.0 && gamepad1.right_stick_x < 0.0) {
-      robot.leftBackMotor.setPower(leftPower);
-      robot.rightFrontMotor.setPower(rightPower);
-    }
-
     //Stop:
-    if (gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
+    else if (gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
       //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(zeroPower);
-      robot.leftBackMotor.setPower(zeroPower);
-      robot.rightFrontMotor.setPower(zeroPower);
-      robot.rightBackMotor.setPower(zeroPower);
+      robot.leftFrontMotor.setPower(robot.zeroPower);
+      robot.leftBackMotor.setPower(robot.zeroPower);
+      robot.rightFrontMotor.setPower(robot.zeroPower);
+      robot.rightBackMotor.setPower(robot.zeroPower);
     }
   }
 
-  //Code responsible for moving the arm:
+  //Moves the Arm:
   public void moveArm() {
+    /* Powers */
+
     //Powers for the Arm:
-    double armPower;
-    double armPowerUp;
+    double armPower = 0.4;
+    double armPowerUp = 0.5;
+
+    /* Slow Mode */
 
     //Slow Mode Boolean:
     boolean slowMode = false;
 
     //Setting Slow Mode:
     if (gamepad2.left_bumper) {
+      //Sets the Slow Mode
       slowMode = true;
-    } else if (gamepad2.right_bumper) {
-      slowMode = false;
     }
 
     //Checks the Slow Mode Boolean Powers:
     if (slowMode == true) {
+      //Sets the Powers:
       armPower = 0.2;
       armPowerUp = 0.25;
-    } else {
-      armPower = 0.4;
-      armPowerUp = 0.5;
     }
+
+    /* Arm Movement */
 
     //Code for moving forearm forward:
     if (gamepad2.left_stick_y > 0.0) {
@@ -155,29 +150,32 @@ public class IDKTeleOp extends OpMode {
     }
 
     //Code for moving forearm backward:
-    if (gamepad2.left_stick_y < 0.0) {
+    else if (gamepad2.left_stick_y < 0.0) {
       robot.baseArmMotor.setPower(-armPower);
     }
 
     //Code for stopping:
-    if (gamepad2.left_stick_y == 0.0) {
-      robot.baseArmMotor.setPower(zeroPower);
+    else if (gamepad2.left_stick_y == 0.0) {
+      robot.baseArmMotor.setPower(robot.zeroPower);
     }
   }
 
-  //Code responsible for claw servos:
+  //Grabs the Wobble Goal:
   public void grabWobble() {
     //Setting Values:
     if (gamepad2.y) {
+      //Sets the Claw:
       clawClosed *= -1;
 
       //Opening and Closing Claws:
       if (clawClosed == -1) {
+        //Sets Positions:
         robot.holdServo.setPosition(robot.holdServoStartPosition);
         robot.clawServo.setPosition(robot.clawServoStartPosition);
       }
 
       if (clawClosed == 1) {
+        //Sets Positions:
         robot.holdServo.setPosition(robot.holdServoEndPosition);
         robot.clawServo.setPosition(robot.clawServoEndPosition);
       }

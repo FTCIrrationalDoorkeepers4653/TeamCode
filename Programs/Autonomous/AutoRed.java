@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode.Programs.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Systems.Movement.IDKRobot;
 import org.firstinspires.ftc.teamcode.Systems.Movement.PositionMovement;
 
+@Autonomous(name="AutoRed")
+//@Disabled
 public class AutoRed extends LinearOpMode {
   /* AUTO RED VARIABLES */
 
   //Robot Objects:
   IDKRobot robot = new IDKRobot();
   PositionMovement positionMovement = new PositionMovement();
-  HardwareMap hwMap;
   ElapsedTime runtime = new ElapsedTime();
 
   //Movement Variables:
@@ -26,12 +29,12 @@ public class AutoRed extends LinearOpMode {
 
   @Override
   public void runOpMode() {
-    //Status Update:
-    telemetry.addData("Status: ", "Initialized");
+    //Status Updates:
+    telemetry.addData("Status", "Initialized");
     telemetry.update();
 
-    //Initializes the Robot:
-    robot.init(hwMap, runType);
+    //Hardware Initialization:
+    robot.init(hardwareMap, runType);
 
     //Waits for Start:
     waitForStart();
@@ -40,11 +43,11 @@ public class AutoRed extends LinearOpMode {
     /* Moves to Pivot */
 
     //Grabs the Wobble:
-    robot.operateClaw("close");
-    idle();
-    sleep(2000);
-    robot.finishRun();
-    idle();
+    //robot.operateClaw("close");
+    //idle();
+    //sleep(1000);
+    //robot.finishRun();
+    //idle();
 
     //Gets the Ring Position:
     position = robot.getPixelsPosition();
@@ -128,9 +131,6 @@ public class AutoRed extends LinearOpMode {
     positionMovement.moveToPosition(motions, robot.mainPower, turnFirst);
 
     /* End */
-
-    //Disables Vuforia:
-    robot.imageInit.disableVuforia();
 
     //Status Update:
     telemetry.addData("Status: ", "Stopped");

@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Systems.Movement;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-
-import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,58 +19,62 @@ public class IDKRobot {
   /* SYSTEM VARIABLES */
 
   //Wheels:
-  public DcMotor leftFrontMotor;
-  public DcMotor leftBackMotor;
-  public DcMotor rightFrontMotor;
-  public DcMotor rightBackMotor;
+  public static DcMotor leftFrontMotor;
+  public static DcMotor leftBackMotor;
+  public static DcMotor rightFrontMotor;
+  public static DcMotor rightBackMotor;
 
   //Mechanisms:
-  public DcMotor baseArmMotor;
+  public static DcMotor baseArmMotor;
 
   //Servos:
-  public Servo holdServo;
-  public Servo clawServo;
+  public static Servo holdServo;
+  public static Servo clawServo;
 
   //IMU Sensor:
-  BNO055IMU imu;
-  Orientation angles;
+  public static BNO055IMU imu;
+  public static Orientation angles;
 
   //Drive Train Variables:
-  private static final double robotDimensions = 17.8;
-  private static final double gearRatio = 1.0;
-  private static final double wheelDiam = 3.9;
-  private static final double wheelCirc = (Math.PI * wheelDiam);
-  private static final double TicksperRev = 1120;
+  public static double robotDimensions = 17.8;
+  public static double gearRatio = 1.0;
+  public static double wheelDiam = 3.9;
+  public static double wheelCirc = (Math.PI * wheelDiam);
+  public static double TicksperRev = 1120;
+  public static double POSITION_RATIO = (144.0 / 760.0);
+  public static double wheelRPM = 100.0;
+  public static double wheelRPS = (wheelRPM / 60.0);
 
   //Mechanism Variables:
-  public static final double clawServoStartPosition = 0.0;
-  public static final double holdServoStartPosition = 0.0;
-  public static final double clawServoEndPosition = 1.0;
-  public static final double holdServoEndPosition = 0.6;
+  public static double clawServoStartPosition = 0.0;
+  public static double holdServoStartPosition = 0.0;
+  public static double clawServoEndPosition = 1.0;
+  public static double holdServoEndPosition = 0.6;
 
   //Powers:
-  public static final double slowPower = 0.4;
-  public static final double mainPower = 0.6;
-  public static final double fastPower = 0.8;
+  public static double zeroPower = 0.0;
+  public static double slowPower = 0.4;
+  public static double mainPower = 0.6;
+  public static double fastPower = 0.8;
 
   //Objects:
-  HardwareMap hardwareMap;
-  public VuforiaImageInit imageInit = new VuforiaImageInit();
-  public Yellow yellowDetector = new Yellow();
+  public static HardwareMap hardwareMap;
+  public static VuforiaImageInit imageInit = new VuforiaImageInit();
+  public static Yellow yellowDetector = new Yellow();
 
   //Detector Settings:
-  public static final int detector[] = {0, 0, 0}, offset[] = {50, 50, 50};
-  public static final String detectorName = "";
-  public static final boolean turnOnFlash = true;
-  public static final int zoomInit = 0;
-  public static final int x = 0, y = 0, width = 0, height = 0;
-  public static final int firstCount = 0, secondCount = 0, pixelCount = 0;
-  public static final double resizeRatio = 0.1;
+  public static int detector[] = {0, 0, 0}, offset[] = {50, 50, 50};
+  public static String detectorName = "ringDetector";
+  public static boolean turnOnFlash = true;
+  public static int zoomInit = 1;
+  public static int x = 0, y = 0, width = 128, height = 72;
+  public static int firstCount = 10, secondCount = 110, pixelCount = 210;
+  public static double resizeRatio = 0.1;
 
   /* INITIALIZATION AND CONTROL */
 
-  //Initialization:
-  public void init(HardwareMap hwMap, boolean type) {
+  //Initialization Method:
+  public static void init(HardwareMap hwMap, boolean type) {
     //Save reference to Hardware map:
     hardwareMap = hwMap;
 
@@ -96,44 +98,23 @@ public class IDKRobot {
     imu = hardwareMap.get(BNO055IMU.class, "imu");
     imu.initialize(imuParameters);
 
-    //Encoders:
-    leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
     //Checks the Case:
     if (type) {
-      //Motors
+      //Motor Encoders:
       leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-      //Zero Behavior:
-      leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     else {
-      //Motors:
+      //Motor Encoders:
       leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-      //Zero Behavior:
-      leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-      baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     //Directions:
@@ -142,21 +123,21 @@ public class IDKRobot {
     rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
     rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
     baseArmMotor.setDirection(DcMotor.Direction.FORWARD);
-
-    //Inits the Servos:
-    clawServo.setPosition(clawServoStartPosition);
-    holdServo.setPosition(holdServoStartPosition);
   }
 
   /* VISION METHODS */
 
   //Gets the Position Pixel Count:
-  public int getPixelsPosition() {
-    //Position Variable (w/ Default):
+  public static int getPixelsPosition() {
+    //Position Variable and Image (w/ Default):
     int position = 1;
-
-    //Gets the Image, Bitmap RGB, and Count:
     Bitmap image = imageInit.getImage(resizeRatio);
+
+    //Sets the Global Width and Height:
+    width = imageInit.getGlobalWidth();
+    height = imageInit.getGlobalHeight();
+
+    //Gets the Boolean Count:
     int rgb[][] = imageInit.getRGBArray(image, x, y, width, height);
     int booleanCount = imageInit.detectBooleanPixelCount(rgb, offset, pixelCount);
 
@@ -182,12 +163,30 @@ public class IDKRobot {
 
   /* IMU METHODS */
 
-  //Calculates turn Rotations in Terms of Degrees:
-  public double calculateTurnRotations(double angleDegrees) {
-    final double angleInRadians = ((Math.PI / 180) * angleDegrees); //Converts Angles from Radians (for Arc Length)
-    final double robotRotations = (robotDimensions / wheelCirc); //Width and Height in terms of Rotations
-    final double d = Math.sqrt((robotRotations * robotRotations) + (robotRotations * robotRotations)); //Diameter Value of Circumscribed Robot
-    final double r = d / 2; //Radius Value of Circumscribed Robot
+  //Converts from Radians to Degrees:
+  public static double convertAngle(double angle, boolean degrees) {
+    //Degrees Double:
+    double angleDegrees = ((180.0 / Math.PI) * angle);
+    double angleRadians = ((Math.PI / 180.0) * angle);
+
+    //Checks the Case:
+    if (degrees) {
+      //Returns the Angle:
+      return angleDegrees;
+    }
+
+    else {
+      //Returns the Angle:
+      return angleRadians;
+    }
+  }
+
+  //Calculates Turn Rotations in Terms of Degrees:
+  public static double calculateTurnRotations(double angleDegrees) {
+    double angleInRadians = convertAngle(angleDegrees, false); //Degrees to Radians (for Arc Length)
+    double robotRotations = (robotDimensions / wheelCirc); //Width and Height in terms of Rotations
+    double d = Math.sqrt((robotRotations * robotRotations) + (robotRotations * robotRotations)); //Diameter Value of Circumscribed Robot
+    double r = d / 2.0; //Radius Value of Circumscribed Robot
 
     /* Ratio is Rotations/Degrees...So to find Rotations it is... x = (ratioRotations*correction)/ratioDegrees */
 
@@ -200,34 +199,34 @@ public class IDKRobot {
 
   /* IMU Gyro Correction Method is Used in Conjunction with Turn Method, Reset Gyro Before Use:
      (PARAMS-expectedAngle should always be with direction [+ -> left and - -> right]) */
-  public double[] getGyroCorrection(double expectedAngle, double resetValue) {
+  public static double[] getGyroCorrection(double expectedAngle, double resetValue) {
     //Main Array and Variables:
     double directionAndRotations[] = new double[2];
-    double direction = 0; //Default Value
+    double direction = 0;
 
     //Gets IMU Reading:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double imuReading = (double) angles.firstAngle;
+    double imuReading = (double)(angles.firstAngle);
 
     //Gets Correct IMU Reset Reading:
     double imuResetReading = imuReading + resetValue;
 
     //Sets the Direction:
     if (imuResetReading > expectedAngle) {
+      //Sets the Heading:
       direction = -1;
     }
 
     else if (imuResetReading < expectedAngle) {
+      //Sets the Heading:
       direction = 1;
     }
 
-    directionAndRotations[0] = direction;
-
     //Calculates Correction Degrees:
+    directionAndRotations[0] = direction;
     double correction = Math.abs(Math.abs(expectedAngle) - Math.abs(imuResetReading));
 
-    /* Calculates Corrections in Rotations: */
-
+    //Calculates Correction Rotations:
     double driveRotations = calculateTurnRotations(correction);
     directionAndRotations[1] = driveRotations;
 
@@ -236,12 +235,10 @@ public class IDKRobot {
   }
 
   //Resets Gyro Sensor Value:
-  public double resetGyroValue() {
-    //Gets Current Value:
+  public static double resetGyroValue() {
+    //Gets Current Value and Resets:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     double currentIMUReading = (double) angles.firstAngle;
-
-    //Resets Gyro Value:
     double resetValue = 0 - currentIMUReading;
 
     //Returns the Zero Value:
@@ -251,20 +248,13 @@ public class IDKRobot {
   /* ROBOT MOVEMENT METHODS */
 
   //Resets Encoders After Every Movement:
-  public void finishRun() {
+  public static void finishRun() {
     //Resets Power:
-    leftFrontMotor.setPower(0);
-    leftBackMotor.setPower(0);
-    rightFrontMotor.setPower(0);
-    rightBackMotor.setPower(0);
-    baseArmMotor.setPower(0);
-
-    //Resets the Encoders:
-    leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    leftFrontMotor.setPower(zeroPower);
+    leftBackMotor.setPower(zeroPower);
+    rightFrontMotor.setPower(zeroPower);
+    rightBackMotor.setPower(zeroPower);
+    baseArmMotor.setPower(zeroPower);
 
     //Runs Using Encoders:
     leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -275,10 +265,13 @@ public class IDKRobot {
   }
 
   //Robot Move with Rotations:
-  public void runRobot(String type, double distanceInRotations, double power) {
+  public static void runRobot(String type, double distanceInRotations, double power) {
+    //Calculates Encoder Values:
     int parts = (int) ((distanceInRotations * TicksperRev) * gearRatio);
 
+    //Checks the Case:
     if (type.equalsIgnoreCase("forward")) {
+      //Sets the Target Positions:
       leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
       leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
       rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
@@ -286,17 +279,20 @@ public class IDKRobot {
     }
 
     else if (type.equalsIgnoreCase("backward")) {
+      //Sets the Target Positions:
       leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
       leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
       rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
     }
 
+    //Changes Motor Mode:
     leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+    //Runs Motors to Position:
     leftFrontMotor.setPower(power);
     leftBackMotor.setPower(power);
     rightFrontMotor.setPower(power);
@@ -304,29 +300,34 @@ public class IDKRobot {
   }
 
   //Robot Turn Motion with Rotations:
-  public void turnRobot(String type, double distanceInRotations, double power) {
-    int partsRotationsLeft = (int) ((distanceInRotations * TicksperRev) * gearRatio);
-    int partsRotationsRight = (int) ((distanceInRotations * TicksperRev) * gearRatio);
+  public static void turnRobot(String type, double distanceInRotations, double power) {
+    //Calculates Encoder Values:
+    int parts = (int) ((distanceInRotations * TicksperRev) * gearRatio);
 
+    //Checks the Case:
     if (type.equalsIgnoreCase("left")) {
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - partsRotationsLeft);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - partsRotationsLeft);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + partsRotationsRight);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + partsRotationsRight);
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
     }
 
     else if (type.equalsIgnoreCase("right")) {
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + partsRotationsLeft);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + partsRotationsLeft);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - partsRotationsRight);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - partsRotationsRight);
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
     }
 
+    //Sets the Motor Mode:
     leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+    //Runs Motors to Position:
     leftFrontMotor.setPower(power);
     leftBackMotor.setPower(power);
     rightFrontMotor.setPower(power);
@@ -334,110 +335,65 @@ public class IDKRobot {
   }
 
   //Robot Strafe Motion:
-  public void shiftRobot(String type, double distanceInRotations, double power) {
-    int partsRotationsLeft = (int) ((distanceInRotations * TicksperRev) * gearRatio);
-    int partsRotationsRight = (int) ((distanceInRotations * TicksperRev) * gearRatio);
+  public static void shiftRobot(String type, double distanceInRotations, double power) {
+    //Calculates Encoder Values:
+    int parts = (int) ((distanceInRotations * TicksperRev) * gearRatio);
 
+    //Checks the Case:
     if (type.equalsIgnoreCase("left")) {
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - partsRotationsLeft);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + partsRotationsLeft);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + partsRotationsRight);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - partsRotationsRight);
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
     }
 
     else if (type.equalsIgnoreCase("right")) {
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + partsRotationsLeft);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - partsRotationsLeft);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - partsRotationsRight);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + partsRotationsRight);
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
     }
 
+    //Sets the Motor Mode:
     leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+    //Runs Motor to Position:
     leftFrontMotor.setPower(power);
     leftBackMotor.setPower(power);
     rightFrontMotor.setPower(power);
     rightBackMotor.setPower(power);
   }
 
-  //Robot Diagonal Motion:
-  public void diagRobot(String type, double distanceInRotations, double power) {
-    int partsRotationsLeft = (int) ((distanceInRotations * TicksperRev) * gearRatio);
-    int partsRotationsRight = (int) ((distanceInRotations * TicksperRev) * gearRatio);
-
-    double LF = 0, LB = 0, RF = 0, RB = 0;
-
-    if (type.equalsIgnoreCase("left and up")) {
-      LF = 0.0;
-      RF = power;
-      RB = 0.0;
-      LB = power;
-      rightFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + partsRotationsRight);
-      leftBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + partsRotationsLeft);
-    }
-
-    else if (type.equalsIgnoreCase("right and up")) {
-      LF = power;
-      RF = 0.0;
-      RB = power;
-      LB = 0.0;
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + partsRotationsLeft);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + partsRotationsRight);
-    }
-
-    else if (type.equalsIgnoreCase("left and down")) {
-      LF = power;
-      RF = 0.0;
-      RB = power;
-      LB = 0.0;
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - partsRotationsLeft);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - partsRotationsRight);
-    }
-
-    else if (type.equalsIgnoreCase("right and down")) {
-      LF = 0.0;
-      RF = power;
-      RB = 0.0;
-      LB = power;
-      rightFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - partsRotationsRight);
-      leftBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - partsRotationsLeft);
-    }
-
-    leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    leftFrontMotor.setPower(LF);
-    leftBackMotor.setPower(LB);
-    rightFrontMotor.setPower(RF);
-    rightBackMotor.setPower(RB);
-  }
-
   /* MECHANISM METHODS */
 
   //Move Arm:
-  public void moveArm(String type, double distanceInRotations, double power) {
+  public static void moveArm(String type, double distanceInRotations, double power) {
+    //Calculates Encoder Values:
     int parts = (int) ((distanceInRotations * TicksperRev) * gearRatio);
 
-    //Checks the Case;
+    //Checks the Case:
     if (type.equalsIgnoreCase("up")) {
+      //Sets the Target Positions:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - parts);
     }
 
     else if (type.equalsIgnoreCase("down")) {
+      //Sets the Target Positions:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + parts);
     }
 
+    //Runs Motor to Position:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     baseArmMotor.setPower(power);
   }
 
   //Operate Claw:
-  public void operateClaw(String type) {
+  public static void operateClaw(String type) {
     //Checks the Case:
     if (type.equalsIgnoreCase("open")) {
       //Sets the Positions:

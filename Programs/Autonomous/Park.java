@@ -16,7 +16,6 @@ public class Park extends LinearOpMode {
   //Robot Objects:
   IDKRobot robot = new IDKRobot();
   PositionMovement positionMovement = new PositionMovement();
-  HardwareMap hwMap;
   ElapsedTime runtime = new ElapsedTime();
 
   //Movement Variables:
@@ -29,25 +28,25 @@ public class Park extends LinearOpMode {
 
   @Override
   public void runOpMode() {
-    //Status Update:
-    telemetry.addData("Status: ", "Initialized");
+    //Status Updates:
+    telemetry.addData("Status", "Initialized");
     telemetry.update();
 
-    //Initializes the Robot:
-    robot.init(hwMap, runType);
+    //Hardware Initialization:
+    robot.init(hardwareMap, runType);
 
-    //Wait for Start:
+    //Waits for Start:
     waitForStart();
     runtime.reset();
 
     /* Parks */
 
     //Grabs the Wobble:
-    robot.operateClaw("close");
-    idle();
-    sleep(2000);
-    robot.finishRun();
-    idle();
+    //robot.operateClaw("close");
+    //idle();
+    //sleep(1000);
+    //robot.finishRun();
+    //idle();
 
     //Parks the Robot:
     positionMovement.findPath(motions, startCoordinates, endCoordinates, turnFirst);
@@ -55,11 +54,8 @@ public class Park extends LinearOpMode {
 
     /* End */
 
-    //Disables Vuforia:
-    robot.imageInit.disableVuforia();
-
     //Status Update:
-    telemetry.addData("Status: ", "Stopped");
+    telemetry.addData("Status", "Stopped");
     telemetry.update();
   }
 }
