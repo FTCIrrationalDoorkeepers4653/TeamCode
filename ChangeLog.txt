@@ -39,4 +39,5 @@ Updated and finished preliminary autonomous for parking and main autonomous. Fix
 - 10/4/2020 - Developer(s): Sushen Kolakaleti
 Fixed a bug regarding the Positional Movement and the vision library, also was able to run the parking autonomous successfully. Also found another bug in the vision library with Vuforia that in the process of fixing.
 - 10/6/2020 - Developer(s): Sushen Kolakaleti
-Added Machine Learning to the FTC_IDK_VISION_LIB, and fixed the vision library for Ultimate Goal and overall. Also, restructured the code and made the code more readable.
+Added Machine Learning to the FTC_IDK_VISION_LIB, and fixed the vision library for Ultimate Goal and overall. Also, restructured the code and made the code more readable. 
+Additionally, restructured project and added TensorFlow and OpenCV vision detections as backups. 
