@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Systems.Vision;
 
 import android.graphics.Bitmap;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
@@ -10,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+@SuppressWarnings("unused")
 public class Camera extends Vision {
   /* VUFORIA VARIABLES */
 
