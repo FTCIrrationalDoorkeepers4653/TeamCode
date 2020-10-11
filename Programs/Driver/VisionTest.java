@@ -22,7 +22,7 @@ public class VisionTest extends LinearOpMode {
     telemetry.update();
 
     //Hardware Initialization:
-    robot.init(hardwareMap, false);
+    robot.init(hardwareMap, false, true);
 
     //Waits for Start:
     waitForStart();

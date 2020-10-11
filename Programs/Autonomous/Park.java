@@ -13,39 +13,35 @@ public class Park extends LinearOpMode {
   Robot robot = new Robot();
 
   //Movement Variables:
-  double startCoordinates[] = {652.0, 760.0},
-    endCoordinates[] = {652.0, 375.0};
-  String motions[] = {"forward", "nothing"};
-  boolean turnFirst = false, runType = true;
+  double startCoordinates[] = new double[2];
+  double endCoordinates[] = new double[2];
 
   /* OPMODE METHODS */
 
   @Override
   public void runOpMode() {
+    /* Initialization */
+
     //Status Updates:
     telemetry.addData("Status", "Initialized");
     telemetry.update();
 
     //Hardware Initialization:
-    robot.init(hardwareMap, runType);
+    robot.init(hardwareMap, true, false);
 
     //Waits for Start:
     waitForStart();
 
-    /* Parks */
-
-    //Grabs the Wobble:
-    //robot.operateClaw("close");
-    //idle();
-    //sleep(1000);
-    //robot.finishRun();
-    //idle();
+    /* Park */
 
     //Parks the Robot:
-    robot.positions.findPath(motions, startCoordinates, endCoordinates, turnFirst);
-    robot.positions.moveToPosition(motions, robot.slowPower, turnFirst);
+    startCoordinates[0] = 652.0;
+    startCoordinates[1] = 760.0;
+    endCoordinates[0] = 652.0;
+    endCoordinates[1] = 380.0;
+    robot.positions.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
-    /* End */
+    /* Stop */
 
     //Status Update:
     telemetry.addData("Status", "Stopped");

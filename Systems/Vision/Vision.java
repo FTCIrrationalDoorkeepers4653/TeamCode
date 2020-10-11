@@ -278,6 +278,24 @@ public class Vision extends Analyze {
     return pixelCounts;
   }
 
+  //Nearest Pixel Method:
+  public static int[] detectNearest(int rgbValues[][], int lightingMargin[]) {
+    //Main Integer Coordinates:
+    int coordinates[] = new int[2];
+
+    try {
+      //Gets the Coordinates:
+      coordinates = getNearestPixel(rgbValues, lightingMargin);
+    }
+
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    //Returns the Coordinates:
+    return coordinates;
+  }
+
   /* COORDINATE METHODS */
 
   //Get All Blob Coordinates Method:

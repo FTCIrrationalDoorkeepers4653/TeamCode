@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Systems.Vision.TensorVision;
 import org.firstinspires.ftc.teamcode.Systems.Vision.DogeVision;
+import org.firstinspires.ftc.teamcode.Systems.Vision.VisionPosition;
 
 public class Robot {
   /* SYSTEM VARIABLES */
@@ -52,11 +53,12 @@ public class Robot {
   //Powers:
   public static double zeroPower = 0.0;
   public static double slowPower = 0.4;
-  public static double mainPower = 0.6;
-  public static double fastPower = 0.8;
+  public static double mainPower = 0.5;
+  public static double fastPower = 0.6;
 
   //Objects:
   public static HardwareMap hardwareMap;
+  public static VisionPosition positioning = new VisionPosition();
   public static DogeVision doge = new DogeVision();
   public static TensorVision vision = new TensorVision();
   public static Positions positions = new Positions();
@@ -66,14 +68,18 @@ public class Robot {
   public static String detectorName = "Ring Detector";
   public static boolean flash = true;
   public static int zoom = 20;
-  public static int x = 150, y = 40, width = 106, height = 64;
-  public static int firstCount = 20, secondCount = 140, pixelCount = 280;
+  public static int x = 0, y = 0, width = 51, height = 26;
+  public static int firstCount = 20, secondCount = 80, pixelCount = 280;
   public static double resizeRatio = 0.2;
+
+  //Vision Position Settings:
+  public static int referencePixel[] = {0, width / 2};
+  public static double referenceDistance = 144.0, camOffsetX = 4.0, camOffsetY = 12.0;
 
   /* INITIALIZATION AND CONTROL */
 
   //Initialization Method:
-  public static void init(HardwareMap hwMap, boolean type) {
+  public static void init(HardwareMap hwMap, boolean type, boolean camera) {
     //Save reference to Hardware map:
     hardwareMap = hwMap;
 
@@ -88,9 +94,13 @@ public class Robot {
     clawServo = hardwareMap.servo.get("clawServo");
     holdServo = hardwareMap.servo.get("holdServo");
 
-    //Vision Initialization:
-    vision.initVuforia(hardwareMap, zoom, flash);
-    vision.initDetector(detectorName, detector);
+    //Checks the Case:
+    if (camera) {
+      //Vision Initialization:
+      vision.initVuforia(hardwareMap, zoom, flash);
+      vision.initDetector(detectorName, detector);
+      positioning.initVisionPosition(referencePixel, referenceDistance, camOffsetX, camOffsetY);
+    }
 
     //IMU Initialization:
     BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
@@ -157,6 +167,47 @@ public class Robot {
     return position;
   }
 
+  /* CALCULATION METHODS */
+
+  //Calculates Time Required To Complete Operation:
+  public static int calculateTime(double rotations, double power) {
+    //Calculates the Time Using Ratio:
+    double timeInSeconds = Math.abs((rotations / (wheelRPS * power)));
+    int timeInMillis = (int) (timeInSeconds * 1000.0);
+
+    //Returns the Value:
+    return timeInMillis;
+  }
+
+  //Gets Correct Gyro Correction Angle:
+  public static double[] getTriangle(double startCoordinates[], double endCoordinates[]) {
+    //Main Array:
+    double triangle[] = new double[4];
+
+    //Defines the Dimensions of Triangle:
+    double x = endCoordinates[0] - startCoordinates[0];
+    double y = endCoordinates[1] - startCoordinates[1];
+    double h = Math.sqrt(((x * x) + (y * y)));
+    double theta = convertAngle(Math.abs((Math.atan(x / y))), true);
+
+    //Sets the Values (x, y, h, theta):
+    triangle[0] = x;
+    triangle[1] = y;
+    triangle[2] = h;
+    triangle[3] = theta;
+
+    //Returns the Array:
+    return triangle;
+  }
+
+  //Get Converted Rotations:
+  public static double getConvertedRotations(double pixelDistance) {
+    //Converts and Returns Data:
+    double coordinatesToInches = (pixelDistance * POSITION_RATIO);
+    double inchesToRotations = (coordinatesToInches / wheelCirc);
+    return inchesToRotations;
+  }
+
   /* IMU METHODS */
 
   //Converts from Radians to Degrees:
@@ -193,8 +244,7 @@ public class Robot {
     return driveRotations;
   }
 
-  /* IMU Gyro Correction Method is Used in Conjunction with Turn Method, Reset Gyro Before Use:
-     (PARAMS-expectedAngle should always be with direction [+ -> left and - -> right]) */
+  //Gets the Rotations of Correction Method:
   public static double[] getGyroCorrection(double expectedAngle, double resetValue) {
     //Main Array and Variables:
     double directionAndRotations[] = new double[2];
@@ -203,11 +253,9 @@ public class Robot {
     //Gets IMU Reading:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     double imuReading = angles.firstAngle;
-
-    //Gets Correct IMU Reset Reading:
     double imuResetReading = imuReading + resetValue;
 
-    //Sets the Direction:
+    //Checks the Case:
     if (imuResetReading > expectedAngle) {
       //Sets the Heading:
       direction = -1;
@@ -234,7 +282,7 @@ public class Robot {
   public static double resetGyroValue() {
     //Gets Current Value and Resets:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double currentIMUReading = (double) angles.firstAngle;
+    double currentIMUReading = (double)(angles.firstAngle);
     double resetValue = 0 - currentIMUReading;
 
     //Returns the Zero Value:

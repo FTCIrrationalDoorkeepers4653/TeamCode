@@ -9,7 +9,7 @@ public class VisionPosition extends Camera {
 
   //Positioning Data (w/ Defaults):
   private static int referencePixel[] = new int[2], centerPixel[] = new int[2];
-  private static int referenceDistanceInches = 0, cameraOffsetX = 0, cameraOffsetY = 0;
+  private static double referenceDistanceInches = 0, cameraOffsetX = 0, cameraOffsetY = 0;
 
   //Vision Positioning Output Variables (w/ Defaults):
   private static ArrayList<Double> alignX = new ArrayList<Double>();
@@ -23,8 +23,8 @@ public class VisionPosition extends Camera {
   }
 
   //Initialize Vision Positioning:
-  public static void initVisionPosition(int reference[], int referenceDistance, int camOffsetX,
-    int camOffsetY) {
+  public static void initVisionPosition(int reference[], double referenceDistance, double camOffsetX,
+    double camOffsetY) {
     //Sets Distances and Offesets:
     referenceDistanceInches = referenceDistance;
     cameraOffsetX = camOffsetX;

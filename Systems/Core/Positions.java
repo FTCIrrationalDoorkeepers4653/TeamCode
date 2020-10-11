@@ -6,11 +6,7 @@ public class Positions extends LinearOpMode {
   /* POSITION VARIABLES */
 
   //Objects:
-  static Robot robot = new Robot();
-
-  //Movement Variables:
-  static double movementOneRotations = 0, movementTwoRotations = 0;
-  static double globalTheta = 0;
+  private static Robot robot = new Robot();
 
   /* OPMODE METHODS */
 
@@ -23,192 +19,56 @@ public class Positions extends LinearOpMode {
   /* POSITION METHODS */
 
   //Finds the Best Path to Coordinate (Uses AutonomousMapping Application Dimensions 760x760):
-  public static void findPath(String path[], double startCoordinates[], double endCoordinates[], boolean turnFirst) {
-    //Defines the Dimensions of Triangle:
-    double triangle[] = getTriangle(startCoordinates, endCoordinates);
-
-    //Defines the Values based on the Path (Movement 1):
-    if (path[0].equalsIgnoreCase("left") || path[0].equalsIgnoreCase("right")) {
-      if (turnFirst) {
-        //Calculates the Turn Angle:
-        double thetaInRotations = robot.calculateTurnRotations(triangle[3]);
-        movementOneRotations = Math.abs(thetaInRotations);
-
-        //Setting Global Theta Value:
-        if (path[0].equalsIgnoreCase("left")) {
-          //Sets Value:
-          globalTheta = triangle[3];
-        }
-
-        else if (path[0].equalsIgnoreCase("right")) {
-          //Sets Value:
-          globalTheta = -triangle[3];
-        }
-      }
-
-      else { //Shifting First is Discouraged
-        //Calculates the Shift Movement:
-        double coordinatesToInches = (triangle[0] * robot.POSITION_RATIO);
-        double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
-        movementOneRotations = Math.abs(inchesToRotations);
-      }
-    }
-
-    else if (path[0].equalsIgnoreCase("forward") || path[0].equalsIgnoreCase("backward")) {
-      //Calculates Forwards/Backwards Rotations:
-      double coordinatesToInches = (triangle[1] * robot.POSITION_RATIO);
-      double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
-      movementOneRotations = Math.abs(inchesToRotations);
-    }
-
-    //Defines the Values based on the Path (Movement 2):
-    if (path[1].equalsIgnoreCase("left") || path[1].equalsIgnoreCase("right")) {
-      //Calculates the Shift Movement:
-      double coordinatesToInches = (triangle[0] * robot.POSITION_RATIO);
-      double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
-      movementTwoRotations = Math.abs(inchesToRotations);
-    }
-
-    else if (path[1].equalsIgnoreCase("forward") || path[1].equalsIgnoreCase("backward")) {
-      //Calculates Forwards/Backwards Rotations:
-      double coordinatesToInches = (triangle[1] * robot.POSITION_RATIO);
-      double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
-      movementTwoRotations = Math.abs(inchesToRotations);
-    }
+  public void turnToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
+    //Gets the Triangle and Rotates:
+    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
+    turnGyro(movement, triangle[index], power);
   }
 
   //Move to Position Method:
-  public void moveToPosition(String path[], double power, boolean turnFirst) {
-    //Movements One and Two:
-    int realTimeMillisOne = calculateTime(movementOneRotations, power);
-    int realTimeMillisTwo = calculateTime(movementTwoRotations, power);
-
-    //Movement One Code:
-    if (path[0].equalsIgnoreCase("left") || path[0].equalsIgnoreCase("right")) {
-      //Checks the Case:
-      if (turnFirst) {
-        //Makes the Gyro Turn:
-        turnGyro(path[0], globalTheta, power);
-      }
-
-      else {
-        //Makes Shift Gyro (Discouraged):
-        shiftGyro(path[0], movementOneRotations, power);
-      }
-    }
-
-    else if (path[0].equalsIgnoreCase("forward") || path[0].equalsIgnoreCase("backward")) {
-      //Turns the Robot Towards Position:
-      robot.runRobot(path[0], movementOneRotations, power);
-      idle();
-      sleep(realTimeMillisOne);
-      robot.finishRun();
-      idle();
-    }
-
-    //Movement Two Code:
-    if (path[1].equalsIgnoreCase("left") || path[1].equalsIgnoreCase("right")) {
-      //Makes Shift Gyro:
-      shiftGyro(path[1], movementTwoRotations, power);
-    }
-
-    else if (path[1].equalsIgnoreCase("forward") || path[1].equalsIgnoreCase("backward")) {
-      //Runs the Robot Towards Position:
-      robot.runRobot(path[1], movementTwoRotations, power);
-      idle();
-      sleep(realTimeMillisTwo);
-      robot.finishRun();
-      idle();
-    }
+  public void runToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
+    //Gets the Triangle and Runs:
+    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
+    double rotations = robot.getConvertedRotations(triangle[index]);
+    runGyro(movement, rotations, power);
   }
 
-  /* CALCULATION METHODS */
-
-  //Calculates Time Required To Complete Operation:
-  public static int calculateTime(double rotations, double power) {
-    //Calculates the Time Using Ratio:
-    double timeInSeconds = Math.abs((rotations / (robot.wheelRPS * power)));
-    int timeInMillis = (int)(timeInSeconds * 1000.0);
-
-    //Returns the Value:
-    return timeInMillis;
+  //Shift Position Method:
+  public void shiftToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
+    //Gets the Triangle and Shifts:
+    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
+    double rotations = robot.getConvertedRotations(triangle[index]);
+    shiftGyro(movement, rotations, power);
   }
 
-  //Gets Correct Gyro Correction Angle:
-  public static double[] getTriangle(double startCoordinates[], double endCoordinates[]) {
-    //Main Array:
-    double triangle[] = new double[4];
-
-    //Defines the Dimensions of Triangle:
-    double x = endCoordinates[0] - startCoordinates[0];
-    double y = endCoordinates[1] - startCoordinates[1];
-    double h = Math.sqrt(((x * x) + (y * y)));
-    double theta = robot.convertAngle((Math.atan(y / x)), true);
-
-    //Sets the Values (x, y, h, theta):
-    triangle[0] = x;
-    triangle[1] = y;
-    triangle[2] = h;
-    triangle[3] = theta;
-
-    //Returns the Array:
-    return triangle;
-  }
-
-  /* GYRO METHODS */
-
-  //Gyro Correction Method (Reset Gyro Before):
-  public void gyroCorrect(double expectedAngle, double resetValue, double power) {
-    //Gyro Correction Calculation:
-    double gyroValues[] = robot.getGyroCorrection(expectedAngle, resetValue);
-    String turnValue = "";
-
-    //Sets the turn Value:
-    if (gyroValues[0] == -1) {
-      turnValue = "right";
-    }
-
-    else if (gyroValues[0] == 1) {
-      turnValue = "left";
-    }
-
-    //Calculates Time Required:
-    int millis = calculateTime(gyroValues[1], power);
-
-    //Makes Correction:
-    robot.turnRobot(turnValue, gyroValues[1], power);
-    idle();
-    sleep(millis);
-    robot.finishRun();
-    idle();
-  }
+  /* GYRO CORRECTION METHODS */
 
   //Makes turns with Gyro Corrections:
-  public void turnGyro(String direction, double angle, double power) {
+  public void turnGyro(String movement, double angle, double power) {
     //Calculates Turn:
-    double gyroResetDeliver = robot.resetGyroValue();
-    double turnValueDeliver = robot.calculateTurnRotations(angle);
-    int timeRequiredDeliver = calculateTime(turnValueDeliver, power);
+    double gyroReset = robot.resetGyroValue();
+    double turnValue = Math.abs(robot.calculateTurnRotations(angle));
+    int timeRequired = Math.abs(robot.calculateTime(turnValue, power));
 
     //Turns Robot:
-    robot.turnRobot(direction, turnValueDeliver, power);
+    robot.turnRobot(movement, Math.abs(turnValue), power);
     idle();
-    sleep(timeRequiredDeliver);
+    sleep(timeRequired);
     robot.finishRun();
     idle();
 
     //Gyro Corrects Robot:
-    gyroCorrect(angle, gyroResetDeliver, power);
+    gyroCorrect(angle, gyroReset, power);
   }
 
-  //Shifts with Gyro Corrects:
-  public void shiftGyro(String direction, double rotations, double power) {
+  //Runs with Gyro Corrects:
+  public void runGyro(String movement, double rotations, double power) {
     //Calculates Resets Gyro Value:
     double gyroReset = robot.resetGyroValue();
-    int millis = calculateTime(rotations, power);
+    int millis = Math.abs(robot.calculateTime(rotations, power));
 
-    //Shifts the Robot Towards Position:
-    robot.shiftRobot(direction, movementOneRotations, power);
+    //Runs the Robot Towards Position:
+    robot.runRobot(movement, Math.abs(rotations), power);
     idle();
     sleep(millis);
     robot.finishRun();
@@ -216,5 +76,48 @@ public class Positions extends LinearOpMode {
 
     //Gyro Corrects:
     gyroCorrect(0, gyroReset, power);
+  }
+
+  //Shifts with Gyro Corrects:
+  public void shiftGyro(String movement, double rotations, double power) {
+    //Calculates Resets Gyro Value:
+    double gyroReset = robot.resetGyroValue();
+    int millis = Math.abs(robot.calculateTime(rotations, power));
+
+    //Shifts the Robot Towards Position:
+    robot.shiftRobot(movement, Math.abs(rotations), power);
+    idle();
+    sleep(millis);
+    robot.finishRun();
+    idle();
+
+    //Gyro Corrects:
+    gyroCorrect(0, gyroReset, power);
+  }
+
+  //Gyro Correction Method (Reset Gyro Before):
+  public void gyroCorrect(double expectedAngle, double resetValue, double power) {
+    //Gyro Correction Calculation:
+    String movement = "";
+    double gyroValues[] = robot.getGyroCorrection(expectedAngle, resetValue);
+    int millis = Math.abs(robot.calculateTime(gyroValues[1], power));
+
+    //Checks the Case:
+    if (gyroValues[0] == -1) {
+      //Sets the Movement:
+      movement = "left";
+    }
+
+    else if (gyroValues[0] == 1) {
+      //Sets the Movement:
+      movement = "right";
+    }
+
+    //Makes Correction:
+    robot.turnRobot(movement, Math.abs(gyroValues[1]), power);
+    idle();
+    sleep(millis);
+    robot.finishRun();
+    idle();
   }
 }

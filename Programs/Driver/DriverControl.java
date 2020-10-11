@@ -18,19 +18,19 @@ public class DriverControl extends LinearOpMode {
   //RunOpMode Method:
   @Override
   public void runOpMode() {
-    /* On Initialization */
+    /* Initialization */
 
     //Sets Status:
     telemetry.addData("Status", "Initialized");
     telemetry.update();
 
     //Initialize Robot:
-    robot.init(hardwareMap, false);
+    robot.init(hardwareMap, false, false);
 
     //Wait for Start:
     waitForStart();
 
-    /* On Run */
+    /* Run */
 
     //Loop Until Stop:
     while (opModeIsActive()) {
@@ -44,7 +44,7 @@ public class DriverControl extends LinearOpMode {
       telemetry.update();
     }
 
-    /* On Stop */
+    /* Stop */
 
     //Sets Status:
     telemetry.addData("Status", "Stopped");
@@ -86,80 +86,45 @@ public class DriverControl extends LinearOpMode {
 
     /* Robot Movement */
 
-    //Forward and Backward:
+    //Checks the Case:
     if (gamepad1.left_stick_y != 0.0 || gamepad1.right_stick_y != 0.0 && gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0) {
       //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(leftPower);
-      robot.leftBackMotor.setPower(leftPower);
-      robot.rightFrontMotor.setPower(rightPower);
-      robot.rightBackMotor.setPower(rightPower);
+      robot.leftFrontMotor.setPower(-leftPower);
+      robot.leftBackMotor.setPower(-leftPower);
+      robot.rightFrontMotor.setPower(-rightPower);
+      robot.rightBackMotor.setPower(-rightPower);
     }
 
-    //Left and Right:
-    else if (gamepad1.left_stick_x != 0.0 || gamepad1.right_stick_x != 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
+    //Checks the Case:
+    if (gamepad1.left_stick_x != 0.0 || gamepad1.right_stick_x != 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
       //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(-leftStrafe);
-      robot.leftBackMotor.setPower(leftStrafe);
-      robot.rightFrontMotor.setPower(rightStrafe);
-      robot.rightBackMotor.setPower(-rightStrafe);
-    }
-
-    //Stop:
-    else if (gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
-      //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(robot.zeroPower);
-      robot.leftBackMotor.setPower(robot.zeroPower);
-      robot.rightFrontMotor.setPower(robot.zeroPower);
-      robot.rightBackMotor.setPower(robot.zeroPower);
+      robot.leftFrontMotor.setPower(leftStrafe);
+      robot.leftBackMotor.setPower(-leftStrafe);
+      robot.rightFrontMotor.setPower(-rightStrafe);
+      robot.rightBackMotor.setPower(rightStrafe);
     }
   }
 
   //Moves the Arm:
   public void moveArm() {
-    /* Powers */
-
-    //Powers for the Arm:
-    double armPower = 0.4;
-    double armPowerUp = 0.5;
-
-    /* Slow Mode */
-
-    //Slow Mode Boolean:
-    boolean slowMode = false;
-
-    //Setting Slow Mode:
-    if (gamepad2.left_bumper) {
-      //Sets the Slow Mode
-      slowMode = true;
-    }
-
-    //Checks the Slow Mode Boolean Powers:
-    if (slowMode == true) {
-      //Sets the Powers:
-      armPower = 0.2;
-      armPowerUp = 0.25;
-    }
-
     /* Arm Movement */
 
-    //Code for moving forearm forward:
-    if (gamepad2.left_stick_y > 0.0) {
-      robot.baseArmMotor.setPower(armPowerUp);
+    //Checks the Case:
+    if (gamepad1.left_trigger > 0.0) {
+      //Moves Arm Up:
+      robot.baseArmMotor.setPower(robot.slowPower);
     }
 
-    //Code for moving forearm backward:
-    else if (gamepad2.left_stick_y < 0.0) {
-      robot.baseArmMotor.setPower(-armPower);
-    }
-
-    //Code for stopping:
-    else if (gamepad2.left_stick_y == 0.0) {
-      robot.baseArmMotor.setPower(robot.zeroPower);
+    else if (gamepad1.right_trigger > 0.0) {
+      //Moves Arm Down:
+      robot.baseArmMotor.setPower(-robot.slowPower);
     }
   }
 
   //Grabs the Wobble Goal:
   public void grabWobble() {
+    /* Claw Movement */
+
     //Setting Values:
     if (gamepad2.y) {
       //Sets the Claw:
@@ -168,14 +133,12 @@ public class DriverControl extends LinearOpMode {
       //Opening and Closing Claws:
       if (clawClosed == -1) {
         //Sets Positions:
-        robot.holdServo.setPosition(robot.holdServoStartPosition);
-        robot.clawServo.setPosition(robot.clawServoStartPosition);
+        robot.operateClaw("open");
       }
 
-      if (clawClosed == 1) {
+      else if (clawClosed == 1) {
         //Sets Positions:
-        robot.holdServo.setPosition(robot.holdServoEndPosition);
-        robot.clawServo.setPosition(robot.clawServoEndPosition);
+        robot.operateClaw("close");
       }
     }
   }
