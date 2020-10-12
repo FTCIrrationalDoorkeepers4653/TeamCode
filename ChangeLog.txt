@@ -2,7 +2,7 @@
 
 - 9/14/2020 - Added pixel count and pixel density support for the VuforiaDetector and the FTC_IDK_VISION_LIB support in the TeamCode.
 
-- 9/28/2020 - Added RGB 565 coding support to the FTC_IDK_VISION_LIB, setup TeleOp and Autonomous for the Ultimate Goal Season. 
+- 9/28/2020 - Added RGB 565 encoding support to the FTC_IDK_VISION_LIB, setup TeleOp and Autonomous for the Ultimate Goal Season. 
 Changed the image in AutonomousMapping application for Ultimate Goal.
 
 - 9/29/2020 - Updated and finished preliminary autonomous for parking and main autonomous. Fixed major distance bug in the AutonomousMapping application.
@@ -19,3 +19,6 @@ Vision Positional Mapping Software.
 
 - 10/10/2020 - Changed the Positional Movement Software (PMS) to be single movements at a time for more customization. Also, fine tuned the values and vision inputs to make
 the main autonomous work on the blue and red allicances. We plan to work on the Vision Positioning Mapping Software (VPMS) further.
+
+- 10/11/202 - Changed Initlialization method for the FTC_IDK_VISION_LIB and started to implement Vision Position Tracking, Automation, and Detection Visualization with the 
+Vision Library.

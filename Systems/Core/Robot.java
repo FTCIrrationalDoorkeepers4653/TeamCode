@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Systems.Vision.TensorVision;
 import org.firstinspires.ftc.teamcode.Systems.Vision.DogeVision;
-import org.firstinspires.ftc.teamcode.Systems.Vision.VisionPosition;
+import org.firstinspires.ftc.teamcode.Systems.Vision.Lib.VisionPosition;
 
 public class Robot {
   /* SYSTEM VARIABLES */
@@ -71,6 +71,11 @@ public class Robot {
   public static int x = 0, y = 0, width = 51, height = 26;
   public static int firstCount = 20, secondCount = 80, pixelCount = 280;
   public static double resizeRatio = 0.2;
+  private static String VUFORIA_KEY =
+  "AR7KPuz/////AAABmSKvAg58mkBSqvvfxvaYqxMN8S2CvbOIzcpLyLVqb9hLPXQf3hPCERtF9azaj5sBUezFRBqdVA53ZAsNmlWW/" +
+  "ThqkaHtmpKNqXneP6p8VhN4liG3ofA7Cidx234PKNIhalLvby0jdmuxT5Uhh4dJjST6taoZGArAQz7Df8hzPG26Nd92L1A" +
+  "TW3mO4qzNAny2UK5YrzG92bUIxqvpDLkjeq8UNTLHYD4ulI1i+Jl/dPzU2PdeNPEqlsykdshGvcuRWRz8qeMXfpKVZ9TXmLxqvu" +
+  "Te6K291gxuKtfWXJ11rYJHTJlUAvooMpPaAh2/isv6LUy83+3UhIyl1kNxaNeMHK52iqEjpswOiOmVkniWTblp";
 
   //Vision Position Settings:
   public static int referencePixel[] = {0, width / 2};
@@ -97,7 +102,7 @@ public class Robot {
     //Checks the Case:
     if (camera) {
       //Vision Initialization:
-      vision.initVuforia(hardwareMap, zoom, flash);
+      vision.initVuforia(hardwareMap, VUFORIA_KEY, zoom, flash);
       vision.initDetector(detectorName, detector);
       positioning.initVisionPosition(referencePixel, referenceDistance, camOffsetX, camOffsetY);
     }

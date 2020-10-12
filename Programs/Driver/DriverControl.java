@@ -11,7 +11,9 @@ public class DriverControl extends LinearOpMode {
 
   //DriverControl Objects and Variables:
   Robot robot = new Robot();
-  double clawClosed = -1;
+  boolean slowMode = false;
+  double clawClosed = -1.0;
+  double divisor = 3.0;
 
   /* TELEOP METHODS */
 
@@ -65,12 +67,8 @@ public class DriverControl extends LinearOpMode {
 
     /* Slow Mode */
 
-    //Slow Mode Boolean:
-    boolean slowMode = false;
-    double divisor = 3.0;
-
-    //Setting Slow Mode:
-    if (gamepad1.left_bumper) {
+    //Checks Slow Mode:
+    if (gamepad1.right_trigger > 0.0) {
       //Sets the Slow Mode:
       slowMode = true;
     }
@@ -128,15 +126,15 @@ public class DriverControl extends LinearOpMode {
     //Setting Values:
     if (gamepad2.y) {
       //Sets the Claw:
-      clawClosed *= -1;
+      clawClosed *= -1.0;
 
       //Opening and Closing Claws:
-      if (clawClosed == -1) {
+      if (clawClosed == -1.0) {
         //Sets Positions:
         robot.operateClaw("open");
       }
 
-      else if (clawClosed == 1) {
+      else if (clawClosed == 1.0) {
         //Sets Positions:
         robot.operateClaw("close");
       }

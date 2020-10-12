@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Systems.Vision;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.Systems.Vision.Lib.Camera;
+
 import java.util.ArrayList;
 import java.util.List;
 
