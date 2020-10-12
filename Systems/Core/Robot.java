@@ -55,6 +55,7 @@ public class Robot {
   public static double slowPower = 0.4;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
+  public static double speedControl = 3.0;
 
   //Objects:
   public static HardwareMap hardwareMap;
@@ -211,6 +212,31 @@ public class Robot {
     double coordinatesToInches = (pixelDistance * POSITION_RATIO);
     double inchesToRotations = (coordinatesToInches / wheelCirc);
     return inchesToRotations;
+  }
+
+  //Step Function Control Method:
+  public static double getStepFunction(double value) {
+    //Main Step Function Output:
+    double output = 0.0;
+
+    //Checks the Case:
+    if (value > 0.0) {
+      //Sets the Output:
+      output = 1.0;
+    }
+
+    else if (value < 0.0) {
+      //Sets the Output:
+      output = -1.0;
+    }
+
+    else {
+      //Sets the Output:
+      output = 0.0;
+    }
+
+    //Returns the Output:
+    return output;
   }
 
   /* IMU METHODS */

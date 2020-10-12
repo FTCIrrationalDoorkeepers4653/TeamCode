@@ -11,9 +11,7 @@ public class DriverControl extends LinearOpMode {
 
   //DriverControl Objects and Variables:
   Robot robot = new Robot();
-  boolean slowMode = false;
-  double clawClosed = -1.0;
-  double divisor = 3.0;
+  boolean open = false;
 
   /* TELEOP METHODS */
 
@@ -57,35 +55,41 @@ public class DriverControl extends LinearOpMode {
 
   //Moves the Robot:
   public void moveRobot() {
-    /* Powers */
+    /* Power Controls */
 
-    //Cubes the Gamepad Values:
-    double leftPower = (gamepad1.left_stick_y * gamepad1.left_stick_y * gamepad1.left_stick_y);
-    double rightPower = (gamepad1.right_stick_y * gamepad1.right_stick_y * gamepad1.right_stick_y);
-    double leftStrafe = (gamepad1.left_stick_x * gamepad1.left_stick_x * gamepad1.left_stick_x);
-    double rightStrafe = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
+    //Gets the Gamepad Control Values:
+    double leftPower = (gamepad1.left_stick_y * gamepad1.left_stick_y);
+    double rightPower = (gamepad1.right_stick_y * gamepad1.right_stick_y);
+    double leftStrafe = (gamepad1.left_stick_x * gamepad1.left_stick_x);
+    double rightStrafe = (gamepad1.right_stick_x * gamepad1.right_stick_x);
+
+    //Gets the Step Control Values:
+    double leftControl = robot.getStepFunction(leftPower);
+    double rightControl = robot.getStepFunction(rightPower);
+    double leftShift = robot.getStepFunction(leftStrafe);
+    double rightShift = robot.getStepFunction(rightStrafe);
+
+    //Sets the New Powers:
+    leftPower *= leftControl;
+    rightPower *= rightControl;
+    leftStrafe *= leftShift;
+    rightStrafe *= rightShift;
 
     /* Slow Mode */
 
     //Checks Slow Mode:
     if (gamepad1.right_trigger > 0.0) {
       //Sets the Slow Mode:
-      slowMode = true;
-    }
-
-    //Checks the Slow Mode Boolean Powers:
-    if (slowMode == true) {
-      //Corrects the Speed:
-      leftPower /= divisor;
-      rightPower /= divisor;
-      leftStrafe /= divisor;
-      rightStrafe /= divisor;
+      leftPower /= robot.speedControl;
+      rightPower /= robot.speedControl;
+      leftStrafe /= robot.speedControl;
+      rightStrafe /= robot.speedControl;
     }
 
     /* Robot Movement */
 
     //Checks the Case:
-    if (gamepad1.left_stick_y != 0.0 || gamepad1.right_stick_y != 0.0 && gamepad1.left_stick_x == 0.0 && gamepad1.right_stick_x == 0.0) {
+    if (gamepad1.left_stick_y != robot.zeroPower || gamepad1.right_stick_y != robot.zeroPower) {
       //Sets the power to the motors:
       robot.leftFrontMotor.setPower(-leftPower);
       robot.leftBackMotor.setPower(-leftPower);
@@ -93,8 +97,7 @@ public class DriverControl extends LinearOpMode {
       robot.rightBackMotor.setPower(-rightPower);
     }
 
-    //Checks the Case:
-    if (gamepad1.left_stick_x != 0.0 || gamepad1.right_stick_x != 0.0 && gamepad1.left_stick_y == 0.0 && gamepad1.right_stick_y == 0.0) {
+    else if (gamepad1.left_stick_x != robot.zeroPower || gamepad1.right_stick_x != robot.zeroPower) {
       //Sets the power to the motors:
       robot.leftFrontMotor.setPower(leftStrafe);
       robot.leftBackMotor.setPower(-leftStrafe);
@@ -105,15 +108,13 @@ public class DriverControl extends LinearOpMode {
 
   //Moves the Arm:
   public void moveArm() {
-    /* Arm Movement */
-
     //Checks the Case:
-    if (gamepad1.left_trigger > 0.0) {
+    if (gamepad1.left_trigger > robot.zeroPower) {
       //Moves Arm Up:
       robot.baseArmMotor.setPower(robot.slowPower);
     }
 
-    else if (gamepad1.right_trigger > 0.0) {
+    else if (gamepad1.right_trigger > robot.zeroPower) {
       //Moves Arm Down:
       robot.baseArmMotor.setPower(-robot.slowPower);
     }
@@ -121,22 +122,19 @@ public class DriverControl extends LinearOpMode {
 
   //Grabs the Wobble Goal:
   public void grabWobble() {
-    /* Claw Movement */
-
-    //Setting Values:
+    //Checks the Case:
     if (gamepad2.y) {
-      //Sets the Claw:
-      clawClosed *= -1.0;
-
-      //Opening and Closing Claws:
-      if (clawClosed == -1.0) {
-        //Sets Positions:
-        robot.operateClaw("open");
+      //Checks the Case:
+      if (open) {
+        //Set the Values:
+        robot.operateClaw("close");
+        open = false;
       }
 
-      else if (clawClosed == 1.0) {
-        //Sets Positions:
-        robot.operateClaw("close");
+      else {
+        //Sets the Values:
+        robot.operateClaw("open");
+        open = true;
       }
     }
   }

@@ -21,4 +21,4 @@ Vision Positional Mapping Software.
 the main autonomous work on the blue and red allicances. We plan to work on the Vision Positioning Mapping Software (VPMS) further.
 
 - 10/11/202 - Changed Initlialization method for the FTC_IDK_VISION_LIB and started to implement Vision Position Tracking, Automation, and Detection Visualization with the 
-Vision Library.
+Vision Library. Changed the Joystick controls for the arm and the chassis to make things more efficient and stable while driving.
