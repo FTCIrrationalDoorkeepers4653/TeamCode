@@ -20,5 +20,9 @@ Vision Positional Mapping Software.
 - 10/10/2020 - Changed the Positional Movement Software (PMS) to be single movements at a time for more customization. Also, fine tuned the values and vision inputs to make
 the main autonomous work on the blue and red allicances. We plan to work on the Vision Positioning Mapping Software (VPMS) further.
 
-- 10/11/202 - Changed Initlialization method for the FTC_IDK_VISION_LIB and started to implement Vision Position Tracking, Automation, and Detection Visualization with the 
+- 10/11/2020 - Changed Initlialization method for the FTC_IDK_VISION_LIB and started to implement Vision Position Tracking, Automation, and Detection Visualization with the 
 Vision Library. Changed the Joystick controls for the arm and the chassis to make things more efficient and stable while driving.
+
+- 10/13/2020 - Added new Gyro Stabilization feature, tweaked Autonomous Programs, Started to add Vision Position Mapping and PID Controller. Setup new Joystick controls for
+overall systems including drive train and arm, build team is adding more mechanisms, so have to keep up. Tweaked Vision profiling, now Vision works under many different lighting
+conditions and systems.

@@ -23,6 +23,7 @@ public class VisionTest extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, false, true);
+    robot.mechanisms.initMechanisms();
 
     //Waits for Start:
     waitForStart();

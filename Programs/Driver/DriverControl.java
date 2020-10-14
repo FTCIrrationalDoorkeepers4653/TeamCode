@@ -26,6 +26,7 @@ public class DriverControl extends LinearOpMode {
 
     //Initialize Robot:
     robot.init(hardwareMap, false, false);
+    robot.mechanisms.initMechanisms();
 
     //Wait for Start:
     waitForStart();
@@ -37,7 +38,6 @@ public class DriverControl extends LinearOpMode {
       //Method Calls:
       moveRobot();
       moveArm();
-      grabWobble();
 
       //Sets Status:
       telemetry.addData("Status", "Running");
@@ -55,87 +55,61 @@ public class DriverControl extends LinearOpMode {
 
   //Moves the Robot:
   public void moveRobot() {
-    /* Power Controls */
-
     //Gets the Gamepad Control Values:
-    double leftPower = (gamepad1.left_stick_y * gamepad1.left_stick_y);
-    double rightPower = (gamepad1.right_stick_y * gamepad1.right_stick_y);
-    double leftStrafe = (gamepad1.left_stick_x * gamepad1.left_stick_x);
-    double rightStrafe = (gamepad1.right_stick_x * gamepad1.right_stick_x);
-
-    //Gets the Step Control Values:
-    double leftControl = robot.getStepFunction(leftPower);
-    double rightControl = robot.getStepFunction(rightPower);
-    double leftShift = robot.getStepFunction(leftStrafe);
-    double rightShift = robot.getStepFunction(rightStrafe);
-
-    //Sets the New Powers:
-    leftPower *= leftControl;
-    rightPower *= rightControl;
-    leftStrafe *= leftShift;
-    rightStrafe *= rightShift;
-
-    /* Slow Mode */
-
-    //Checks Slow Mode:
-    if (gamepad1.right_trigger > 0.0) {
-      //Sets the Slow Mode:
-      leftPower /= robot.speedControl;
-      rightPower /= robot.speedControl;
-      leftStrafe /= robot.speedControl;
-      rightStrafe /= robot.speedControl;
-    }
-
-    /* Robot Movement */
+    double power = (gamepad1.left_stick_y * gamepad1.left_stick_y * gamepad1.left_stick_y);
+    double turn = (gamepad1.left_stick_x * gamepad1.left_stick_x * gamepad1.left_stick_x);
+    double strafe = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
 
     //Checks the Case:
-    if (gamepad1.left_stick_y != robot.zeroPower || gamepad1.right_stick_y != robot.zeroPower) {
-      //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(-leftPower);
-      robot.leftBackMotor.setPower(-leftPower);
-      robot.rightFrontMotor.setPower(-rightPower);
-      robot.rightBackMotor.setPower(-rightPower);
+    if (power != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.leftFrontMotor.setPower(-power);
+      robot.leftBackMotor.setPower(-power);
+      robot.rightFrontMotor.setPower(-power);
+      robot.rightBackMotor.setPower(-power);
     }
 
-    else if (gamepad1.left_stick_x != robot.zeroPower || gamepad1.right_stick_x != robot.zeroPower) {
-      //Sets the power to the motors:
-      robot.leftFrontMotor.setPower(leftStrafe);
-      robot.leftBackMotor.setPower(-leftStrafe);
-      robot.rightFrontMotor.setPower(-rightStrafe);
-      robot.rightBackMotor.setPower(rightStrafe);
-    }
-  }
-
-  //Moves the Arm:
-  public void moveArm() {
-    //Checks the Case:
-    if (gamepad1.left_trigger > robot.zeroPower) {
-      //Moves Arm Up:
-      robot.baseArmMotor.setPower(robot.slowPower);
+    else if (turn != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.leftFrontMotor.setPower(turn);
+      robot.leftBackMotor.setPower(turn);
+      robot.rightFrontMotor.setPower(-turn);
+      robot.rightBackMotor.setPower(-turn);
     }
 
-    else if (gamepad1.right_trigger > robot.zeroPower) {
-      //Moves Arm Down:
-      robot.baseArmMotor.setPower(-robot.slowPower);
+    else if (strafe != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.leftFrontMotor.setPower(strafe);
+      robot.leftBackMotor.setPower(-strafe);
+      robot.rightFrontMotor.setPower(-strafe);
+      robot.rightBackMotor.setPower(strafe);
+    }
+
+    else {
+      //Sets the Motor Power:
+      robot.leftFrontMotor.setPower(robot.zeroPower);
+      robot.leftBackMotor.setPower(robot.zeroPower);
+      robot.rightFrontMotor.setPower(robot.zeroPower);
+      robot.rightBackMotor.setPower(robot.zeroPower);
     }
   }
 
   //Grabs the Wobble Goal:
-  public void grabWobble() {
+  public void moveArm() {
     //Checks the Case:
-    if (gamepad2.y) {
-      //Checks the Case:
-      if (open) {
-        //Set the Values:
-        robot.operateClaw("close");
-        open = false;
-      }
+    if (gamepad1.a) {
+      //Moves the Arm:
+      robot.mechanisms.automateArm();
+    }
 
-      else {
-        //Sets the Values:
-        robot.operateClaw("open");
-        open = true;
-      }
+    else if (gamepad1.y) {
+      //Operates the Claw:
+      robot.mechanisms.operateClaw();
+    }
+
+    else {
+      //Resets Arm:
+      robot.mechanisms.mechanismsFinishRun();
     }
   }
 }

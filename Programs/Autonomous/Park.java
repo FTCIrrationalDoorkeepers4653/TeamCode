@@ -28,6 +28,7 @@ public class Park extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, false);
+    robot.mechanisms.initMechanisms();
 
     //Waits for Start:
     waitForStart();
@@ -39,7 +40,7 @@ public class Park extends LinearOpMode {
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 652.0;
     endCoordinates[1] = 380.0;
-    robot.positions.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
+    robot.pid.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     /* Stop */
 

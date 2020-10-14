@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Systems.Vision;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.Systems.Vision.Lib.Camera;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class TensorVision extends Camera {
   }
 
   //Initializes the TensorFlow Model:
-  public static void initTensorVision() {
+  public static void initTensorVision(HardwareMap hardwareMap, VuforiaLocalizer vuforia) {
     //Initializes the TensorFlow Parameters:
     int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
         "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());

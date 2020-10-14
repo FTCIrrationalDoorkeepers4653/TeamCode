@@ -3,52 +3,105 @@ package org.firstinspires.ftc.teamcode.Systems.Core;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class Positions extends LinearOpMode {
-  /* POSITION VARIABLES */
+  /* POSITION SETUP */
 
   //Objects:
-  private static Robot robot = new Robot();
+  static Robot robot = new Robot();
 
-  /* OPMODE METHODS */
+  /* POSITION HARDWARE METHODS */
 
-  //RunOpMode Method:
   @Override
   public void runOpMode() {
     /* Accesses Hardware Functions */
   }
 
-  /* POSITION METHODS */
+  //Gets the Current Encoder Positions:
+  public static int getRobotPosition() {
+    //Gets the Wheel Encoder Values:
+    double leftFrontEncoder = robot.leftFrontMotor.getCurrentPosition();
+    double leftBackEncoder = robot.leftBackMotor.getCurrentPosition();
+    double rightFrontEncoder = robot.rightFrontMotor.getCurrentPosition();
+    double rightBackEncoder = robot.rightBackMotor.getCurrentPosition();
+
+    //Gets the Average of Encoders and Returns:
+    double sumEncoder = (leftFrontEncoder + leftBackEncoder + rightFrontEncoder + rightBackEncoder);
+    int avgEncoder = (int)(sumEncoder / robot.numWheels);
+    return avgEncoder;
+  }
+
+  /* POSITION MOVEMENT METHODS */
 
   //Finds the Best Path to Coordinate (Uses AutonomousMapping Application Dimensions 760x760):
   public void turnToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
     //Gets the Triangle and Rotates:
-    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
+    double triangle[] = getTriangle(startCoordinates, endCoordinates);
+    gyroCorrect(0, robot.resetGyroValue(), power);
     turnGyro(movement, triangle[index], power);
   }
 
   //Move to Position Method:
   public void runToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
     //Gets the Triangle and Runs:
-    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
-    double rotations = robot.getConvertedRotations(triangle[index]);
+    double triangle[] = getTriangle(startCoordinates, endCoordinates);
+    double rotations = getConvertedRotations(triangle[index]);
     runGyro(movement, rotations, power);
   }
 
   //Shift Position Method:
   public void shiftToPosition(String movement, int index, double startCoordinates[], double endCoordinates[], double power) {
     //Gets the Triangle and Shifts:
-    double triangle[] = robot.getTriangle(startCoordinates, endCoordinates);
-    double rotations = robot.getConvertedRotations(triangle[index]);
+    double triangle[] = getTriangle(startCoordinates, endCoordinates);
+    double rotations = getConvertedRotations(triangle[index]);
     shiftGyro(movement, rotations, power);
   }
 
-  /* GYRO CORRECTION METHODS */
+  /* POSITION CALCULATION METHODS */
+
+  //Calculates Time Required To Complete Operation:
+  public static int calculateTime(double rotations, double power) {
+    //Calculates the Time and Returns:
+    double timeInSeconds = Math.abs((rotations / (robot.wheelRPS * power)));
+    int timeInMillis = (int) (timeInSeconds * 1000.0);
+    return timeInMillis;
+  }
+
+  //Get Converted Rotations:
+  public static double getConvertedRotations(double pixelDistance) {
+    //Converts and Returns Data:
+    double coordinatesToInches = (pixelDistance * robot.POSITION_RATIO);
+    double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
+    return inchesToRotations;
+  }
+
+  //Gets Correct Gyro Correction Angle:
+  public static double[] getTriangle(double startCoordinates[], double endCoordinates[]) {
+    //Main Array:
+    double triangle[] = new double[4];
+
+    //Defines the Dimensions of Triangle:
+    double x = endCoordinates[0] - startCoordinates[0];
+    double y = endCoordinates[1] - startCoordinates[1];
+    double h = Math.sqrt((x * x) + (y * y));
+    double theta = robot.convertAngle(Math.abs(Math.atan2(x, y)), true);
+
+    //Sets the Values (x, y, h, theta):
+    triangle[0] = x;
+    triangle[1] = y;
+    triangle[2] = h;
+    triangle[3] = theta;
+
+    //Returns the Array:
+    return triangle;
+  }
+
+  /* POSITION GYRO CORRECTION METHODS */
 
   //Makes turns with Gyro Corrections:
   public void turnGyro(String movement, double angle, double power) {
     //Calculates Turn:
     double gyroReset = robot.resetGyroValue();
     double turnValue = Math.abs(robot.calculateTurnRotations(angle));
-    int timeRequired = Math.abs(robot.calculateTime(turnValue, power));
+    int timeRequired = Math.abs(calculateTime(turnValue, power));
 
     //Turns Robot:
     robot.turnRobot(movement, Math.abs(turnValue), power);
@@ -65,7 +118,7 @@ public class Positions extends LinearOpMode {
   public void runGyro(String movement, double rotations, double power) {
     //Calculates Resets Gyro Value:
     double gyroReset = robot.resetGyroValue();
-    int millis = Math.abs(robot.calculateTime(rotations, power));
+    int millis = Math.abs(calculateTime(rotations, power));
 
     //Runs the Robot Towards Position:
     robot.runRobot(movement, Math.abs(rotations), power);
@@ -82,7 +135,7 @@ public class Positions extends LinearOpMode {
   public void shiftGyro(String movement, double rotations, double power) {
     //Calculates Resets Gyro Value:
     double gyroReset = robot.resetGyroValue();
-    int millis = Math.abs(robot.calculateTime(rotations, power));
+    int millis = Math.abs(calculateTime(rotations, power));
 
     //Shifts the Robot Towards Position:
     robot.shiftRobot(movement, Math.abs(rotations), power);
@@ -100,7 +153,7 @@ public class Positions extends LinearOpMode {
     //Gyro Correction Calculation:
     String movement = "";
     double gyroValues[] = robot.getGyroCorrection(expectedAngle, resetValue);
-    int millis = Math.abs(robot.calculateTime(gyroValues[1], power));
+    int millis = Math.abs(calculateTime(gyroValues[1], power));
 
     //Checks the Case:
     if (gyroValues[0] == -1) {
