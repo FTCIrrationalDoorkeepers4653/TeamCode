@@ -63,26 +63,26 @@ public class DriverControl extends LinearOpMode {
     //Checks the Case:
     if (power != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(-power);
-      robot.leftBackMotor.setPower(-power);
-      robot.rightFrontMotor.setPower(-power);
-      robot.rightBackMotor.setPower(-power);
+      robot.leftFrontMotor.setPower(power);
+      robot.leftBackMotor.setPower(power);
+      robot.rightFrontMotor.setPower(power);
+      robot.rightBackMotor.setPower(power);
     }
 
     else if (turn != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(turn);
-      robot.leftBackMotor.setPower(turn);
-      robot.rightFrontMotor.setPower(-turn);
-      robot.rightBackMotor.setPower(-turn);
+      robot.leftFrontMotor.setPower(-turn);
+      robot.leftBackMotor.setPower(-turn);
+      robot.rightFrontMotor.setPower(turn);
+      robot.rightBackMotor.setPower(turn);
     }
 
     else if (strafe != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(strafe);
-      robot.leftBackMotor.setPower(-strafe);
-      robot.rightFrontMotor.setPower(-strafe);
-      robot.rightBackMotor.setPower(strafe);
+      robot.leftFrontMotor.setPower(-strafe);
+      robot.leftBackMotor.setPower(strafe);
+      robot.rightFrontMotor.setPower(strafe);
+      robot.rightBackMotor.setPower(-strafe);
     }
 
     else {

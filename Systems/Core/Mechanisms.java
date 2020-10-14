@@ -15,15 +15,8 @@ public class Mechanisms extends PID {
 
   /* MECHANISMS MOVEMENT VARIABLES */
 
-  //Mechanism Motor Setup:
-  public static double PlanetaryTicksPerRev = 560;
-  public static double PlanetaryDegreeTicks = (360.0 / PlanetaryTicksPerRev);
-  public static double mechGearRatio = 1.0;
-
-  //Mechanism Motor Angle Variables:
-  public static double armDegrees = 80.0;
-
   //Mechanism Position Variables:
+  public static double armDegrees = 80.0;
   public static boolean armUp = true;
   public static boolean clawClosed = true;
 
@@ -53,15 +46,11 @@ public class Mechanisms extends PID {
   //Automates the Movement of Arm:
   public void automateArm() {
     //Calculates the Time:
-    int timeMillis = robot.pid.calculateTime(calculatePlanetaryDegreeRotations(armDegrees), robot.mainPower);
+    int timeRequired = calculateTime(robot.getAngleRotations(armDegrees), robot.mainPower);
 
     //Moves the Arm:
-    moveArm();
-    idle();
-    sleep(timeMillis);
-    robot.finishRun();
-    mechanismsFinishRun();
-    idle();
+    moveArm(robot.mainPower);
+    completeCycle(timeRequired);
 
     //Opens the Claw:
     operateClaw();
@@ -79,26 +68,25 @@ public class Mechanisms extends PID {
   }
 
   //Move Arm:
-  public static void moveArm() {
-    //Calculates Encoder Values:
-    int parts = (int)((calculatePlanetaryDegreeRotations(armDegrees) * PlanetaryTicksPerRev) * mechGearRatio);
-
+  public static void moveArm(double power) {
     //Checks the Case:
     if (armUp) {
       //Sets the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - parts);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() -
+        robot.getParts(robot.getAngleRotations(armDegrees)));
       armUp = false;
     }
 
     else {
       //Sets the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + parts);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() +
+        robot.getParts(robot.getAngleRotations(armDegrees)));
       armUp = true;
     }
 
     //Runs Motor to Position:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    baseArmMotor.setPower(robot.mainPower);
+    baseArmMotor.setPower(power);
   }
 
   //Operate Claw:
@@ -115,15 +103,5 @@ public class Mechanisms extends PID {
       clawServo.setPosition(clawOpenPosition);
       clawClosed = true;
     }
-  }
-
-  /* MECHANISMS UTILITY METHODS */
-
-  //Calculates the Planetary Motor Rotations in Degrees:
-  public static double calculatePlanetaryDegreeRotations(double degrees) {
-    //Converts the Angle to Ticks and Returns:
-    double localTicks = (degrees * PlanetaryDegreeTicks);
-    double rotations = (localTicks / PlanetaryTicksPerRev);
-    return rotations;
   }
 }
