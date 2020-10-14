@@ -4,7 +4,7 @@ This is the team code library for the FTC team #4653 Irrational DoorKeepers from
 This repository contains all of the coding we did throughout the 2020-2021 FIRST Ultimate Goal Season, including all Autonomous, TeleOp, and Calibration Testing.
 And....MAY THE FORCE BE WITH YOU!!!
 
-# Team #4653 Irrational DoorKeepers Programming Change Log
+## Change Log:
 
 - 9/14/2020 - Added pixel count and pixel density support for the VuforiaDetector and the FTC_IDK_VISION_LIB support in the TeamCode.
 
