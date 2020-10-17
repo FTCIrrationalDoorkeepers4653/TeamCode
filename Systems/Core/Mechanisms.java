@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Systems.Core;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Mechanisms extends PID {
+public class Mechanisms extends Controller {
   /* MECHANISMS SETUP VARIABLES */
 
   //Objects:
@@ -37,6 +37,7 @@ public class Mechanisms extends PID {
     /* Setup */
 
     //Mechanism Motors:
+    baseArmMotor.setPower(0);
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }

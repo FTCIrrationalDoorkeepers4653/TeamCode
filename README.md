@@ -32,3 +32,6 @@ Vision Library. Changed the Joystick controls for the arm and the chassis to mak
 - 10/13/2020 - Added new Gyro Stabilization feature, tweaked Autonomous Programs, Started to add Vision Position Mapping and PID Controller. Setup new Joystick controls for
 overall systems including drive train and arm, build team is adding more mechanisms, so have to keep up. Tweaked Vision profiling, now Vision works under many different lighting
 conditions and systems.
+
+- 10/16/2020 - Added new Motion Profiling Controller and started on motion profiled turning algortihm and vision positioning work. Need to integrate further and
+test changes in autonomous program. Also, will add further PID controls if needed for the motion profiling.

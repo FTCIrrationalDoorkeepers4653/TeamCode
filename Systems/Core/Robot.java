@@ -26,17 +26,17 @@ public class Robot {
 
   //Hardware Objects:
   public static HardwareMap hardwareMap;
-  public static PID pid = new PID();
+  public static Controller controller = new Controller();
   public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
 
   /* DRIVE TRAIN AND MOTOR VARIABLES */
 
   //Drive Train Variables:
-  public static double numWheels = 4.0;
   public static double robotDimensions = 17.8;
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
+  public static double numWheels = 4.0;
   public static double wheelCirc = (Math.PI * wheelDiam);
   public static double TicksPerRev = 1120;
   public static double POSITION_RATIO = (144.0 / 760.0);
@@ -51,6 +51,7 @@ public class Robot {
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
   public static double uncoPower = 0.8;
+  public static double maxiPower = 1.0;
 
   /* VISION VARIABLES */
 
@@ -102,13 +103,11 @@ public class Robot {
 
     //Checks the Case:
     if (type) {
-      //Wheel Motor Encoders:
-      leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      //Wheel Setup:
+      applyAllPowers(zeroPower);
+      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
 
-      //Wheel Motor Directions:
+      //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
       leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
       rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -116,13 +115,11 @@ public class Robot {
     }
 
     else {
-      //Wheel Motor Encoders:
-      leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      //Wheel Setup:
+      applyAllPowers(zeroPower);
+      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-      //Wheel Motor Directions:
+      //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
       leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
       rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -231,7 +228,9 @@ public class Robot {
       if (imuResetReading > expectedAngle) {
         //Sets the Heading:
         direction = -1;
-      } else if (imuResetReading < expectedAngle) {
+      }
+
+      else if (imuResetReading < expectedAngle) {
         //Sets the Heading:
         direction = 1;
       }
@@ -262,17 +261,9 @@ public class Robot {
 
   //Resets Encoders After Every Movement:
   public static void finishRun() {
-    //Resets Power:
-    leftFrontMotor.setPower(zeroPower);
-    leftBackMotor.setPower(zeroPower);
-    rightFrontMotor.setPower(zeroPower);
-    rightBackMotor.setPower(zeroPower);
-
-    //Runs Using Encoders:
-    leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //Sets the Motors:
+    applyAllPowers(zeroPower);
+    applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   //Robot Move with Rotations:
@@ -294,17 +285,9 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
     }
 
-    //Changes Motor Mode:
-    leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    //Runs Motors to Position:
-    leftFrontMotor.setPower(power);
-    leftBackMotor.setPower(power);
-    rightFrontMotor.setPower(power);
-    rightBackMotor.setPower(power);
+    //Sets the Motors:
+    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
+    applyAllPowers(power);
   }
 
   //Robot Turn Motion with Rotations:
@@ -326,17 +309,9 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
     }
 
-    //Sets the Motor Mode:
-    leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-    //Runs Motors to Position:
-    leftFrontMotor.setPower(power);
-    leftBackMotor.setPower(power);
-    rightFrontMotor.setPower(power);
-    rightBackMotor.setPower(power);
+    //Sets the Motors:
+    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
+    applyAllPowers(power);
   }
 
   //Robot Strafe Motion:
@@ -358,20 +333,46 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
     }
 
-    //Sets the Motor Mode:
-    leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    //Sets the Motors:
+    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
+    applyAllPowers(power);
+  }
 
-    //Runs Motor to Position:
+  /* ROBOT MOTOR UTILITY METHODS */
+
+  //Apply Power to All Motors:
+  public static void applyAllPowers(double power) {
+    //Applies the Motor Powers:
     leftFrontMotor.setPower(power);
     leftBackMotor.setPower(power);
     rightFrontMotor.setPower(power);
     rightBackMotor.setPower(power);
   }
 
+  //Apply Mode to All Motors:
+  public static void applyAllModes(DcMotor.RunMode mode) {
+    //Applies the Motor Modes:
+    leftFrontMotor.setMode(mode);
+    leftBackMotor.setMode(mode);
+    rightFrontMotor.setMode(mode);
+    rightBackMotor.setMode(mode);
+  }
+
   /* ROBOT UTILITY FUNCTIONS */
+
+  //Gets the Current Encoder Positions:
+  public static int getRobotPosition() {
+    //Gets the Wheel Encoder Values:
+    double leftFrontEncoder = leftFrontMotor.getCurrentPosition();
+    double leftBackEncoder = leftBackMotor.getCurrentPosition();
+    double rightFrontEncoder = rightFrontMotor.getCurrentPosition();
+    double rightBackEncoder = rightBackMotor.getCurrentPosition();
+
+    //Gets the Average of Encoders and Returns:
+    double sumEncoder = (leftFrontEncoder + leftBackEncoder + rightFrontEncoder + rightBackEncoder);
+    int avgEncoder = (int)(sumEncoder / numWheels);
+    return avgEncoder;
+  }
 
   //Gets Parts Based on Rotations:
   public static int getParts(double rotations) {
@@ -386,19 +387,5 @@ public class Robot {
     int parts = (int)(angle * degreesPerTick);
     double rotations = (parts / TicksPerRev);
     return rotations;
-  }
-
-  //Gets the Current Encoder Positions:
-  public static int getRobotPosition() {
-    //Gets the Wheel Encoder Values:
-    double leftFrontEncoder = leftFrontMotor.getCurrentPosition();
-    double leftBackEncoder = leftBackMotor.getCurrentPosition();
-    double rightFrontEncoder = rightFrontMotor.getCurrentPosition();
-    double rightBackEncoder = rightBackMotor.getCurrentPosition();
-
-    //Gets the Average of Encoders and Returns:
-    double sumEncoder = (leftFrontEncoder + leftBackEncoder + rightFrontEncoder + rightBackEncoder);
-    int avgEncoder = (int)(sumEncoder / numWheels);
-    return avgEncoder;
   }
 }
