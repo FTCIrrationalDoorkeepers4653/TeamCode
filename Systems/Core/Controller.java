@@ -17,16 +17,16 @@ public class Controller extends Positions {
   }
 
   //Controller Power Method:
-  public static void applyControlPower(int targetPosition, double errorOffset) {
+  public static void applyControlPower(int targetPosition, double errorOffset, double constant) {
     //Main Error Variable:
-    int initialDifference = Math.abs(Math.abs(targetPosition) - Math.abs(robot.getRobotPosition()));
-    double error = applyControlError(robot.getRobotPosition(), targetPosition, initialDifference);
+    int initialDifference = Math.abs(Math.abs(targetPosition) - Math.abs(robot.leftFrontMotor.getCurrentPosition()));
+    double error = applyControlError(robot.leftFrontMotor.getCurrentPosition(), targetPosition, initialDifference);
 
     //Loops through Error:
     while (error > errorOffset) {
       //Applies the Power:
-      error = applyControlError(robot.getRobotPosition(), targetPosition, initialDifference);
-      robot.applyAllPowers(error);
+      error = applyControlError(robot.leftFrontMotor.getCurrentPosition(), targetPosition, initialDifference);
+      robot.applyAllPowers(error * constant);
     }
   }
 

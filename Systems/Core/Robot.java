@@ -36,7 +36,6 @@ public class Robot {
   public static double robotDimensions = 17.8;
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
-  public static double numWheels = 4.0;
   public static double wheelCirc = (Math.PI * wheelDiam);
   public static double TicksPerRev = 1120;
   public static double POSITION_RATIO = (144.0 / 760.0);
@@ -338,7 +337,7 @@ public class Robot {
     applyAllPowers(power);
   }
 
-  /* ROBOT MOTOR UTILITY METHODS */
+  /* ROBOT UTILITY METHODS */
 
   //Apply Power to All Motors:
   public static void applyAllPowers(double power) {
@@ -356,22 +355,6 @@ public class Robot {
     leftBackMotor.setMode(mode);
     rightFrontMotor.setMode(mode);
     rightBackMotor.setMode(mode);
-  }
-
-  /* ROBOT UTILITY FUNCTIONS */
-
-  //Gets the Current Encoder Positions:
-  public static int getRobotPosition() {
-    //Gets the Wheel Encoder Values:
-    double leftFrontEncoder = leftFrontMotor.getCurrentPosition();
-    double leftBackEncoder = leftBackMotor.getCurrentPosition();
-    double rightFrontEncoder = rightFrontMotor.getCurrentPosition();
-    double rightBackEncoder = rightBackMotor.getCurrentPosition();
-
-    //Gets the Average of Encoders and Returns:
-    double sumEncoder = (leftFrontEncoder + leftBackEncoder + rightFrontEncoder + rightBackEncoder);
-    int avgEncoder = (int)(sumEncoder / numWheels);
-    return avgEncoder;
   }
 
   //Gets Parts Based on Rotations:
