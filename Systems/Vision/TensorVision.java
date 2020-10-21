@@ -59,7 +59,7 @@ public class TensorVision extends Camera {
     //Checks the Case:
     if (recognitions != null) {
       //Loops through Detections:
-      for (Recognition recognition : recognitions) {
+      mainLoop: for (Recognition recognition : recognitions) {
         //Adds the Detection Info:
         detections.add(recognition.getLabel());
         top.add(recognition.getTop());

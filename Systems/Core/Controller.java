@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 public class Controller extends Positions {
   /* CONTROLLER VARIABLES */
 
@@ -17,17 +15,27 @@ public class Controller extends Positions {
   }
 
   //Controller Power Method:
-  public static void applyControlPower(int targetPosition, double errorOffset, double constant) {
-    //Main Error Variable:
-    int initialDifference = Math.abs(Math.abs(targetPosition) - Math.abs(robot.leftFrontMotor.getCurrentPosition()));
-    double error = applyControlError(robot.leftFrontMotor.getCurrentPosition(), targetPosition, initialDifference);
+  public static void applyControlPower(double power) {
+    //Main Error Variables:
+    int initialDifference = Math.abs(Math.abs(robot.leftFrontMotor.getTargetPosition())
+        - Math.abs(robot.leftFrontMotor.getCurrentPosition()));
+    double error = controlError(robot.leftFrontMotor.getCurrentPosition(),
+        robot.leftFrontMotor.getTargetPosition(), initialDifference);
+    double previousError = 0.0;
 
     //Loops through Error:
-    while (error > errorOffset) {
-      //Applies the Power:
-      error = applyControlError(robot.leftFrontMotor.getCurrentPosition(), targetPosition, initialDifference);
-      robot.applyAllPowers(error * constant);
+    mainLoop: while (error > previousError) {
+      //Applies the Controlled Power:
+      error = controlError(robot.leftFrontMotor.getCurrentPosition(),
+          robot.leftFrontMotor.getTargetPosition(), initialDifference);
+      robot.applyAllPowers((error * power));
+      previousError = error;
     }
+  }
+
+  //Controller Arm Power Method:
+  public static void applyControlArmPower(double power) {
+
   }
 
   //Controller Turning Method:
@@ -36,8 +44,10 @@ public class Controller extends Positions {
 
   }
 
+  /* CONTROL CALCULATION METHODS */
+
   //Controller Error Method:
-  public static double applyControlError(int current, int target, int initialDifference) {
+  public static double controlError(int current, int target, int initialDifference) {
     //Calculates and Returns Error:
     double error = Math.abs(Math.abs(target) - Math.abs(current));
     error /= Math.abs(initialDifference);

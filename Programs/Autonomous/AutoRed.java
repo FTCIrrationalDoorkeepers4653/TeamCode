@@ -42,7 +42,7 @@ public class AutoRed extends LinearOpMode {
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 560.0;
     endCoordinates[1] = 460.0;
-    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
+    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.contPower);
 
     /* Shooting */
 
@@ -62,7 +62,7 @@ public class AutoRed extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 660.0;
       endCoordinates[1] = 360.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
     }
 
     else if (position == 2) {
@@ -74,7 +74,7 @@ public class AutoRed extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 560.0;
       endCoordinates[1] = 290.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
 
       //Drops Wobble:
       robot.mechanisms.automateArm();
@@ -84,7 +84,7 @@ public class AutoRed extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 480.0;
       endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.contPower);
     }
 
     else {
@@ -96,7 +96,7 @@ public class AutoRed extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 640.0;
       endCoordinates[1] = 160.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
 
       //Drops Wobble:
       robot.mechanisms.automateArm();
@@ -106,7 +106,7 @@ public class AutoRed extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 550.0;
       endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.contPower);
     }
 
     /* Stop */

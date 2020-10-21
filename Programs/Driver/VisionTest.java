@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name = "VisionTest")
-//@Disabled
+@Disabled
 public class VisionTest extends LinearOpMode {
   /* TEST VARIABLES */
 
@@ -29,7 +30,7 @@ public class VisionTest extends LinearOpMode {
     waitForStart();
 
     //Loops Until Stop:
-    while (opModeIsActive()) {
+    mainLoop: while (opModeIsActive()) {
       //Sets the Position:
       position = robot.getPixelsPosition();
 

@@ -35,3 +35,6 @@ conditions and systems.
 
 - 10/16/2020 - Added new Motion Profiling Controller and started on motion profiled turning algortihm and vision positioning work. Need to integrate further and
 test changes in autonomous program. Also, will add further PID controls if needed for the motion profiling.
+
+- 10/21/2020 - Added further Motion Profiling Control and automation of the Arm and claw. Further improvements to the Vision Positioning System and testing of the 
+motion profiling and automation to come.

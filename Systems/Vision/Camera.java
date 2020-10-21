@@ -74,7 +74,7 @@ public class Camera extends Vision {
       Bitmap unscaled;
 
       //Loops through Frames:
-      for (int i = 0; i < frame.getNumImages(); i++) {
+      mainLoop: for (int i = 0; i < frame.getNumImages(); i++) {
         //Checks for Correct RGB Format:
         if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
           //Stores the Image:

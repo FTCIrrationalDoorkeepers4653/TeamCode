@@ -7,13 +7,12 @@ import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 @TeleOp(name = "DriverControl")
 //@Disabled
 public class DriverControl extends LinearOpMode {
-  /* TELEOP VARIABLES */
+  /* DRIVE VARIABLES */
 
-  //DriverControl Objects and Variables:
-  Robot robot = new Robot();
-  boolean open = false;
+  //Objects:
+  static Robot robot = new Robot();
 
-  /* TELEOP METHODS */
+  /* OPMODE METHODS */
 
   //RunOpMode Method:
   @Override
@@ -34,10 +33,11 @@ public class DriverControl extends LinearOpMode {
     /* Run */
 
     //Loop Until Stop:
-    while (opModeIsActive()) {
+    mainLoop: while (opModeIsActive()) {
       //Method Calls:
       moveRobot();
       moveArm();
+      moveClaw();
 
       //Sets Status:
       telemetry.addData("Status", "Running");
@@ -51,14 +51,24 @@ public class DriverControl extends LinearOpMode {
     telemetry.update();
   }
 
-  /* CONTROL METHODS */
+  /* DRIVER CONTROL METHODS */
 
   //Moves the Robot:
   public void moveRobot() {
     //Gets the Gamepad Control Values:
     double power = (gamepad1.left_stick_y * gamepad1.left_stick_y * gamepad1.left_stick_y);
-    double turn = (gamepad1.left_stick_x * gamepad1.left_stick_x * gamepad1.left_stick_x);
-    double strafe = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
+    double turn = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
+    double left = (gamepad1.left_trigger * gamepad1.left_trigger * gamepad1.left_trigger);
+    double right = (gamepad1.right_trigger * gamepad1.right_trigger * gamepad1.right_trigger);
+
+    //Checks the Case:
+    if (gamepad1.left_bumper) {
+      //Adjusts Slow Mode Speed:
+      power /= robot.speedControl;
+      turn /= robot.speedControl;
+      left /= robot.speedControl;
+      right /= robot.speedControl;
+    }
 
     //Checks the Case:
     if (power != robot.zeroPower) {
@@ -77,12 +87,20 @@ public class DriverControl extends LinearOpMode {
       robot.rightBackMotor.setPower(turn);
     }
 
-    else if (strafe != robot.zeroPower) {
+    else if (left != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(-strafe);
-      robot.leftBackMotor.setPower(strafe);
-      robot.rightFrontMotor.setPower(strafe);
-      robot.rightBackMotor.setPower(-strafe);
+      robot.leftFrontMotor.setPower(left);
+      robot.leftBackMotor.setPower(-left);
+      robot.rightFrontMotor.setPower(-left);
+      robot.rightBackMotor.setPower(left);
+    }
+
+    else if (right != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.leftFrontMotor.setPower(-right);
+      robot.leftBackMotor.setPower(right);
+      robot.rightFrontMotor.setPower(right);
+      robot.rightBackMotor.setPower(-right);
     }
 
     else {
@@ -94,22 +112,54 @@ public class DriverControl extends LinearOpMode {
     }
   }
 
-  //Grabs the Wobble Goal:
+  //Moves the Wobble Arm:
   public void moveArm() {
     //Checks the Case:
     if (gamepad1.a) {
+      //Checks the Case:
+      if (robot.mechanisms.arm == 0) {
+        //Sets the Arm:
+        robot.mechanisms.arm++;
+      }
+
+      else if (robot.mechanisms.arm == 1) {
+        //Sets the Arm:
+        robot.mechanisms.arm++;
+      }
+
+      else if (robot.mechanisms.arm == 2) {
+        //Sets the Arm:
+        robot.mechanisms.arm -= 2;
+      }
+
       //Moves the Arm:
-      robot.mechanisms.automateArm();
+      robot.mechanisms.operateArm(robot.mainPower);
+      robot.mechanisms.completeCycle();
+    }
+  }
+
+  //Moves the Wobble Claw:
+  public void moveClaw() {
+    //Checks the Case:
+    if (gamepad1.y) {
+      //Checks the Case:
+      if (robot.mechanisms.claw == 0) {
+        //Changes the Claw:
+        robot.mechanisms.claw++;
+      }
+
+      else if (robot.mechanisms.claw == 1) {
+        //Changes the Claw:
+        robot.mechanisms.claw -= 2;
+      }
+
+      else if (robot.mechanisms.claw == -1) {
+        //Changes the Claw:
+        robot.mechanisms.claw++;
+      }
     }
 
-    else if (gamepad1.y) {
-      //Operates the Claw:
-      robot.mechanisms.operateClaw();
-    }
-
-    else {
-      //Resets Arm:
-      robot.mechanisms.mechanismsFinishRun();
-    }
+    //Operates the Claw:
+    robot.mechanisms.operateClaw();
   }
 }

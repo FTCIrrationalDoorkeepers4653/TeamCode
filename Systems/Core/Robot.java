@@ -43,6 +43,8 @@ public class Robot {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double gyroStabilization = 0.3;
   public static double degreesPerTick = (360.0 / TicksPerRev);
+  public static double timeAdjustment = 0.5;
+  public static double speedControl = 3.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
@@ -51,6 +53,7 @@ public class Robot {
   public static double fastPower = 0.6;
   public static double uncoPower = 0.8;
   public static double maxiPower = 1.0;
+  public static double contPower = 2.0;
 
   /* VISION VARIABLES */
 
@@ -105,6 +108,7 @@ public class Robot {
       //Wheel Setup:
       applyAllPowers(zeroPower);
       applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
 
       //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -117,6 +121,7 @@ public class Robot {
       //Wheel Setup:
       applyAllPowers(zeroPower);
       applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
 
       //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -286,7 +291,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    applyAllPowers(power);
+    controller.applyControlPower(power);
   }
 
   //Robot Turn Motion with Rotations:
@@ -310,7 +315,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    applyAllPowers(power);
+    controller.applyControlPower(power);
   }
 
   //Robot Strafe Motion:
@@ -334,7 +339,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    applyAllPowers(power);
+    controller.applyControlPower(power);
   }
 
   /* ROBOT UTILITY METHODS */
@@ -355,6 +360,15 @@ public class Robot {
     leftBackMotor.setMode(mode);
     rightFrontMotor.setMode(mode);
     rightBackMotor.setMode(mode);
+  }
+
+  //Apply Zero Power Behavior to All Motors:
+  public static void applyAllZero(DcMotor.ZeroPowerBehavior behavior) {
+    //Applies the Motor Behaviors:
+    leftFrontMotor.setZeroPowerBehavior(behavior);
+    leftBackMotor.setZeroPowerBehavior(behavior);
+    rightFrontMotor.setZeroPowerBehavior(behavior);
+    rightBackMotor.setZeroPowerBehavior(behavior);
   }
 
   //Gets Parts Based on Rotations:
