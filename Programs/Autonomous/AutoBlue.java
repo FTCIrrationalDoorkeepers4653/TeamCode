@@ -42,7 +42,7 @@ public class AutoBlue extends LinearOpMode {
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 200.0;
     endCoordinates[1] = 460.0;
-    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.contPower);
+    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     /* Shooting */
 
@@ -55,14 +55,14 @@ public class AutoBlue extends LinearOpMode {
     //Checks the Case:
     if (position == 1) {
       //Turns to the Wobble:
-      robot.controller.turnGyro("right", 40.0, robot.mainPower);
+      robot.controller.turnGyro("left", 40.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
-      endCoordinates[0] = 100.0;
+      endCoordinates[0] = 20.0;
       endCoordinates[1] = 360.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     else if (position == 2) {
@@ -71,17 +71,23 @@ public class AutoBlue extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 200.0;
       endCoordinates[1] = 290.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
 
       //Drops Wobble:
-      robot.mechanisms.automateArm();
+      robot.mechanisms.arm = 1;
+      robot.mechanisms.operateArm(robot.mainPower);
+      robot.mechanisms.completeCycle();
+
+      //Releases Wobble:
+      robot.mechanisms.claw = -1;
+      robot.mechanisms.operateClaw(robot.mainPower);
 
       //Moves to Park:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 280.0;
       endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.contPower);
+      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     else {
@@ -93,17 +99,23 @@ public class AutoBlue extends LinearOpMode {
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 120.0;
       endCoordinates[1] = 160.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.contPower);
+      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
 
       //Drops Wobble:
-      robot.mechanisms.automateArm();
+      robot.mechanisms.arm = 1;
+      robot.mechanisms.operateArm(robot.mainPower);
+      robot.mechanisms.completeCycle();
+
+      //Releases Wobble:
+      robot.mechanisms.claw = -1;
+      robot.mechanisms.operateClaw(robot.mainPower);
 
       //Moves to Park:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 210.0;
       endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.contPower);
+      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     /* Stop */

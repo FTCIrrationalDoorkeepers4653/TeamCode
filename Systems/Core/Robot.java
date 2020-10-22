@@ -39,21 +39,21 @@ public class Robot {
   public static double wheelCirc = (Math.PI * wheelDiam);
   public static double TicksPerRev = 1120;
   public static double POSITION_RATIO = (144.0 / 760.0);
-  public static double wheelRPM = 100.0;
-  public static double wheelRPS = (wheelRPM / 60.0);
   public static double gyroStabilization = 0.3;
   public static double degreesPerTick = (360.0 / TicksPerRev);
-  public static double timeAdjustment = 0.5;
+
+  //Controller Variables:
   public static double speedControl = 3.0;
+  public static double errorMargin = 0.05;
+  public static int delay = 250;
+  public static int breakIterations = 50000;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
   public static double slowPower = 0.4;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
-  public static double uncoPower = 0.8;
-  public static double maxiPower = 1.0;
-  public static double contPower = 2.0;
+  public static double maxiPower = 0.8;
 
   /* VISION VARIABLES */
 

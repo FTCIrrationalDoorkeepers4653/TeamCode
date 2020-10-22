@@ -69,28 +69,28 @@ public class Mechanisms extends Controller {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(startTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(power);
+      applyControlArmPower(power);
     }
 
     else if (arm == 1) {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(middleTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(power);
+      applyControlArmPower(power);
     }
 
     else if (arm == 2) {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(power);
+      applyControlArmPower(power);
     }
   }
 
   /* MECHANISM SERVO MOVEMENT METHODS */
 
   //Operate Claw:
-  public static void operateClaw() {
+  public static void operateClaw(double power) {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
@@ -99,12 +99,12 @@ public class Mechanisms extends Controller {
 
     else if (claw == 1) {
       //Sets the Servo:
-      clawServo.setPower(robot.mainPower);
+      clawServo.setPower(power);
     }
 
     else if (claw == -1) {
       //Sets the Servo:
-      clawServo.setPower(-robot.mainPower);
+      clawServo.setPower(-power);
     }
   }
 }

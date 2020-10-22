@@ -39,8 +39,8 @@ public class Park extends LinearOpMode {
     startCoordinates[0] = 652.0;
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 652.0;
-    endCoordinates[1] = 380.0;
-    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.contPower);
+    endCoordinates[1] = 340.0;
+    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     /* Stop */
 

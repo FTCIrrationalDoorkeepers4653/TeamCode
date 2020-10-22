@@ -37,4 +37,4 @@ conditions and systems.
 test changes in autonomous program. Also, will add further PID controls if needed for the motion profiling.
 
 - 10/21/2020 - Added further Motion Profiling Control and automation of the Arm and claw. Further improvements to the Vision Positioning System and testing of the 
-motion profiling and automation to come.
+motion profiling and automation to come. Fixed bugs in Motion Profiling and changes to autonomous, more Motion Profiling and Automation Changes to come.

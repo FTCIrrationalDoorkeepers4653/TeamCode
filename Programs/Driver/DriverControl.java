@@ -160,6 +160,6 @@ public class DriverControl extends LinearOpMode {
     }
 
     //Operates the Claw:
-    robot.mechanisms.operateClaw();
+    robot.mechanisms.operateClaw(robot.mainPower);
   }
 }

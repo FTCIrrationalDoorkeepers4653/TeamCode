@@ -41,14 +41,6 @@ public class Positions extends LinearOpMode {
 
   /* POSITION CALCULATION METHODS */
 
-  //Calculates Time Required To Complete Operation:
-  public static int calculateTime(double rotations, double power, double adjustment) {
-    //Calculates the Time and Returns:
-    double timeInSeconds = Math.abs((rotations / (robot.wheelRPS * (power * adjustment))));
-    int timeInMillis = (int) (timeInSeconds * 1000.0);
-    return timeInMillis;
-  }
-
   //Get Converted Rotations:
   public static double getConvertedRotations(double pixelDistance) {
     //Converts and Returns Data:
@@ -84,6 +76,7 @@ public class Positions extends LinearOpMode {
   public void completeCycle() {
     //Finishes the Run:
     idle();
+    sleep(robot.delay);
     robot.finishRun();
     robot.mechanisms.mechanismsFinishRun();
     idle();
@@ -91,26 +84,35 @@ public class Positions extends LinearOpMode {
 
   //Makes turns with Gyro Corrections:
   public void turnGyro(String movement, double angle, double power) {
-    //Turns Robot:
+    //Calculates Turn:
     double gyroReset = robot.resetGyroValue();
     double turnValue = Math.abs(robot.calculateTurnRotations(angle));
+
+    //Moves Robot:
     robot.turnRobot(movement, Math.abs(turnValue), power);
+    completeCycle();
     gyroCorrect(angle, gyroReset, power);
   }
 
   //Runs with Gyro Corrects:
   public void runGyro(String movement, double rotations, double power) {
-    //Runs the Robot Towards Position:
+    //Calculates Distance:
     double gyroReset = robot.resetGyroValue();
+
+    //Moves Robot:
     robot.runRobot(movement, Math.abs(rotations), power);
+    completeCycle();
     gyroCorrect(0, gyroReset, power);
   }
 
   //Shifts with Gyro Corrects:
   public void shiftGyro(String movement, double rotations, double power) {
-    //Shifts the Robot Towards Position:
+    //Calculate Distance:
     double gyroReset = robot.resetGyroValue();
+
+    //Moves Robot:
     robot.shiftRobot(movement, Math.abs(rotations), power);
+    completeCycle();
     gyroCorrect(0, gyroReset, power);
   }
 
@@ -125,12 +127,14 @@ public class Positions extends LinearOpMode {
       //Sets the Movement:
       movement = "left";
       robot.turnRobot(movement, Math.abs(gyroValues[1]), power);
+      completeCycle();
     }
 
     else if (gyroValues[0] == 1) {
       //Sets the Movement:
       movement = "right";
       robot.turnRobot(movement, Math.abs(gyroValues[1]), power);
+      completeCycle();
     }
   }
 }
