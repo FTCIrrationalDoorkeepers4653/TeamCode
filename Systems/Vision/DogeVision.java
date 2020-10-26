@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DogeVision extends DogeCVDetector {
   //HardwareMap Object:
-  HardwareMap hardwareMap;
+  private HardwareMap hardwareMap;
 
   // Defining Mats to be used.
   private Mat displayMat = new Mat(); // Display debug info to the screen (this is what is returned)

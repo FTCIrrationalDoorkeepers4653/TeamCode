@@ -11,8 +11,8 @@ public class VisionTest extends LinearOpMode {
   /* TEST VARIABLES */
 
   //Objects and Variables:
-  Robot robot = new Robot();
-  int position = 1;
+  private Robot robot = new Robot();
+  private int position = 1;
 
   /* OPMODE METHODS */
 

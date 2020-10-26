@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class EasyVision {
   /* EASY VISION VARIABLES */
 
-  static OpenCvInternalCamera phoneCam;
-  static SkystoneDeterminationPipeline pipeline;
+  private static OpenCvInternalCamera phoneCam;
+  private static SkystoneDeterminationPipeline pipeline;
 
   /* EASY VISION METHODS */
 

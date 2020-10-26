@@ -1,27 +1,28 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Mechanisms extends Controller {
   /* MECHANISMS SETUP VARIABLES */
 
   //Objects:
-  static Robot robot = new Robot();
+  private static Robot robot = new Robot();
 
   //Mechanisms:
   public static DcMotor baseArmMotor;
-  public static CRServo clawServo;
+  public static Servo clawServo;
 
-  /* MECHANISMS MOVEMENT VARIABLES */
+  /* MECHANISMS CONTROL VARIABLES */
 
-  //Mechanism Degree Variables:
-  public static double armDown = 90.0;
-  public static double armMiddle = 45.0;
-
-  //Mechanism Position Variables:
-  public static int claw = 0;
+  //Mechanism Arm Variables:
+  public static double armDown = 170.0;
   public static int arm = 0;
+
+  //Mechanism Claw Variables:
+  public static double clawStartPosition = 0.0;
+  public static double clawEndPosition = 0.6;
+  public static int claw = 0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -31,37 +32,54 @@ public class Mechanisms extends Controller {
 
     //Mechanism Maps:
     baseArmMotor = robot.hardwareMap.dcMotor.get("baseArmMotor");
-    clawServo = robot.hardwareMap.crservo.get("clawServo");
+    clawServo = robot.hardwareMap.servo.get("clawServo");
+    clawServo.setPosition(clawStartPosition);
 
     /* Setup */
 
     //Mechanism Motors:
-    baseArmMotor.setPower(robot.zeroPower);
+    baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    baseArmMotor.setPower(robot.zeroPower);
 
-    //Mechanism Servos:
-    clawServo.setPower(robot.zeroPower);
-    clawServo.setDirection(CRServo.Direction.REVERSE);
+    /* Variables */
+
+    //Resetting Positions:
+    arm = 0;
+    claw = 0;
   }
 
-  /* MECHANISM MOTOR MOVEMENT METHODS */
+  /* MECHANISM AUTOMATION METHODS */
+
+  //Automate Arm Method:
+  public void automateArm(double power) {
+    //Runs the Arm With Time:
+    int time = calculateTime(robot.getAngleRotations(armDown), power);
+    operateArm(power);
+    completeCycle(time);
+
+    //Checks the Case:
+    if (arm == 1) {
+      //Sets the Claw Position:
+      claw = 0;
+      operateClaw();
+    }
+  }
+
+  /* MECHANISM OPERATION METHODS */
 
   //Mechanism Finish Run Method:
   public static void mechanismsFinishRun() {
-    //Resets Power:
+    //Resets Power and Resets Encoders:
     baseArmMotor.setPower(robot.zeroPower);
-
-    //Runs Using Encoder:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
-  //Move Arm:
+  //Operates the Arm:
   public static void operateArm(double power) {
-    //Target Positions:
+    //Target Variables:
     int startTarget = 0;
-    int middleTarget = robot.getParts(robot.getAngleRotations(armMiddle));
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
 
     //Checks the Case:
@@ -74,37 +92,23 @@ public class Mechanisms extends Controller {
 
     else if (arm == 1) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(middleTarget);
-      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlArmPower(power);
-    }
-
-    else if (arm == 2) {
-      //Runs the Target Positions:
       baseArmMotor.setTargetPosition(endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlArmPower(power);
     }
   }
 
-  /* MECHANISM SERVO MOVEMENT METHODS */
-
   //Operate Claw:
-  public static void operateClaw(double power) {
+  public static void operateClaw() {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
-      clawServo.setPower(robot.zeroPower);
+      clawServo.setPosition(clawStartPosition);
     }
 
     else if (claw == 1) {
       //Sets the Servo:
-      clawServo.setPower(power);
-    }
-
-    else if (claw == -1) {
-      //Sets the Servo:
-      clawServo.setPower(-power);
+      clawServo.setPosition(clawEndPosition);
     }
   }
 }

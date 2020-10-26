@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -26,7 +27,6 @@ public class Robot {
 
   //Hardware Objects:
   public static HardwareMap hardwareMap;
-  public static Controller controller = new Controller();
   public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
 
@@ -39,21 +39,20 @@ public class Robot {
   public static double wheelCirc = (Math.PI * wheelDiam);
   public static double TicksPerRev = 1120;
   public static double POSITION_RATIO = (144.0 / 760.0);
-  public static double gyroStabilization = 0.3;
-  public static double degreesPerTick = (360.0 / TicksPerRev);
 
-  //Controller Variables:
-  public static double speedControl = 3.0;
-  public static double errorMargin = 0.05;
-  public static int delay = 250;
-  public static int breakIterations = 50000;
+  //Drive Train Control Variables:
+  public static double wheelRPM = 100.0;
+  public static double wheelRPS = (wheelRPM / 60.0);
+  public static double gyroStabilization = 0.3;
+  public static double degreesPerTick = (TicksPerRev / 360.0);
+  public static double speedControl = 4.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
   public static double slowPower = 0.4;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
-  public static double maxiPower = 0.8;
+  public static double uncoPower = 0.8;
 
   /* VISION VARIABLES */
 
@@ -105,29 +104,29 @@ public class Robot {
 
     //Checks the Case:
     if (type) {
-      //Wheel Setup:
-      applyAllPowers(zeroPower);
-      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
-
       //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
       leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
       rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
       rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+
+      //Wheel Setup:
+      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
+      applyAllPowers(zeroPower);
     }
 
     else {
-      //Wheel Setup:
-      applyAllPowers(zeroPower);
-      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
-
       //Wheel Directions:
       leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
       leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
       rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
       rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
+
+      //Wheel Setup:
+      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
+      applyAllPowers(zeroPower);
     }
   }
 
@@ -291,7 +290,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    controller.applyControlPower(power);
+    mechanisms.applyControlPower(power);
   }
 
   //Robot Turn Motion with Rotations:
@@ -315,7 +314,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    controller.applyControlPower(power);
+    mechanisms.applyControlPower(power);
   }
 
   //Robot Strafe Motion:
@@ -339,7 +338,7 @@ public class Robot {
 
     //Sets the Motors:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    controller.applyControlPower(power);
+    mechanisms.applyControlPower(power);
   }
 
   /* ROBOT UTILITY METHODS */

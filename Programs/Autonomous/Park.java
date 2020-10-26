@@ -10,11 +10,11 @@ public class Park extends LinearOpMode {
   /* PARK VARIABLES */
 
   //Robot Objects:
-  Robot robot = new Robot();
+  private Robot robot = new Robot();
 
   //Movement Variables:
-  double startCoordinates[] = new double[2];
-  double endCoordinates[] = new double[2];
+  private double startCoordinates[] = new double[2];
+  private double endCoordinates[] = new double[2];
 
   /* OPMODE METHODS */
 
@@ -39,8 +39,8 @@ public class Park extends LinearOpMode {
     startCoordinates[0] = 652.0;
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 652.0;
-    endCoordinates[1] = 340.0;
-    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
+    endCoordinates[1] = 360.0;
+    robot.mechanisms.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     /* Stop */
 

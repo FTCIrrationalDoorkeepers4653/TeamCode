@@ -10,12 +10,12 @@ public class AutoRed extends LinearOpMode {
   /* AUTO RED VARIABLES */
 
   //Robot Objects:
-  Robot robot = new Robot();
+  private Robot robot = new Robot();
 
   //Movement Variables:
-  double startCoordinates[] = new double[2];
-  double  endCoordinates[] = new double[2];
-  int position = 0;
+  private double startCoordinates[] = new double[2];
+  private double endCoordinates[] = new double[2];
+  private int position = 0;
 
   @Override
   public void runOpMode() {
@@ -42,83 +42,73 @@ public class AutoRed extends LinearOpMode {
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 560.0;
     endCoordinates[1] = 460.0;
-    robot.controller.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
+    robot.mechanisms.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     /* Shooting */
 
     //Turns Robot and Shoots:
-    robot.controller.turnGyro("left", 85.0, robot.mainPower);
-    robot.controller.turnGyro("left", 10.0, robot.mainPower);
+    robot.mechanisms.turnGyro("right", 80.0, robot.mainPower);
+    robot.mechanisms.turnGyro("right", 15.0, robot.mainPower);
 
     /* Wobble Goal and Park */
 
     //Checks the Case:
     if (position == 1) {
       //Turns to the Wobble:
-      robot.controller.turnGyro("right", 162.0, robot.mainPower);
+      robot.mechanisms.turnGyro("left", 35.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
-      endCoordinates[0] = 740.0;
+      endCoordinates[0] = 750.0;
       endCoordinates[1] = 360.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     else if (position == 2) {
       //Turns to the Wobble:
-      robot.controller.turnGyro("right", 122.0, robot.mainPower);
+      robot.mechanisms.turnGyro("left", 75.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 560.0;
-      endCoordinates[1] = 290.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      endCoordinates[1] = 310.0;
+      robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
 
       //Drops Wobble:
       robot.mechanisms.arm = 1;
-      robot.mechanisms.operateArm(robot.mainPower);
-      robot.mechanisms.completeCycle();
-
-      //Releases Wobble:
-      robot.mechanisms.claw = -1;
-      robot.mechanisms.operateClaw(robot.mainPower);
+      robot.mechanisms.automateArm(robot.mainPower);
 
       //Moves to Park:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 480.0;
-      endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      endCoordinates[1] = 330.0;
+      robot.mechanisms.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     else {
       //Turns to the Wobble:
-      robot.controller.turnGyro("right", 132.0, robot.mainPower);
+      robot.mechanisms.turnGyro("left", 65.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 640.0;
       endCoordinates[1] = 160.0;
-      robot.controller.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
 
       //Drops Wobble:
       robot.mechanisms.arm = 1;
-      robot.mechanisms.operateArm(robot.mainPower);
-      robot.mechanisms.completeCycle();
-
-      //Releases Wobble:
-      robot.mechanisms.claw = -1;
-      robot.mechanisms.operateClaw(robot.mainPower);
+      robot.mechanisms.automateArm(robot.mainPower);
 
       //Moves to Park:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
       endCoordinates[0] = 550.0;
-      endCoordinates[1] = 350.0;
-      robot.controller.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
+      endCoordinates[1] = 330.0;
+      robot.mechanisms.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
 
     /* Stop */

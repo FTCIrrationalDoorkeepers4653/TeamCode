@@ -8,15 +8,15 @@ public class Controller extends Positions {
   /* CONTROLLER VARIABLES */
 
   //Controller Objects:
-  static Robot robot = new Robot();
-  static ElapsedTime time = new ElapsedTime();
-
-  /* CONTROLLER CONTROL METHODS */
+  private static Robot robot = new Robot();
+  private static ElapsedTime time = new ElapsedTime();
 
   //Constructor:
   public Controller() {
     super();
   }
+
+  /* CONTROLLER CONTROL METHODS */
 
   //Controller Power Method:
   public static void applyControlPower(double power) {
@@ -25,22 +25,7 @@ public class Controller extends Positions {
       - Math.abs(robot.leftFrontMotor.getCurrentPosition()));
     double error = controlError(robot.leftFrontMotor.getCurrentPosition(),
       robot.leftFrontMotor.getTargetPosition(), initialDifference);
-    int iterations = 0;
-
-    //Loops through Error:
-    mainLoop: while (error > robot.errorMargin) {
-      //Applies the Controlled Power:
-      error = controlError(robot.leftFrontMotor.getCurrentPosition(),
-          robot.leftFrontMotor.getTargetPosition(), initialDifference);
-      robot.applyAllPowers((/* error **/ power));
-      iterations++;
-
-      //Checks the Case:
-      if (iterations >= robot.breakIterations) {
-        //Breaks the Loop:
-        break mainLoop;
-      }
-    }
+    robot.applyAllPowers(power);
   }
 
   //Controller Arm Power Method:
@@ -49,22 +34,7 @@ public class Controller extends Positions {
       - Math.abs(robot.mechanisms.baseArmMotor.getCurrentPosition()));
     double error = controlError(robot.mechanisms.baseArmMotor.getCurrentPosition(),
       robot.mechanisms.baseArmMotor.getTargetPosition(), initialDifference);
-    int iterations = 0;
-
-    //Loops through Error:
-    mainLoop: while (error > robot.errorMargin) {
-      //Applies the Controlled Power:
-      error = controlError(robot.mechanisms.baseArmMotor.getCurrentPosition(),
-        robot.mechanisms.baseArmMotor.getTargetPosition(), initialDifference);
-      robot.mechanisms.baseArmMotor.setPower((/* error **/ power));
-      iterations++;
-
-      //Checks the Case:
-      if (iterations >= robot.breakIterations) {
-        //Breaks the Loop:
-        break mainLoop;
-      }
-    }
+    robot.mechanisms.baseArmMotor.setPower(power);
   }
 
   /* CONTROL ALGORITHM METHODS */

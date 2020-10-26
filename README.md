@@ -1,8 +1,7 @@
 # Team 4653 Irrational DoorKeepers Team Code
 
 This is the Code library for FTC Team #4653 Irrational DoorKeepers from Northern Guilford High School in Greensboro, NC.
-This Repository Contains All of the Coding We Did, Including All Autonomous, TeleOp, and Calibration Testing.
-And....MAY THE FORCE BE WITH YOU!!!
+This Repository Contains All of the Coding We Did, Including All Autonomous, TeleOp, and Calibration Testing. And....MAY THE FORCE BE WITH YOU!!!
 
 ## Change Log:
 
@@ -38,3 +37,6 @@ test changes in autonomous program. Also, will add further PID controls if neede
 
 - 10/21/2020 - Added further Motion Profiling Control and automation of the Arm and claw. Further improvements to the Vision Positioning System and testing of the 
 motion profiling and automation to come. Fixed bugs in Motion Profiling and changes to autonomous, more Motion Profiling and Automation Changes to come.
+
+- 10/25/2020 - Fixed Autonomous Bugs and Added Support for New Wobble Goal Arm. Also Tested Arm and Chassis Movements. Also, Fixed Motion Profiling and Move-to-Position.
+Wil Continue to Work on Vision Positioning and Turning Algortihms.

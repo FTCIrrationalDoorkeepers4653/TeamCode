@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Programs.Driver;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name = "DriverControl")
@@ -10,7 +12,9 @@ public class DriverControl extends LinearOpMode {
   /* DRIVE VARIABLES */
 
   //Objects:
-  static Robot robot = new Robot();
+  private static Robot robot = new Robot();
+  private GamePad driverPad;
+  private GamePad operatorPad;
 
   /* OPMODE METHODS */
 
@@ -26,6 +30,8 @@ public class DriverControl extends LinearOpMode {
     //Initialize Robot:
     robot.init(hardwareMap, false, false);
     robot.mechanisms.initMechanisms();
+    driverPad = new GamePad(gamepad1);
+    operatorPad = new GamePad(gamepad2);
 
     //Wait for Start:
     waitForStart();
@@ -34,7 +40,11 @@ public class DriverControl extends LinearOpMode {
 
     //Loop Until Stop:
     mainLoop: while (opModeIsActive()) {
-      //Method Calls:
+      //GamePad Method Calls:
+      driverPad.setGamePad();
+      operatorPad.setGamePad();
+
+      //Robot Method Calls:
       moveRobot();
       moveArm();
       moveClaw();
@@ -56,13 +66,13 @@ public class DriverControl extends LinearOpMode {
   //Moves the Robot:
   public void moveRobot() {
     //Gets the Gamepad Control Values:
-    double power = (gamepad1.left_stick_y * gamepad1.left_stick_y * gamepad1.left_stick_y);
-    double turn = (gamepad1.right_stick_x * gamepad1.right_stick_x * gamepad1.right_stick_x);
-    double left = (gamepad1.left_trigger * gamepad1.left_trigger * gamepad1.left_trigger);
-    double right = (gamepad1.right_trigger * gamepad1.right_trigger * gamepad1.right_trigger);
+    double power = (driverPad.leftY * driverPad.leftY * driverPad.leftY);
+    double turn = (driverPad.rightX * driverPad.rightX * driverPad.rightX);
+    double left = (driverPad.leftTrigger * driverPad.leftTrigger * driverPad.leftTrigger);
+    double right = (driverPad.rightTrigger * driverPad.rightTrigger * driverPad.rightTrigger);
 
     //Checks the Case:
-    if (gamepad1.left_bumper) {
+    if (driverPad.leftBumper) {
       //Adjusts Slow Mode Speed:
       power /= robot.speedControl;
       turn /= robot.speedControl;
@@ -115,7 +125,7 @@ public class DriverControl extends LinearOpMode {
   //Moves the Wobble Arm:
   public void moveArm() {
     //Checks the Case:
-    if (gamepad1.a) {
+    if (operatorPad.isAReleased()) {
       //Checks the Case:
       if (robot.mechanisms.arm == 0) {
         //Sets the Arm:
@@ -124,24 +134,18 @@ public class DriverControl extends LinearOpMode {
 
       else if (robot.mechanisms.arm == 1) {
         //Sets the Arm:
-        robot.mechanisms.arm++;
-      }
-
-      else if (robot.mechanisms.arm == 2) {
-        //Sets the Arm:
-        robot.mechanisms.arm -= 2;
+        robot.mechanisms.arm--;
       }
 
       //Moves the Arm:
-      robot.mechanisms.operateArm(robot.mainPower);
-      robot.mechanisms.completeCycle();
+      robot.mechanisms.automateArm(robot.mainPower);
     }
   }
 
   //Moves the Wobble Claw:
   public void moveClaw() {
     //Checks the Case:
-    if (gamepad1.y) {
+    if (operatorPad.isYReleased()) {
       //Checks the Case:
       if (robot.mechanisms.claw == 0) {
         //Changes the Claw:
@@ -150,16 +154,11 @@ public class DriverControl extends LinearOpMode {
 
       else if (robot.mechanisms.claw == 1) {
         //Changes the Claw:
-        robot.mechanisms.claw -= 2;
+        robot.mechanisms.claw--;
       }
 
-      else if (robot.mechanisms.claw == -1) {
-        //Changes the Claw:
-        robot.mechanisms.claw++;
-      }
+      //Operates the Claw:
+      robot.mechanisms.operateClaw();
     }
-
-    //Operates the Claw:
-    robot.mechanisms.operateClaw(robot.mainPower);
   }
 }

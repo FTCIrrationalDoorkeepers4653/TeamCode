@@ -15,11 +15,11 @@ public class Camera extends Vision {
   /* VUFORIA VARIABLES */
 
   //Hardware Map Object:
-  static HardwareMap hardwareMap;
+  private static HardwareMap hardwareMap;
 
   //Vuforia Elements:
-  static VuforiaLocalizer vuforia;
-  static VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+  private static VuforiaLocalizer vuforia;
+  private static VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
   public static int globalWidth = 0, globalHeight = 0;
 
   /* VUFORIA METHODS */
