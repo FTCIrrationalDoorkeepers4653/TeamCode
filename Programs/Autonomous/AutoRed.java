@@ -57,10 +57,14 @@ public class AutoRed extends LinearOpMode {
       //Turns to the Wobble:
       robot.mechanisms.turnGyro("left", 35.0, robot.mainPower);
 
+      //Drops Wobble:
+      robot.mechanisms.arm = 1;
+      robot.mechanisms.automateArm(robot.mainPower);
+
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
-      endCoordinates[0] = 750.0;
+      endCoordinates[0] = 700.0;
       endCoordinates[1] = 360.0;
       robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
@@ -110,6 +114,10 @@ public class AutoRed extends LinearOpMode {
       endCoordinates[1] = 330.0;
       robot.mechanisms.runToPosition("backward", 2, startCoordinates, endCoordinates, robot.mainPower);
     }
+
+    //Resets the Arm:
+    robot.mechanisms.arm = 0;
+    robot.mechanisms.automateArm(robot.mainPower);
 
     /* Stop */
 

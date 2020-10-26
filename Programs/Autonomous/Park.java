@@ -33,14 +33,28 @@ public class Park extends LinearOpMode {
     //Waits for Start:
     waitForStart();
 
-    /* Park */
+    /* Wobble Goal and Park */
 
-    //Parks the Robot:
+    //Moves to Drop Wobble:
     startCoordinates[0] = 652.0;
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 652.0;
-    endCoordinates[1] = 360.0;
+    endCoordinates[1] = 125.0;
     robot.mechanisms.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
+
+    //Drops Wobble:
+    robot.mechanisms.arm = 1;
+    robot.mechanisms.automateArm(robot.mainPower);
+
+    startCoordinates[0] = endCoordinates[0];
+    startCoordinates[1] = endCoordinates[1];
+    endCoordinates[0] = 652.0;
+    endCoordinates[1] = 360.0;
+    robot.mechanisms.runToPosition("backward", 1, startCoordinates, endCoordinates, robot.mainPower);
+
+    //Resets the Arm:
+    robot.mechanisms.arm = 0;
+    robot.mechanisms.automateArm(robot.mainPower);
 
     /* Stop */
 
