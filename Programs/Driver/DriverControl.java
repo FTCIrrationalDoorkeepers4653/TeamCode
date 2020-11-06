@@ -120,7 +120,7 @@ public class DriverControl extends LinearOpMode {
   //Moves the Shooter:
   public void moveShooter() {
     //Checks the Case:
-    if (driverPad.isYReleased()) {
+    if (operatorPad.isRightBumperReleased()) {
       //Checks the Case:
       if (robot.mechanisms.shooter == 0) {
         //Turns On Flywheel:
@@ -136,7 +136,7 @@ public class DriverControl extends LinearOpMode {
   //Moves the Flywheel:
   public void moveFlywheel() {
     //Checks the Case:
-    if (operatorPad.isRightJoyButtonReleased()) {
+    if (operatorPad.isLeftBumperReleased()) {
       //Checks the Case:
       if (robot.mechanisms.shooter == 0) {
         //Sets the Shooter:
