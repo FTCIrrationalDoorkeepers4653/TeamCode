@@ -3,9 +3,12 @@ package org.firstinspires.ftc.teamcode.Programs.Driver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
+
+import dalvik.system.DelegateLastClassLoader;
 
 @TeleOp(name = "DriverControl")
 //@Disabled
@@ -14,8 +17,13 @@ public class DriverControl extends LinearOpMode {
 
   //Objects:
   private static Robot robot = new Robot();
+  private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
   private GamePad operatorPad;
+
+  //Variables:
+  private static int alignment = 0;
+  private static int secondsLeft = 80;
 
   /* OPMODE METHODS */
 
@@ -38,6 +46,9 @@ public class DriverControl extends LinearOpMode {
     waitForStart();
 
     /* Run */
+
+    //Starts the Timer:
+    time.reset();
 
     //Loop Until Stop:
     mainLoop: while (opModeIsActive()) {
@@ -63,6 +74,7 @@ public class DriverControl extends LinearOpMode {
 
       //Sets Status:
       telemetry.addData("Status", "Running");
+      telemetry.addData("Time Remaining", (secondsLeft - time.seconds()));
       telemetry.update();
     }
 
@@ -122,7 +134,7 @@ public class DriverControl extends LinearOpMode {
     //Checks the Case:
     if (operatorPad.isRightBumperReleased()) {
       //Checks the Case:
-      if (robot.mechanisms.shooter == 0) {
+      if (robot.mechanisms.shooter == 0 && robot.mechanisms.ringCount > 0) {
         //Turns On Flywheel:
         robot.mechanisms.automateFlywheel();
         robot.mechanisms.completeCycle(robot.mechanisms.shooterWait);
@@ -206,7 +218,7 @@ public class DriverControl extends LinearOpMode {
     double right = (driverPad.rightTrigger * driverPad.rightTrigger * driverPad.rightTrigger);
 
     //Checks the Case:
-    if (driverPad.aButton) {
+    if (driverPad.leftBumper) {
       //Adjusts Slow Mode Speed:
       forward /= robot.speedControl;
       turn /= robot.speedControl;
@@ -256,14 +268,42 @@ public class DriverControl extends LinearOpMode {
     }
   }
 
-  //Aligns Robot to Goals:
+  //Aligns Robot to PowerShots:
   public void alignRobot() {
     //Checks the Case:
-    if (driverPad.isXReleased()) {
+    if (driverPad.isAReleased()) {
       //Sets Modes, Turns, and Resets:
       robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-      robot.mechanisms.turnGyro("right", 85.0, robot.fastPower);
+      robot.mechanisms.turnGyro("right", 90.0, robot.fastPower);
       robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    //Checks the Case:
+    if (driverPad.isYReleased()) {
+      //Checks the Case:
+      if (alignment == 0) {
+        //Sets Modes, Turns, and Resets:
+        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.mechanisms.turnGyro("right", 60.0, robot.fastPower);
+        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        alignment++;
+      }
+
+      else if (alignment == 1) {
+        //Sets Modes, Turns, and Resets:
+        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.mechanisms.turnGyro("right", 15.0, robot.fastPower);
+        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        alignment++;
+      }
+
+      else if (alignment == 2) {
+        //Sets Modes, Turns, and Resets:
+        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.mechanisms.turnGyro("left", 10.0, robot.fastPower);
+        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        alignment -= 2;
+      }
     }
   }
 }
