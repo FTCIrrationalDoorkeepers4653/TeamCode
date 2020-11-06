@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Systems.Vision.TensorVision;
 
+import lib.Positioning;
+
 public class Robot {
   /* HARDWARE VARIABLES */
 
@@ -26,7 +28,6 @@ public class Robot {
   private static Orientation angles;
 
   //Hardware Objects:
-  public static HardwareMap hardwareMap;
   public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
 
@@ -46,6 +47,11 @@ public class Robot {
   public static double gyroStabilization = 0.3;
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double speedControl = 4.0;
+
+  //Drive Train Motor Variables:
+  public static double Kp = 0.05;
+  public static double Ki = 0.001;
+  public static double Kd = 0.008;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
@@ -70,14 +76,17 @@ public class Robot {
   "TW3mO4qzNAny2UK5YrzG92bUIxqvpDLkjeq8UNTLHYD4ulI1i+Jl/dPzU2PdeNPEqlsykdshGvcuRWRz8qeMXfpKVZ9TXmLxqvu" +
   "Te6K291gxuKtfWXJ11rYJHTJlUAvooMpPaAh2/isv6LUy83+3UhIyl1kNxaNeMHK52iqEjpswOiOmVkniWTblp";
 
+  //Vision Positioning Settings:
+  private static int frameWidth = 1280, frameHeight = 720;
+  private static double camOffsetX = 10.0, camOffSetY = 14.0;
+  private static double distanceOfField = 13.0, camZoom = 1.0;
+  private static double finalDistanceOfField = (distanceOfField * camZoom);
+
   /* HARDWARE INITIALIZATION METHODS */
 
   //Initialization Method:
-  public static void init(HardwareMap hwMap, boolean type, boolean camera) {
+  public static void init(HardwareMap hardwareMap, boolean type, boolean camera) {
     /* Hardware */
-
-    //Save reference to Hardware map:
-    hardwareMap = hwMap;
 
     //Wheel Maps:
     leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
@@ -85,14 +94,28 @@ public class Robot {
     rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
     rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
-    /* Sensors */
+    /* Motors */
+
+    //Wheel Directions:
+    leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+    rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
 
     //Checks the Case:
-    if (camera) {
-      //Vision Initialization:
-      vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
-      vision.initDetector("", detector);
+    if (type) {
+      //Motor Behavior Setup:
+      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
+    else {
+      //Motor Behavior Setup:
+      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    /* Sensors */
 
     //IMU Initialization:
     BNO055IMU.Parameters imuParameters = new BNO055IMU.Parameters();
@@ -100,33 +123,17 @@ public class Robot {
     imu = hardwareMap.get(BNO055IMU.class, "imu");
     imu.initialize(imuParameters);
 
-    /* Motors */
+    //Controller Initialization:
+    mechanisms.initController(Kp, Ki, Kd);
+    applyAllPowers(zeroPower);
 
     //Checks the Case:
-    if (type) {
-      //Wheel Directions:
-      leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-      leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-      rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-      rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-
-      //Wheel Setup:
-      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
-      applyAllPowers(zeroPower);
-    }
-
-    else {
-      //Wheel Directions:
-      leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-      leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-      rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-      rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
-
-      //Wheel Setup:
-      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
-      applyAllPowers(zeroPower);
+    if (camera) {
+      //Vision Initialization:
+      vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
+      vision.initDetector("", detector);
+      vision.positioning.initVisionPosition(frameWidth, frameHeight, finalDistanceOfField,
+        camOffsetX, camOffSetY);
     }
   }
 
@@ -134,13 +141,9 @@ public class Robot {
 
   //Gets the Position Pixel Count:
   public static int getPixelsPosition() {
-    //Position Variable and Image (w/ Default):
+    //Vision Positions:
     int position = 1;
-    Bitmap image = vision.getImage(resizeRatio);
-
-    //Gets the Boolean Count:
-    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
-    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
+    int booleanCount = getVision();
 
     //Checks the Case:
     if (booleanCount <= firstCount) {
@@ -160,6 +163,15 @@ public class Robot {
 
     //Returns the Position:
     return position;
+  }
+
+  //Gets the Universal Vision Information:
+  public static int getVision() {
+    //Analyzes and Returns the Boolean Count:
+    Bitmap image = vision.getImage(resizeRatio);
+    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
+    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
+    return booleanCount;
   }
 
   /* IMU METHODS */
@@ -207,10 +219,8 @@ public class Robot {
 
     /* Ratio is Rotations/Degrees...So to find Rotations it is... x = (ratioRotations*correction)/ratioDegrees */
 
-    //Rotations Needed to Correct Angle (arc length = r * theta):
+    //Returns Rotations Needed to Correct Angle (arc length = r * theta):
     double driveRotations = (r * angleInRadians);
-
-    //Returns the Value:
     return driveRotations;
   }
 
@@ -243,11 +253,9 @@ public class Robot {
       rotations = calculateTurnRotations(correction);
     }
 
-    //Formats the Return Array:
+    //Formats the Return Array and Returns:
     directionAndRotations[0] = direction;
     directionAndRotations[1] = rotations;
-
-    //Returns the Direction (-1, 0, or 1) and the Rotations:
     return directionAndRotations;
   }
 
@@ -288,9 +296,12 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
     }
 
-    //Sets the Motors:
+    //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlPower(power);
+    mechanisms.applyControlMotorPower(leftFrontMotor, power);
+    mechanisms.applyControlMotorPower(leftBackMotor, power);
+    mechanisms.applyControlMotorPower(rightFrontMotor, power);
+    mechanisms.applyControlMotorPower(rightBackMotor, power);
   }
 
   //Robot Turn Motion with Rotations:
@@ -312,9 +323,12 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
     }
 
-    //Sets the Motors:
+    //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlPower(power);
+    mechanisms.applyControlMotorPower(leftFrontMotor, power);
+    mechanisms.applyControlMotorPower(leftBackMotor, power);
+    mechanisms.applyControlMotorPower(rightFrontMotor, power);
+    mechanisms.applyControlMotorPower(rightBackMotor, power);
   }
 
   //Robot Strafe Motion:
@@ -336,12 +350,15 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
     }
 
-    //Sets the Motors:
+    //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlPower(power);
+    mechanisms.applyControlMotorPower(leftFrontMotor, power);
+    mechanisms.applyControlMotorPower(leftBackMotor, power);
+    mechanisms.applyControlMotorPower(rightFrontMotor, power);
+    mechanisms.applyControlMotorPower(rightBackMotor, power);
   }
 
-  /* ROBOT UTILITY METHODS */
+  /* ROBOT MOTOR UTILITY METHODS */
 
   //Apply Power to All Motors:
   public static void applyAllPowers(double power) {
@@ -369,6 +386,8 @@ public class Robot {
     rightFrontMotor.setZeroPowerBehavior(behavior);
     rightBackMotor.setZeroPowerBehavior(behavior);
   }
+
+  /* ROBOT ENCODER UTILITY METHODS */
 
   //Gets Parts Based on Rotations:
   public static int getParts(double rotations) {

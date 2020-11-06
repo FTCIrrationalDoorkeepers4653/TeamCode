@@ -3,11 +3,18 @@ package org.firstinspires.ftc.teamcode.Systems.Vision;
 import android.graphics.Bitmap;
 import java.util.ArrayList;
 import lib.Analyze;
+import lib.ImageProcessing;
 import lib.ImageRecognition;
+import lib.Positioning;
 
 @SuppressWarnings("unused")
 public class Vision extends Analyze {
   /* VISION VARIABLES */
+
+  //Vision Objects:
+  public static Positioning positioning = new Positioning();
+  private static ImageRecognition recognition = new ImageRecognition();
+  private static ImageProcessing processing = new ImageProcessing();
 
   //YOLO Detection Information Variables:
   private static ArrayList<Integer> detectionX = new ArrayList<Integer>();
@@ -124,7 +131,7 @@ public class Vision extends Analyze {
         Bitmap scaled = Bitmap.createScaledBitmap(unscaled, width, height, true);
 
         //Checks the Case:
-        if (ImageRecognition.authenticateImage(identifier, authRGB, 0, 0, authPercent, vectorGrid)) {
+        if (recognition.authenticateImage(identifier, authRGB, 0, 0, authPercent, vectorGrid)) {
           //Adds a Detection:
           detections++;
 
@@ -155,7 +162,7 @@ public class Vision extends Analyze {
 
     try {
       //Gets the Object Detection:
-      isThere = ImageRecognition.authenticateImage(identifier, rgbValues,
+      isThere = recognition.authenticateImage(identifier, rgbValues,
         0, 0, percentage, grid);
     }
 
@@ -171,7 +178,7 @@ public class Vision extends Analyze {
   public static void trainObject(int rgbValues[][], String identifier, int grid) {
     try {
       //Trains a Model on RGB Values:
-      ImageRecognition.trainImage(identifier, rgbValues, 0, 0,
+      recognition.trainImage(identifier, rgbValues, 0, 0,
         0, grid);
     }
 

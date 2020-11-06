@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DogeVision extends DogeCVDetector {
-  //HardwareMap Object:
-  private HardwareMap hardwareMap;
-
   // Defining Mats to be used.
   private Mat displayMat = new Mat(); // Display debug info to the screen (this is what is returned)
   private Mat workingMat = new Mat(); // Used for preprocessing and working with (blurring as an example)
@@ -57,11 +54,9 @@ public class DogeVision extends DogeCVDetector {
     detectorName = "DogeVision"; // Set the detector name
   }
 
-  //INITS The Detector:
-  public void initDetector(HardwareMap hwMap) {
-    //Declares Hardware Map:
-    hardwareMap = hwMap;
-
+  //Initializes The Detector:
+  public void initDetector(HardwareMap hardwareMap) {
+    //Initializes:
     init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Initialize it with the app context and camera
     useDefaults(); // Set detector to use default settings
 

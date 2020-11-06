@@ -28,7 +28,7 @@ public class Park extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, false);
-    robot.mechanisms.initMechanisms();
+    robot.mechanisms.initMechanisms(hardwareMap);
 
     //Waits for Start:
     waitForStart();
@@ -39,7 +39,7 @@ public class Park extends LinearOpMode {
     startCoordinates[0] = 652.0;
     startCoordinates[1] = 760.0;
     endCoordinates[0] = 652.0;
-    endCoordinates[1] = 125.0;
+    endCoordinates[1] = 150.0;
     robot.mechanisms.runToPosition("forward", 1, startCoordinates, endCoordinates, robot.mainPower);
 
     //Drops Wobble:

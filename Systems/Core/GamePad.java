@@ -10,6 +10,8 @@ public class GamePad {
   private Gamepad gamepad = new Gamepad();
   private Robot robot = new Robot();
 
+  /* GAMEPAD INTERFACE VARIABLES */
+
   //Control Button Variables:
   public boolean aButton = false;
   public boolean bButton = false;
@@ -35,6 +37,16 @@ public class GamePad {
   public boolean dPadDown = false;
   public boolean dPadLeft = false;
   public boolean dPadRight = false;
+
+  /* GAMEPAD TRACKER VARIABLES */
+
+  //Control Joystick Tracker Variables:
+  private boolean wasLeftJoyPressed = false;
+  private boolean wasRightJoyPressed = false;
+
+  //Control Triggers Tracker Variables:
+  private boolean wasLeftBumperPressed = false;
+  private boolean wasRightBumperPressed = false;
 
   //Control Buttons Tracker Variables:
   private boolean wasAPressed = false;
@@ -79,12 +91,101 @@ public class GamePad {
     dPadRight = gamepad.dpad_right;
   }
 
-  /* GAMEPAD METHODS */
+  /* GAMEPAD JOYSTICK METHODS */
+
+  //Left Joystick Button Released:
+  public boolean isLeftJoyButtonReleased() {
+    //Checks the Case:
+    if (leftJoyButton) {
+      //Sets the Button Press:
+      wasLeftJoyPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasLeftJoyPressed && !leftJoyButton) {
+      //Returns the Value:
+      wasLeftJoyPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  //Right Joystick Button Released:
+  public boolean isRightJoyButtonReleased() {
+    //Checks the Case:
+    if (rightJoyButton) {
+      //Sets the Button Press:
+      wasRightJoyPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasRightJoyPressed && !rightJoyButton) {
+      //Returns the Value:
+      wasRightJoyPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  /* GAMEPAD TRIGGER METHODS */
+
+  //Left Trigger Released:
+  public boolean isLeftBumperReleased() {
+    //Checks the Case:
+    if (leftBumper) {
+      //Sets the Button Press:
+      wasLeftBumperPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasLeftBumperPressed && !leftBumper) {
+      //Returns the Value:
+      wasLeftBumperPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  //Right Trigger Released:
+  public boolean isRightBumperReleased() {
+    //Checks the Case:
+    if (rightBumper) {
+      //Sets the Button Press:
+      wasRightBumperPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasRightBumperPressed && !rightBumper) {
+      //Returns the Value:
+      wasRightBumperPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  /* GAMEPAD BUTTON METHODS */
 
   //A Button Released:
   public boolean isAReleased() {
     //Checks the Case:
     if (aButton) {
+      //Sets the Button Press:
       wasAPressed = true;
     }
 
@@ -93,7 +194,9 @@ public class GamePad {
       //Returns the Value:
       wasAPressed = false;
       return true;
-    } else {
+    }
+
+    else {
       //Returns the Value:
       return false;
     }
@@ -103,6 +206,7 @@ public class GamePad {
   public boolean isBReleased() {
     //Checks the Case:
     if (bButton) {
+      //Sets the Button Press:
       wasBPressed = true;
     }
 
@@ -111,7 +215,9 @@ public class GamePad {
       //Returns the Value:
       wasBPressed = false;
       return true;
-    } else {
+    }
+
+    else {
       //Returns the Value:
       return false;
     }
@@ -121,6 +227,7 @@ public class GamePad {
   public boolean isXReleased() {
     //Checks the Case:
     if (xButton) {
+      //Sets the Button Press:
       wasXPressed = true;
     }
 
@@ -129,7 +236,9 @@ public class GamePad {
       //Returns the Value:
       wasXPressed = false;
       return true;
-    } else {
+    }
+
+    else {
       //Returns the Value:
       return false;
     }
@@ -139,6 +248,7 @@ public class GamePad {
   public boolean isYReleased() {
     //Checks the Case:
     if (yButton) {
+      //Sets the Button Press:
       wasYPressed = true;
     }
 
@@ -147,7 +257,9 @@ public class GamePad {
       //Returns the Value:
       wasYPressed = false;
       return true;
-    } else {
+    }
+
+    else {
       //Returns the Value:
       return false;
     }

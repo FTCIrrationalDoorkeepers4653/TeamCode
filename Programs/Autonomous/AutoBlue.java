@@ -27,7 +27,7 @@ public class AutoBlue extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
-    robot.mechanisms.initMechanisms();
+    robot.mechanisms.initMechanisms(hardwareMap);
 
     //Waits for Start:
     waitForStart();
@@ -36,6 +36,7 @@ public class AutoBlue extends LinearOpMode {
 
     //Gets the Ring Position:
     position = robot.getPixelsPosition();
+    robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
     startCoordinates[0] = 200.0;
@@ -47,31 +48,40 @@ public class AutoBlue extends LinearOpMode {
     /* Shooting */
 
     //Turns Robot and Shoots:
-    robot.mechanisms.turnGyro("left", 80.0, robot.mainPower);
-    robot.mechanisms.turnGyro("left", 15.0, robot.mainPower);
+    robot.mechanisms.turnGyro("right", 100.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+
+    //Turns Robot and Shoots:
+    robot.mechanisms.turnGyro("right", 15.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+
+    //Turns Robot and Shoots Final:
+    robot.mechanisms.turnGyro("right", 10.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+    robot.mechanisms.automateFlywheel();
 
     /* Wobble Goal and Park */
 
     //Checks the Case:
     if (position == 1) {
       //Turns to the Wobble:
-      robot.mechanisms.turnGyro("right", 35.0, robot.mainPower);
-
-      //Drops Wobble:
-      robot.mechanisms.arm = 1;
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.turnGyro("left", 135.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
-      endCoordinates[0] = 60.0;
+      endCoordinates[0] = 80.0;
       endCoordinates[1] = 360.0;
       robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+
+      //Drops Wobble:
+      robot.mechanisms.arm = 1;
+      robot.mechanisms.automateArm(robot.mainPower);
     }
 
     else if (position == 2) {
       //Turns to the Wobble:
-      robot.mechanisms.turnGyro("right", 75.0, robot.mainPower);
+      robot.mechanisms.turnGyro("left", 95.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
@@ -94,7 +104,7 @@ public class AutoBlue extends LinearOpMode {
 
     else {
       //Turns to the Wobble:
-      robot.mechanisms.turnGyro("right", 65.0, robot.mainPower);
+      robot.mechanisms.turnGyro("left", 85.0, robot.mainPower);
 
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];

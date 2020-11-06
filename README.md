@@ -40,3 +40,6 @@ motion profiling and automation to come. Fixed bugs in Motion Profiling and chan
 
 - 10/25/2020 - Fixed Autonomous Bugs and Added Support for New Wobble Goal Arm. Also Tested Arm and Chassis Movements. Also, Fixed Motion Profiling and Move-to-Position.
 Wil Continue to Work on Vision Positioning and Turning Algortihms.
+
+- 11/5/2020 - Added an Another Powershot to Autonmous, Added Vision Positioning Support, Coded for Intake and Flywheel/Shooter, Fixed and Tuned Motion Profiling, 
+Added a Custom GamePad Class, Tuned and Automated the TeleOp Further, and Made Code Easier and More Modular to Work With.

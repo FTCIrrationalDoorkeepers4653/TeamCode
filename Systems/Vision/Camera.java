@@ -14,9 +14,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 public class Camera extends Vision {
   /* VUFORIA VARIABLES */
 
-  //Hardware Map Object:
-  private static HardwareMap hardwareMap;
-
   //Vuforia Elements:
   private static VuforiaLocalizer vuforia;
   private static VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
@@ -30,11 +27,8 @@ public class Camera extends Vision {
   }
 
   //Initialize Vuforia:
-  public static void initVuforia(HardwareMap hwMap, String API_KEY, int zoomValue, boolean flash) {
+  public static void initVuforia(HardwareMap hardwareMap, String API_KEY, int zoomValue, boolean flash) {
     /* Hardware Setup */
-
-    //Declares Hardware Map:
-    hardwareMap = hwMap;
 
     //Inits the Vuforia Localizer:
     int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());

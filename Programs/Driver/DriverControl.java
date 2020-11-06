@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Programs.Driver;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
@@ -29,7 +30,7 @@ public class DriverControl extends LinearOpMode {
 
     //Initialize Robot:
     robot.init(hardwareMap, false, false);
-    robot.mechanisms.initMechanisms();
+    robot.mechanisms.initMechanisms(hardwareMap);
     driverPad = new GamePad(gamepad1);
     operatorPad = new GamePad(gamepad2);
 
@@ -44,10 +45,21 @@ public class DriverControl extends LinearOpMode {
       driverPad.setGamePad();
       operatorPad.setGamePad();
 
-      //Robot Method Calls:
-      moveRobot();
+      //Intake Control Methods:
+      moveIntakeArm();
+      moveIntakeClaw();
+
+      //Shooter Control Methods
+      moveShooter();
+      moveFlywheel();
+
+      //Arm Control Methods:
       moveArm();
       moveClaw();
+
+      //Base Control Methods:
+      moveRobot();
+      alignRobot();
 
       //Sets Status:
       telemetry.addData("Status", "Running");
@@ -61,66 +73,87 @@ public class DriverControl extends LinearOpMode {
     telemetry.update();
   }
 
-  /* DRIVER CONTROL METHODS */
+  /* DRIVER INTAKE CONTROL METHODS */
 
-  //Moves the Robot:
-  public void moveRobot() {
-    //Gets the Gamepad Control Values:
-    double power = (driverPad.leftY * driverPad.leftY * driverPad.leftY);
-    double turn = (driverPad.rightX * driverPad.rightX * driverPad.rightX);
-    double left = (driverPad.leftTrigger * driverPad.leftTrigger * driverPad.leftTrigger);
-    double right = (driverPad.rightTrigger * driverPad.rightTrigger * driverPad.rightTrigger);
-
+  //Moves the Intake Arm:
+  public void moveIntakeArm() {
     //Checks the Case:
-    if (driverPad.leftBumper) {
-      //Adjusts Slow Mode Speed:
-      power /= robot.speedControl;
-      turn /= robot.speedControl;
-      left /= robot.speedControl;
-      right /= robot.speedControl;
-    }
+    if (operatorPad.isXReleased()) {
+      //Checks the Case:
+      if (robot.mechanisms.intakeArm == 0) {
+        //Sets the Intake Arm:
+        robot.mechanisms.intakeArm++;
+      }
 
-    //Checks the Case:
-    if (power != robot.zeroPower) {
-      //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(power);
-      robot.leftBackMotor.setPower(power);
-      robot.rightFrontMotor.setPower(power);
-      robot.rightBackMotor.setPower(power);
-    }
+      else if (robot.mechanisms.intakeArm == 1) {
+        //Sets the Intake Arm:
+        robot.mechanisms.intakeArm--;
+      }
 
-    else if (turn != robot.zeroPower) {
-      //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(-turn);
-      robot.leftBackMotor.setPower(-turn);
-      robot.rightFrontMotor.setPower(turn);
-      robot.rightBackMotor.setPower(turn);
-    }
-
-    else if (left != robot.zeroPower) {
-      //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(left);
-      robot.leftBackMotor.setPower(-left);
-      robot.rightFrontMotor.setPower(-left);
-      robot.rightBackMotor.setPower(left);
-    }
-
-    else if (right != robot.zeroPower) {
-      //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(-right);
-      robot.leftBackMotor.setPower(right);
-      robot.rightFrontMotor.setPower(right);
-      robot.rightBackMotor.setPower(-right);
-    }
-
-    else {
-      //Sets the Motor Power:
-      robot.leftFrontMotor.setPower(robot.zeroPower);
-      robot.leftBackMotor.setPower(robot.zeroPower);
-      robot.rightFrontMotor.setPower(robot.zeroPower);
-      robot.rightBackMotor.setPower(robot.zeroPower);
+      //Operates the Intake Arm:
+      robot.mechanisms.automateIntake(robot.fastPower);
     }
   }
+
+  //Moves the Intake Claw:
+  public void moveIntakeClaw() {
+    //Checks the Case:
+    if (operatorPad.isBReleased()) {
+      //Checks the Case:
+      if (robot.mechanisms.intakeClaw == 0) {
+        //Sets the Intake Claw:
+        robot.mechanisms.intakeClaw++;
+      }
+
+      else if (robot.mechanisms.intakeClaw == 1) {
+        //Sets the Intake Claw:
+        robot.mechanisms.intakeClaw++;
+      }
+
+      //Operates the Intake Claw:
+      robot.mechanisms.operateIntakeClaw();
+    }
+  }
+
+  /* DRIVER SHOOTER CONTROL METHODS */
+
+  //Moves the Shooter:
+  public void moveShooter() {
+    //Checks the Case:
+    if (driverPad.isYReleased()) {
+      //Checks the Case:
+      if (robot.mechanisms.shooter == 0) {
+        //Turns On Flywheel:
+        robot.mechanisms.automateFlywheel();
+        robot.mechanisms.completeCycle(robot.mechanisms.shooterWait);
+      }
+
+      //Shoots the Ring:
+      robot.mechanisms.automateShooter();
+    }
+  }
+
+  //Moves the Flywheel:
+  public void moveFlywheel() {
+    //Checks the Case:
+    if (operatorPad.isRightJoyButtonReleased()) {
+      //Checks the Case:
+      if (robot.mechanisms.shooter == 0) {
+        //Sets the Shooter:
+        robot.mechanisms.shooter++;
+      }
+
+      else if (robot.mechanisms.shooter == 1) {
+        //Sets the Shooter:
+        robot.mechanisms.shooter--;
+      }
+    }
+
+    //Operates the Flywheel:
+    robot.mechanisms.operateFlywheel();
+  }
+
+  /* DRIVER ARM CONTROL METHODS */
 
   //Moves the Wobble Arm:
   public void moveArm() {
@@ -138,7 +171,7 @@ public class DriverControl extends LinearOpMode {
       }
 
       //Moves the Arm:
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm(robot.fastPower);
     }
   }
 
@@ -159,6 +192,78 @@ public class DriverControl extends LinearOpMode {
 
       //Operates the Claw:
       robot.mechanisms.operateClaw();
+    }
+  }
+
+  /* DRIVER BASE CONTROL METHODS */
+
+  //Moves the Robot:
+  public void moveRobot() {
+    //Gets the GamePad Control Values:
+    double forward = (driverPad.leftY * driverPad.leftY * driverPad.leftY);
+    double turn = (driverPad.rightX * driverPad.rightX * driverPad.rightX);
+    double left = (driverPad.leftTrigger * driverPad.leftTrigger * driverPad.leftTrigger);
+    double right = (driverPad.rightTrigger * driverPad.rightTrigger * driverPad.rightTrigger);
+
+    //Checks the Case:
+    if (driverPad.aButton) {
+      //Adjusts Slow Mode Speed:
+      forward /= robot.speedControl;
+      turn /= robot.speedControl;
+      left /= robot.speedControl;
+      right /= robot.speedControl;
+    }
+
+    //Checks the Case:
+    if (forward != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, -forward);
+      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, -forward);
+      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -forward);
+      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -forward);
+    }
+
+    else if (turn != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, turn);
+      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, turn);
+      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -turn);
+      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -turn);
+    }
+
+    else if (left != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, -left);
+      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, left);
+      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, left);
+      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -left);
+    }
+
+    else if (right != robot.zeroPower) {
+      //Sets the Motor Power:
+      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, right);
+      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, -right);
+      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -right);
+      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, right);
+    }
+
+    else {
+      //Sets the Motor Power:
+      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, robot.zeroPower);
+      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, robot.zeroPower);
+      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, robot.zeroPower);
+      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, robot.zeroPower);
+    }
+  }
+
+  //Aligns Robot to Goals:
+  public void alignRobot() {
+    //Checks the Case:
+    if (driverPad.isXReleased()) {
+      //Sets Modes, Turns, and Resets:
+      robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+      robot.mechanisms.turnGyro("right", 85.0, robot.fastPower);
+      robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
   }
 }

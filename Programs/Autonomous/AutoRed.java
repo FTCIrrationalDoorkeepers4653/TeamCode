@@ -27,7 +27,7 @@ public class AutoRed extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
-    robot.mechanisms.initMechanisms();
+    robot.mechanisms.initMechanisms(hardwareMap);
 
     //Waits for Start:
     waitForStart();
@@ -36,6 +36,7 @@ public class AutoRed extends LinearOpMode {
 
     //Gets the Ring Position:
     position = robot.getPixelsPosition();
+    robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
     startCoordinates[0] = 560.0;
@@ -47,8 +48,17 @@ public class AutoRed extends LinearOpMode {
     /* Shooting */
 
     //Turns Robot and Shoots:
-    robot.mechanisms.turnGyro("right", 80.0, robot.mainPower);
+    robot.mechanisms.turnGyro("right", 70.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+
+    //Turns Robot and Shoots:
     robot.mechanisms.turnGyro("right", 15.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+
+    //Turns Robot and Shoots Final:
+    robot.mechanisms.turnGyro("right", 10.0, robot.mainPower);
+    robot.mechanisms.automateShooter();
+    robot.mechanisms.automateFlywheel();
 
     /* Wobble Goal and Park */
 
@@ -57,16 +67,16 @@ public class AutoRed extends LinearOpMode {
       //Turns to the Wobble:
       robot.mechanisms.turnGyro("left", 35.0, robot.mainPower);
 
-      //Drops Wobble:
-      robot.mechanisms.arm = 1;
-      robot.mechanisms.automateArm(robot.mainPower);
-
       //Moves to Drop:
       startCoordinates[0] = endCoordinates[0];
       startCoordinates[1] = endCoordinates[1];
-      endCoordinates[0] = 700.0;
+      endCoordinates[0] = 680.0;
       endCoordinates[1] = 360.0;
       robot.mechanisms.runToPosition("forward", 2, startCoordinates, endCoordinates, robot.mainPower);
+
+      //Drops Wobble:
+      robot.mechanisms.arm = 1;
+      robot.mechanisms.automateArm(robot.mainPower);
     }
 
     else if (position == 2) {
