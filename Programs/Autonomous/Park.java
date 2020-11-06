@@ -29,6 +29,7 @@ public class Park extends LinearOpMode {
     //Hardware Initialization:
     robot.init(hardwareMap, true, false);
     robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.ringCount = 3;
 
     //Waits for Start:
     waitForStart();

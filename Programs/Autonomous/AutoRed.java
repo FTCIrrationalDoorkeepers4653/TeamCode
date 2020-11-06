@@ -28,6 +28,7 @@ public class AutoRed extends LinearOpMode {
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
     robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.ringCount = 3;
 
     //Waits for Start:
     waitForStart();

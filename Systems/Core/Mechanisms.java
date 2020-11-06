@@ -117,14 +117,18 @@ public class Mechanisms extends Controller {
 
   //Automate Intake Method:
   public void automateIntake(double power) {
-    //Intake Arm With Time:
-    int time = calculateTime(robot.getAngleRotations(intakeArmDown), power);
-    operateIntakeArm(power);
-    completeCycle(time);
+    //Checks the Case:
+    if (ringCount < 4) {
+      //Intake Arm With Time:
+      int time = calculateTime(robot.getAngleRotations(intakeArmDown), power);
+      operateIntakeArm(power);
+      completeCycle(time);
 
-    //Opens the Intake Claw:
-    intakeClaw = 0;
-    operateIntakeClaw();
+      //Opens the Intake Claw:
+      intakeClaw = 0;
+      operateIntakeClaw();
+      ringCount++;
+    }
   }
 
   //Automate Arm Method:
@@ -166,7 +170,7 @@ public class Mechanisms extends Controller {
   //Automate Flywheel Method:
   public void automateFlywheel() {
     //Checks the Case:
-    if (ringCount > 0) {
+    if (ringCount > 0 && ringCount < 4) {
       //Operates Flywheel:
       shooter = 1;
       operateFlywheel();
