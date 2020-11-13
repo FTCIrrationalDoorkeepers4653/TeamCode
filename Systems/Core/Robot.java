@@ -38,14 +38,15 @@ public class Robot {
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
-  public static double TicksPerRev = 1120;
+  public static double TicksPerRev = 1120.0;
+  public static double maxRPM = 150.0;
   public static double POSITION_RATIO = (144.0 / 760.0);
 
   //Drive Train Control Variables:
   public static double wheelRPM = 100.0;
   public static double wheelRPS = (wheelRPM / 60.0);
-  public static double gyroStabilization = 0.3;
   public static double degreesPerTick = (TicksPerRev / 360.0);
+  public static double gyroStabilization = 10.0;
   public static double speedControl = 4.0;
 
   //Drive Train Motor Variables:
@@ -124,7 +125,8 @@ public class Robot {
     imu.initialize(imuParameters);
 
     //Controller Initialization:
-    mechanisms.initController(Kp, Ki, Kd);
+    mechanisms.initControl(Kp, Ki, Kd);
+    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
     applyAllPowers(zeroPower);
 
     //Checks the Case:
@@ -138,6 +140,15 @@ public class Robot {
   }
 
   /* VISION METHODS */
+
+  //Gets the Universal Vision Information:
+  public static int getVision() {
+    //Analyzes and Returns the Boolean Count:
+    Bitmap image = vision.getImage(resizeRatio);
+    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
+    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
+    return booleanCount;
+  }
 
   //Gets the Position Pixel Count:
   public static int getPixelsPosition() {
@@ -165,50 +176,7 @@ public class Robot {
     return position;
   }
 
-  //Gets the Universal Vision Information:
-  public static int getVision() {
-    //Analyzes and Returns the Boolean Count:
-    Bitmap image = vision.getImage(resizeRatio);
-    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
-    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
-    return booleanCount;
-  }
-
   /* IMU METHODS */
-
-  //Calculates If Value is Within Range:
-  public static boolean isWithinRange(double value, double initial, double offset) {
-    //Main Boolean and Values:
-    boolean within = false;
-    double max = initial + (initial * offset);
-    double min = initial - (initial * offset);
-
-    //Checks the Case:
-    if (value >= min && value <= max) {
-      within = true;
-    }
-
-    //Returns the Boolean:
-    return within;
-  }
-
-  //Converts from Radians to Degrees:
-  public static double convertAngle(double angle, boolean degrees) {
-    //Degrees Double:
-    double angleDegrees = ((180.0 / Math.PI) * angle);
-    double angleRadians = ((Math.PI / 180.0) * angle);
-
-    //Checks the Case:
-    if (degrees) {
-      //Returns the Angle:
-      return angleDegrees;
-    }
-
-    else {
-      //Returns the Angle:
-      return angleRadians;
-    }
-  }
 
   //Calculates Turn Rotations in Terms of Degrees:
   public static double calculateTurnRotations(double angleDegrees) {
@@ -233,7 +201,7 @@ public class Robot {
     //Gets IMU Reading:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     double imuReading = angles.firstAngle;
-    double imuResetReading = imuReading + resetValue;
+    double imuResetReading = (imuReading + resetValue);
 
     //Checks the Case:
     if (isWithinRange(imuReading, expectedAngle, gyroStabilization)) {
@@ -263,9 +231,52 @@ public class Robot {
   public static double resetGyroValue() {
     //Gets Current Value and Returns Reset:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double currentIMUReading = (double)(angles.firstAngle);
-    double resetValue = 0 - currentIMUReading;
+    double currentIMUReading = angles.firstAngle;
+    double resetValue = -currentIMUReading;
     return resetValue;
+  }
+
+  /* IMU UTILITY METHODS */
+
+  //Gets the Robot Theta Position:
+  public static double getTheta() {
+    //Returns the Robot Theta:
+    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    return angles.firstAngle;
+  }
+
+  //Calculates If Value is Within Range:
+  public static boolean isWithinRange(double value, double initial, double offset) {
+    //Main Boolean and Values:
+    boolean within = false;
+    double max = (initial + offset);
+    double min = (initial - offset);
+
+    //Checks the Case:
+    if (value >= min && value <= max) {
+      within = true;
+    }
+
+    //Returns the Boolean:
+    return within;
+  }
+
+  //Converts from Radians to Degrees:
+  public static double convertAngle(double angle, boolean degrees) {
+    //Degrees Double:
+    double angleDegrees = ((180.0 / Math.PI) * angle);
+    double angleRadians = ((Math.PI / 180.0) * angle);
+
+    //Checks the Case:
+    if (degrees) {
+      //Returns the Angle:
+      return angleDegrees;
+    }
+
+    else {
+      //Returns the Angle:
+      return angleRadians;
+    }
   }
 
   /* ROBOT MOVEMENT METHODS */

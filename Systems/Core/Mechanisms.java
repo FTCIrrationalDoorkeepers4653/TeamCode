@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,8 +14,8 @@ public class Mechanisms extends Controller {
 
   //Motor Mechanisms:
   public static DcMotor baseArmMotor;
-  public static DcMotor shooterMotor;
   public static DcMotor intakeMotor;
+  public static DcMotor shooterMotor;
 
   //Servo Mechanisms:
   public static Servo clawServo;
@@ -35,13 +36,13 @@ public class Mechanisms extends Controller {
 
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.0;
-  public static double shooterEndPosition = 0.7;
+  public static double shooterEndPosition = 0.4;
   public static int shot = 0;
-  public static int shooterWait = 1000;
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static int ringCount = 3;
+  public static int shooterWait = 500;
 
   //Mechanism Ramp Variables:
   public static double rampStartPosition = 0.0;
@@ -57,6 +58,13 @@ public class Mechanisms extends Controller {
   public static double intakeEndPosition = 0.6;
   public static double intakeClaw = 0;
 
+  //Mechanism Calculation Variables:
+  public static double gearReduction = 40.0;
+  public static double flyTicksPerRev = (robot.TicksPerRev / gearReduction);
+  public static double targetFlyRPM = 4800.0;
+  public static double targetFlyRPS = (targetFlyRPM / 60.0);
+  public static double targetFlyTicks = (targetFlyRPS * flyTicksPerRev);
+
   /* MECHANISMS INITIALIZATION METHODS */
 
   //Initializes the Mechanisms:
@@ -65,8 +73,8 @@ public class Mechanisms extends Controller {
 
     //Motor Mechanism Maps:
     baseArmMotor = hardwareMap.dcMotor.get("baseArmMotor");
-    shooterMotor = hardwareMap.dcMotor.get("shooterMotor");
     intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+    shooterMotor = hardwareMap.dcMotor.get("shooterMotor");
 
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
@@ -196,38 +204,18 @@ public class Mechanisms extends Controller {
     intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
-  //Operates the Intake Arm:
-  public static void operateIntakeArm(double power) {
-    //Target Variables:
-    int startTarget = 0;
-    int endTarget = robot.getParts(robot.getAngleRotations(intakeArmDown));
-
-    //Checks the Case:
-    if (intakeArm == 0) {
-      //Runs the Target Positions:
-      intakeMotor.setTargetPosition(startTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(intakeMotor, power);
-    }
-
-    else if (arm == 1) {
-      //Runs the Target Positions:
-      intakeMotor.setTargetPosition(endTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(intakeMotor, power);
-    }
-  }
-
   //Operates the Flywheel:
   public static void operateFlywheel() {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor Power:
+      setupControlInterface(flyTicksPerRev, targetFlyRPM);
       applyControlMotorPower(shooterMotor, robot.zeroPower);
     }
 
     else if (shooter == 1) {
       //Sets the Motor Power:
+      setupControlInterface(flyTicksPerRev, targetFlyRPM);
       applyControlMotorPower(shooterMotor, robot.uncoPower);
     }
   }
@@ -251,6 +239,28 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlMotorPower(baseArmMotor, power);
+    }
+  }
+
+  //Operates the Intake Arm:
+  public static void operateIntakeArm(double power) {
+    //Target Variables:
+    int startTarget = 0;
+    int endTarget = robot.getParts(robot.getAngleRotations(intakeArmDown));
+
+    //Checks the Case:
+    if (intakeArm == 0) {
+      //Runs the Target Positions:
+      intakeMotor.setTargetPosition(startTarget);
+      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      applyControlMotorPower(intakeMotor, power);
+    }
+
+    else if (intakeArm == 1) {
+      //Runs the Target Positions:
+      intakeMotor.setTargetPosition(endTarget);
+      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      applyControlMotorPower(intakeMotor, power);
     }
   }
 
