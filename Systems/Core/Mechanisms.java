@@ -15,7 +15,7 @@ public class Mechanisms extends Controller {
   //Motor Mechanisms:
   public static DcMotor baseArmMotor;
   public static DcMotor intakeMotor;
-  public static DcMotor shooterMotor;
+  public static DcMotorEx shooterMotor;
 
   //Servo Mechanisms:
   public static Servo clawServo;
@@ -74,7 +74,7 @@ public class Mechanisms extends Controller {
     //Motor Mechanism Maps:
     baseArmMotor = hardwareMap.dcMotor.get("baseArmMotor");
     intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
-    shooterMotor = hardwareMap.dcMotor.get("shooterMotor");
+    shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
 
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
@@ -91,24 +91,24 @@ public class Mechanisms extends Controller {
     /* Setup */
 
     //Mechanism Motors Behavior:
-    shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
     //Mechanism Motors Direction:
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
-    shooterMotor.setDirection(DcMotor.Direction.REVERSE);
     intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    shooterMotor.setDirection(DcMotor.Direction.REVERSE);
 
     //Mechanism Motors Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     //Mechanism Motors Powers:
     baseArmMotor.setPower(robot.zeroPower);
-    shooterMotor.setPower(robot.zeroPower);
     intakeMotor.setPower(robot.zeroPower);
+    shooterMotor.setPower(robot.zeroPower);
 
     /* Variables */
 
@@ -210,13 +210,13 @@ public class Mechanisms extends Controller {
     if (shooter == 0) {
       //Sets the Motor Power:
       setupControlInterface(flyTicksPerRev, targetFlyRPM);
-      applyControlMotorPower(shooterMotor, robot.zeroPower);
+      applyControlMotorPowerEx(shooterMotor, robot.zeroPower);
     }
 
     else if (shooter == 1) {
       //Sets the Motor Power:
       setupControlInterface(flyTicksPerRev, targetFlyRPM);
-      applyControlMotorPower(shooterMotor, robot.uncoPower);
+      applyControlMotorPowerEx(shooterMotor, targetFlyTicks);
     }
   }
 
