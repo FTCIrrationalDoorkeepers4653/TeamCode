@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
-@Autonomous(name="Main")
-public class Main extends LinearOpMode {
-  /* MAIN AUTO VARIABLES */
+@Autonomous(name="Side")
+public class Side extends LinearOpMode {
+  /* SIDE AUTO VARIABLES */
 
   //Movement Variables:
   private Robot robot = new Robot();
@@ -38,23 +38,20 @@ public class Main extends LinearOpMode {
     robot.mechanisms.automateFlywheel(robot.mechPower);
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition("forward", 1, 560.0, 440.0, robot.fastPower);
+    robot.mechanisms.runToPosition("forward", 1, 560.0, 500.0, robot.fastPower);
     robot.mechanisms.turnGyro("right", 85.0, robot.mainPower);
 
     /* Shooting */
 
-    //Moves Robot and Shoots:
-    robot.mechanisms.runToPosition("backward", 2, 460.0, 440.0, robot.mainPower);
+    //Waits and Shoots:
     robot.mechanisms.automateShooter();
     robot.mechanisms.completeCycle(robot.mechanisms.shooterWait);
 
-    //Moves Robot and Shoots:
-    robot.mechanisms.runToPosition("forward", 2, 510.0, 440.0, robot.mainPower);
+    //Waits and Shoots:
     robot.mechanisms.automateShooter();
     robot.mechanisms.completeCycle(robot.mechanisms.shooterWait);
 
-    //Moves Robot and Shoots:
-    robot.mechanisms.runToPosition("forward", 2, 560.0, 440.0, robot.mainPower);
+    //Shoots and Powers Down:
     robot.mechanisms.automateShooter();
     robot.mechanisms.automateFlywheel(robot.mechPower);
 

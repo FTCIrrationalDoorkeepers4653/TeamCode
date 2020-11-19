@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
-@TeleOp(name = "Test")
+@TeleOp(name="Test")
 public class Test extends LinearOpMode {
   /* TEST VARIABLES */
 

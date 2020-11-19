@@ -43,3 +43,6 @@ Wil Continue to Work on Vision Positioning and Turning Algortihms.
 
 - 11/5/2020 - Added an Another Powershot to Autonmous, Added Vision Positioning Support, Coded for Intake and Flywheel/Shooter, Fixed and Tuned Motion Profiling, 
 Added a Custom GamePad Class, Tuned and Automated the TeleOp Further, and Made Code Easier and More Modular to Work With.
+
+- 11/18/2020 - Began Tweaking Autonomous and Mechanisms Parameters to Fine Tun Robot Movements for Perfection. We Are Still Working on Developing Shooter and More Consistent 
+Shooting During Autonomous Especially.

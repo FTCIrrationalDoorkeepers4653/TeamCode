@@ -56,10 +56,9 @@ public class Robot {
 
   //Motor Powers:
   public static double zeroPower = 0.0;
-  public static double slowPower = 0.4;
   public static double mainPower = 0.5;
+  public static double mechPower = 0.56;
   public static double fastPower = 0.6;
-  public static double uncoPower = 0.8;
 
   /* VISION VARIABLES */
 
@@ -134,8 +133,6 @@ public class Robot {
       //Vision Initialization:
       vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
       vision.initDetector("", detector);
-      vision.positioning.initVisionPosition(frameWidth, frameHeight, finalDistanceOfField,
-        camOffsetX, camOffSetY);
     }
   }
 

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,7 +14,7 @@ public class Mechanisms extends Controller {
   //Motor Mechanisms:
   public static DcMotor baseArmMotor;
   public static DcMotor intakeMotor;
-  public static DcMotorEx shooterMotor;
+  public static DcMotor shooterMotor;
 
   //Servo Mechanisms:
   public static Servo clawServo;
@@ -26,7 +25,7 @@ public class Mechanisms extends Controller {
   /* MECHANISMS CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 170.0;
+  public static double armDown = 175.0;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -35,8 +34,8 @@ public class Mechanisms extends Controller {
   public static int claw = 0;
 
   //Mechanism Shooter Variables:
-  public static double shooterStartPosition = 0.0;
-  public static double shooterEndPosition = 0.4;
+  public static double shooterStartPosition = 0.8;
+  public static double shooterEndPosition = 0.5;
   public static int shot = 0;
 
   //Mechanism Flywheel Variables:
@@ -58,13 +57,6 @@ public class Mechanisms extends Controller {
   public static double intakeEndPosition = 0.6;
   public static double intakeClaw = 0;
 
-  //Mechanism Calculation Variables:
-  public static double gearReduction = 40.0;
-  public static double flyTicksPerRev = (robot.TicksPerRev / gearReduction);
-  public static double targetFlyRPM = 4800.0;
-  public static double targetFlyRPS = (targetFlyRPM / 60.0);
-  public static double targetFlyTicks = (targetFlyRPS * flyTicksPerRev);
-
   /* MECHANISMS INITIALIZATION METHODS */
 
   //Initializes the Mechanisms:
@@ -74,7 +66,7 @@ public class Mechanisms extends Controller {
     //Motor Mechanism Maps:
     baseArmMotor = hardwareMap.dcMotor.get("baseArmMotor");
     intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
-    shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+    shooterMotor = hardwareMap.dcMotor.get("shooterMotor");
 
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
@@ -97,7 +89,7 @@ public class Mechanisms extends Controller {
 
     //Mechanism Motors Direction:
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
-    intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     shooterMotor.setDirection(DcMotor.Direction.REVERSE);
 
     //Mechanism Motors Encoders:
@@ -176,18 +168,18 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Flywheel Method:
-  public void automateFlywheel() {
+  public void automateFlywheel(double power) {
     //Checks the Case:
     if (ringCount > 0 && ringCount < 4) {
       //Operates Flywheel:
       shooter = 1;
-      operateFlywheel();
+      operateFlywheel(power);
     }
 
     else {
       //Operates the Flywheel:
       shooter = 0;
-      operateFlywheel();
+      operateFlywheel(power);
     }
   }
 
@@ -205,18 +197,16 @@ public class Mechanisms extends Controller {
   }
 
   //Operates the Flywheel:
-  public static void operateFlywheel() {
+  public static void operateFlywheel(double power) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor Power:
-      setupControlInterface(flyTicksPerRev, targetFlyRPM);
-      applyControlMotorPowerEx(shooterMotor, robot.zeroPower);
+      applyControlMotorPower(shooterMotor, robot.zeroPower);
     }
 
     else if (shooter == 1) {
       //Sets the Motor Power:
-      setupControlInterface(flyTicksPerRev, targetFlyRPM);
-      applyControlMotorPowerEx(shooterMotor, targetFlyTicks);
+      applyControlMotorPower(shooterMotor, power);
     }
   }
 

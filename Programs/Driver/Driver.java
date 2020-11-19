@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Driver")
+@TeleOp(name="Driver")
 public class Driver extends LinearOpMode {
   /* DRIVER VARIABLES */
 
@@ -131,13 +132,6 @@ public class Driver extends LinearOpMode {
   public void moveShooter() {
     //Checks the Case:
     if (operatorPad.isRightBumperReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.shooter == 0 && robot.mechanisms.ringCount > 0) {
-        //Turns On Flywheel:
-        robot.mechanisms.automateFlywheel();
-        robot.mechanisms.completeCycle(robot.mechanisms.shooterWait);
-      }
-
       //Shoots the Ring:
       robot.mechanisms.automateShooter();
     }
@@ -160,7 +154,7 @@ public class Driver extends LinearOpMode {
     }
 
     //Operates the Flywheel:
-    robot.mechanisms.operateFlywheel();
+    robot.mechanisms.operateFlywheel(robot.mechPower);
   }
 
   /* DRIVER ARM CONTROL METHODS */
