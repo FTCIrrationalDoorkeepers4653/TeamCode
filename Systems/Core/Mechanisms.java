@@ -30,12 +30,12 @@ public class Mechanisms extends Controller {
 
   //Mechanism Claw Variables:
   public static double clawStartPosition = 0.0;
-  public static double clawEndPosition = 0.6;
+  public static double clawEndPosition = 0.3;
   public static int claw = 0;
 
   //Mechanism Shooter Variables:
-  public static double shooterStartPosition = 0.8;
-  public static double shooterEndPosition = 0.5;
+  public static double shooterStartPosition = 0.9;
+  public static double shooterEndPosition = 0.3;
   public static int shot = 0;
 
   //Mechanism Flywheel Variables:

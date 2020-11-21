@@ -154,7 +154,7 @@ public class Driver extends LinearOpMode {
     }
 
     //Operates the Flywheel:
-    robot.mechanisms.operateFlywheel(robot.mechPower);
+    robot.mechanisms.operateFlywheel(robot.mainPower);
   }
 
   /* DRIVER ARM CONTROL METHODS */
@@ -268,7 +268,7 @@ public class Driver extends LinearOpMode {
       if (alignment == 0) {
         //Sets Modes, Turns, and Resets:
         robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.mechanisms.turnGyro("right", 85.0, robot.fastPower);
+        robot.mechanisms.turnGyro("right", 85.0, robot.fastPower, true);
         robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         alignment++;
       }
@@ -277,7 +277,7 @@ public class Driver extends LinearOpMode {
         //Sets Modes, Turns, and Resets:
         robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.mechanisms.runToPosition("forward", 2, 20,
-          0, robot.fastPower);
+          0, robot.fastPower, false);
         robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         alignment++;
       }
@@ -286,7 +286,7 @@ public class Driver extends LinearOpMode {
         //Sets Modes, Turns, and Resets:
         robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.mechanisms.runToPosition("forward", 2, 40,
-          0, robot.fastPower);
+          0, robot.fastPower, false);
         robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         alignment -= 2;
       }

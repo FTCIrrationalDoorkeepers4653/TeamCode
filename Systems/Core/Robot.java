@@ -46,7 +46,7 @@ public class Robot {
   public static double wheelRPM = 100.0;
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
-  public static double gyroStabilization = 10.0;
+  public static double gyroStabilization = 0.3;
   public static double speedControl = 4.0;
 
   //Drive Train Motor Variables:
@@ -57,7 +57,6 @@ public class Robot {
   //Motor Powers:
   public static double zeroPower = 0.0;
   public static double mainPower = 0.5;
-  public static double mechPower = 0.56;
   public static double fastPower = 0.6;
 
   /* VISION VARIABLES */
@@ -201,22 +200,19 @@ public class Robot {
     double imuResetReading = (imuReading + resetValue);
 
     //Checks the Case:
-    if (isWithinRange(imuReading, expectedAngle, gyroStabilization)) {
-      //Checks the Case:
-      if (imuResetReading > expectedAngle) {
-        //Sets the Heading:
-        direction = -1;
-      }
-
-      else if (imuResetReading < expectedAngle) {
-        //Sets the Heading:
-        direction = 1;
-      }
-
-      //Calculates Correction:
-      double correction = Math.abs(Math.abs(expectedAngle) - Math.abs(imuResetReading));
-      rotations = calculateTurnRotations(correction);
+    if (imuResetReading > expectedAngle) {
+      //Sets the Heading:
+      direction = -1;
     }
+
+    else if (imuResetReading < expectedAngle) {
+      //Sets the Heading:
+      direction = 1;
+    }
+
+    //Calculates Correction:
+    double correction = Math.abs(Math.abs(expectedAngle) - Math.abs(imuResetReading));
+    rotations = calculateTurnRotations(correction);
 
     //Formats the Return Array and Returns:
     directionAndRotations[0] = direction;
@@ -243,11 +239,11 @@ public class Robot {
   }
 
   //Calculates If Value is Within Range:
-  public static boolean isWithinRange(double value, double initial, double offset) {
+  public static boolean isWithinRange(double value, double offset) {
     //Main Boolean and Values:
     boolean within = false;
-    double max = (initial + offset);
-    double min = (initial - offset);
+    double max = value + (value * offset);
+    double min = value - (value * offset);
 
     //Checks the Case:
     if (value >= min && value <= max) {

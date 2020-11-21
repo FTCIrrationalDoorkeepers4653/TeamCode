@@ -46,3 +46,6 @@ Added a Custom GamePad Class, Tuned and Automated the TeleOp Further, and Made C
 
 - 11/18/2020 - Began Tweaking Autonomous and Mechanisms Parameters to Fine Tun Robot Movements for Perfection. We Are Still Working on Developing Shooter and More Consistent 
 Shooting During Autonomous Especially.
+
+- 11/21/2020 - Continued upon Improving the Autonomous Programs (Main and Side) for Upcoming Scrimmage in NC. Also, We Fixed and Updated the Gyro-Correction Algortihm.
+Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correction on Images.
