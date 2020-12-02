@@ -12,7 +12,7 @@ public class Vision extends Analyze {
   /* VISION VARIABLES */
 
   //Vision Objects:
-  public static Positioning positioning = new Positioning();
+  private static Positioning positioning = new Positioning();
   private static ImageRecognition recognition = new ImageRecognition();
   private static ImageProcessing processing = new ImageProcessing();
 
@@ -34,6 +34,18 @@ public class Vision extends Analyze {
     try {
       //Detector Setup:
       initDetector(detectorName, rgb[0], rgb[1], rgb[2]);
+    }
+
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  //Vision Positioning Setup:
+  public static void initPositioning(int width, int height, double depth, double x, double y) {
+    try {
+      //Positioning Setup:
+      positioning.initVisionPosition(width, height, depth, x, y);
     }
 
     catch (Exception e) {

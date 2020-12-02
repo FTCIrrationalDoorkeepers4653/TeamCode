@@ -23,13 +23,13 @@ public class Robot {
   public static DcMotor rightFrontMotor;
   public static DcMotor rightBackMotor;
 
-  //IMU Sensor:
-  private static BNO055IMU imu;
-  private static Orientation angles;
-
   //Hardware Objects:
   public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
+
+  //IMU Sensor:
+  private static BNO055IMU imu;
+  private static Orientation angles;
 
   /* DRIVE TRAIN AND MOTOR VARIABLES */
 
@@ -42,22 +42,29 @@ public class Robot {
   public static double maxRPM = 150.0;
   public static double POSITION_RATIO = (144.0 / 760.0);
 
-  //Drive Train Control Variables:
+  //Drive Train Augmentation Variables:
   public static double wheelRPM = 100.0;
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 0.3;
   public static double speedControl = 4.0;
 
-  //Drive Train Motor Variables:
-  public static double Kp = 0.05;
-  public static double Ki = 0.001;
-  public static double Kd = 0.008;
-
   //Motor Powers:
   public static double zeroPower = 0.0;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
+  public static double uncoPower = 1.0;
+
+  /* POSITION VARIABLES */
+
+  //Controller Variables:
+  private static double Kp = 0.05;
+  private static double Ki = 0.001;
+  private static double Kd = 0.008;
+
+  //Positioning Variables:
+  private static double roadblockX[] = {0.0, 760.0, 0.0, 760.0};
+  private static double roadblockY[] = {0.0, 0.0, 760.0, 760.0};
 
   /* VISION VARIABLES */
 
@@ -77,9 +84,9 @@ public class Robot {
 
   //Vision Positioning Settings:
   private static int frameWidth = 1280, frameHeight = 720;
-  private static double camOffsetX = 10.0, camOffSetY = 14.0;
+  private static double offsetX = 10.0, offSetY = 14.0;
   private static double distanceOfField = 13.0, camZoom = 1.0;
-  private static double finalDistanceOfField = (distanceOfField * camZoom);
+  private static double fieldDistance = (distanceOfField * camZoom);
 
   /* HARDWARE INITIALIZATION METHODS */
 
@@ -104,15 +111,28 @@ public class Robot {
     //Checks the Case:
     if (type) {
       //Motor Behavior Setup:
+      applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
       applyAllZero(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     else {
       //Motor Behavior Setup:
+      applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
     }
+
+    /* Positions */
+
+    //Position Initialization:
+    mechanisms.resetCurrentPosition();
+    mechanisms.setRoadblocks(roadblockX, roadblockY);
+
+    //Controller Initialization:
+    mechanisms.initControl(Kp, Ki, Kd);
+    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
+    applyAllPowers(zeroPower);
 
     /* Sensors */
 
@@ -122,16 +142,12 @@ public class Robot {
     imu = hardwareMap.get(BNO055IMU.class, "imu");
     imu.initialize(imuParameters);
 
-    //Controller Initialization:
-    mechanisms.initControl(Kp, Ki, Kd);
-    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
-    applyAllPowers(zeroPower);
-
     //Checks the Case:
     if (camera) {
       //Vision Initialization:
       vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
       vision.initDetector("", detector);
+      vision.initPositioning(frameWidth, frameHeight, fieldDistance, offsetX, offSetY);
     }
   }
 
@@ -189,35 +205,16 @@ public class Robot {
   }
 
   //Gets the Rotations of Correction Method:
-  public static double[] getGyroCorrection(double expectedAngle, double resetValue) {
-    //Main Array and Variables:
-    double directionAndRotations[] = new double[2];
-    double direction = 0.0, rotations = 0.0;
-
+  public static double getGyroCorrection(double expectedAngle, double resetValue) {
     //Gets IMU Reading:
     angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     double imuReading = angles.firstAngle;
     double imuResetReading = (imuReading + resetValue);
 
-    //Checks the Case:
-    if (imuResetReading > expectedAngle) {
-      //Sets the Heading:
-      direction = -1;
-    }
-
-    else if (imuResetReading < expectedAngle) {
-      //Sets the Heading:
-      direction = 1;
-    }
-
-    //Calculates Correction:
-    double correction = Math.abs(Math.abs(expectedAngle) - Math.abs(imuResetReading));
-    rotations = calculateTurnRotations(correction);
-
-    //Formats the Return Array and Returns:
-    directionAndRotations[0] = direction;
-    directionAndRotations[1] = rotations;
-    return directionAndRotations;
+    //Calculates Correction and Returns:
+    double correction = (expectedAngle - imuResetReading);
+    double rotations = calculateTurnRotations(correction);
+    return rotations;
   }
 
   //Resets Gyro Sensor Value:
@@ -278,26 +275,31 @@ public class Robot {
   public static void finishRun() {
     //Sets the Motors:
     applyAllPowers(zeroPower);
+    applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   //Robot Move with Rotations:
-  public static void runRobot(String type, double rotations, double power) {
+  public static void runRobot(double rotations, double power) {
+    //Movement Values:
+    double localRotations = Math.abs(rotations);
+    int parts = getParts(localRotations);
+
     //Checks the Case:
-    if (type.equalsIgnoreCase("forward")) {
+    if (rotations > 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
     }
 
-    else if (type.equalsIgnoreCase("backward")) {
+    else if (rotations < 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
     }
 
     //Sets the Motor Powers:
@@ -309,49 +311,26 @@ public class Robot {
   }
 
   //Robot Turn Motion with Rotations:
-  public static void turnRobot(String type, double rotations, double power) {
+  public static void turnRobot(double rotations, double power) {
+    //Movement Values:
+    double localRotations = Math.abs(rotations);
+    int parts = getParts(localRotations);
+
     //Checks the Case:
-    if (type.equalsIgnoreCase("left")) {
+    if (rotations < 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
     }
 
-    else if (type.equalsIgnoreCase("right")) {
+    else if (rotations > 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
-    }
-
-    //Sets the Motor Powers:
-    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlMotorPower(leftFrontMotor, power);
-    mechanisms.applyControlMotorPower(leftBackMotor, power);
-    mechanisms.applyControlMotorPower(rightFrontMotor, power);
-    mechanisms.applyControlMotorPower(rightBackMotor, power);
-  }
-
-  //Robot Strafe Motion:
-  public static void shiftRobot(String type, double rotations, double power) {
-    //Checks the Case:
-    if (type.equalsIgnoreCase("left")) {
-      //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
-    }
-
-    else if (type.equalsIgnoreCase("right")) {
-      //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + getParts(rotations));
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - getParts(rotations));
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - getParts(rotations));
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
     }
 
     //Sets the Motor Powers:

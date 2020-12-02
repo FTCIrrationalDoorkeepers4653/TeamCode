@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 public class Mechanisms extends Controller {
   /* MECHANISMS SETUP VARIABLES */
@@ -14,7 +17,7 @@ public class Mechanisms extends Controller {
   //Motor Mechanisms:
   public static DcMotor baseArmMotor;
   public static DcMotor intakeMotor;
-  public static DcMotor shooterMotor;
+  public static DcMotorEx shooterMotor;
 
   //Servo Mechanisms:
   public static Servo clawServo;
@@ -22,16 +25,18 @@ public class Mechanisms extends Controller {
   public static Servo rampServo;
   public static Servo intakeServo;
 
-  /* MECHANISMS CONTROL VARIABLES */
+  /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 175.0;
+  public static double armDown = 200.0;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 0.0;
-  public static double clawEndPosition = 0.3;
+  public static double clawStartPosition = 0.2;
+  public static double clawEndPosition = 0.6;
   public static int claw = 0;
+
+  /* MECHANISM SHOOTER CONTROL VARIABLES */
 
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.9;
@@ -40,22 +45,29 @@ public class Mechanisms extends Controller {
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
-  public static int ringCount = 3;
   public static int shooterWait = 500;
+  public static int shooterRevWait = (shooterWait * 2);
+
+  //Mechanism Flywheel Control Variables:
+  public static double flywheelTicks = 28;
+  public static double mainRPM = 3200.0;
+  public static double slowRPM = 2900.0;
 
   //Mechanism Ramp Variables:
   public static double rampStartPosition = 0.0;
   public static double rampEndPosition = 0.3;
   public static int ramp = 0;
 
-  //Mechanism Intake Arm Variables:
-  public static double intakeArmDown = 150.0;
+  /* MECHANISM INTAKE CONTROL VARIABLES */
+
+  //Mechanism Intake Variables:
+  public static double intakeArmDown = 250.0;
   public static int intakeArm = 0;
 
   //Mechanism Intake Claw Variables:
-  public static double intakeStartPosition = 0.0;
-  public static double intakeEndPosition = 0.6;
-  public static double intakeClaw = 0;
+  public static double intakeWheel = 0;
+  public static double intakeWheelStartPosition = 0.6;
+  public static double intakeWheelEndPosition = 0.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -66,7 +78,8 @@ public class Mechanisms extends Controller {
     //Motor Mechanism Maps:
     baseArmMotor = hardwareMap.dcMotor.get("baseArmMotor");
     intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
-    shooterMotor = hardwareMap.dcMotor.get("shooterMotor");
+    shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+    setupFlywheel(robot.uncoPower);
 
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
@@ -74,11 +87,11 @@ public class Mechanisms extends Controller {
     rampServo = hardwareMap.servo.get("rampServo");
     intakeServo = hardwareMap.servo.get("intakeServo");
 
-    //Servo Mechanism Positions:
+    //Servo Mechanism Setup:
     clawServo.setPosition(clawStartPosition);
     shooterServo.setPosition(shooterStartPosition);
     rampServo.setPosition(rampStartPosition);
-    intakeServo.setPosition(intakeStartPosition);
+    intakeServo.setPosition(intakeWheelStartPosition);
 
     /* Setup */
 
@@ -91,6 +104,11 @@ public class Mechanisms extends Controller {
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
     intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     shooterMotor.setDirection(DcMotor.Direction.REVERSE);
+
+    //Mechanism Motors Encoders Reset:
+    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     //Mechanism Motors Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -110,25 +128,21 @@ public class Mechanisms extends Controller {
     shooter = 0;
     shot = 0;
     intakeArm = 0;
-    intakeClaw = 0;
+    intakeWheel = 0;
   }
 
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
   public void automateIntake(double power) {
-    //Checks the Case:
-    if (ringCount < 4) {
-      //Intake Arm With Time:
-      int time = calculateTime(robot.getAngleRotations(intakeArmDown), power);
-      operateIntakeArm(power);
-      completeCycle(time);
+    //Intake Arm With Time:
+    int time = calculateTime(robot.getAngleRotations(intakeArmDown), power);
+    operateIntakeArm(power);
+    completeCycle(time);
 
-      //Opens the Intake Claw:
-      intakeClaw = 0;
-      operateIntakeClaw();
-      ringCount++;
-    }
+    //Sets the Intake Wheel:
+    intakeWheel = 0;
+    operateIntakeWheel();
   }
 
   //Automate Arm Method:
@@ -159,28 +173,6 @@ public class Mechanisms extends Controller {
     shot = 0;
     operateRamp();
     operateShooter();
-
-    //Checks the Case:
-    if (ringCount > 0 && shooter == 1) {
-      //Sets the Ring Count:
-      ringCount--;
-    }
-  }
-
-  //Automate Flywheel Method:
-  public void automateFlywheel(double power) {
-    //Checks the Case:
-    if (ringCount > 0 && ringCount < 4) {
-      //Operates Flywheel:
-      shooter = 1;
-      operateFlywheel(power);
-    }
-
-    else {
-      //Operates the Flywheel:
-      shooter = 0;
-      operateFlywheel(power);
-    }
   }
 
   /* MECHANISM MOTOR OPERATION METHODS */
@@ -191,42 +183,53 @@ public class Mechanisms extends Controller {
     baseArmMotor.setPower(robot.zeroPower);
     intakeMotor.setPower(robot.zeroPower);
 
-    //Resets Encoders:
+    //Resets the Encoders:
+    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    //Sets Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   //Operates the Flywheel:
-  public static void operateFlywheel(double power) {
+  public static void operateFlywheel() {
     //Checks the Case:
     if (shooter == 0) {
-      //Sets the Motor Power:
-      applyControlMotorPower(shooterMotor, robot.zeroPower);
+      //Sets the Motor:
+      double ticks = calculateTicks(robot.zeroPower);
+      applyControlMotorPowerEx(shooterMotor, ticks);
     }
 
     else if (shooter == 1) {
-      //Sets the Motor Power:
-      applyControlMotorPower(shooterMotor, power);
+      //Sets the Motor:
+      double ticks = calculateTicks(mainRPM);
+      applyControlMotorPowerEx(shooterMotor, ticks);
+    }
+
+    else if (shooter == 2) {
+      //Sets the Motor:
+      double ticks = calculateTicks(slowRPM);
+      applyControlMotorPowerEx(shooterMotor, ticks);
     }
   }
 
   //Operates the Arm:
   public static void operateArm(double power) {
-    //Target Variables:
-    int startTarget = 0;
+    //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
 
     //Checks the Case:
     if (arm == 0) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(startTarget);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlMotorPower(baseArmMotor, power);
     }
 
     else if (arm == 1) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(endTarget);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlMotorPower(baseArmMotor, power);
     }
@@ -234,21 +237,20 @@ public class Mechanisms extends Controller {
 
   //Operates the Intake Arm:
   public static void operateIntakeArm(double power) {
-    //Target Variables:
-    int startTarget = 0;
+    //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(intakeArmDown));
 
     //Checks the Case:
     if (intakeArm == 0) {
       //Runs the Target Positions:
-      intakeMotor.setTargetPosition(startTarget);
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlMotorPower(intakeMotor, power);
     }
 
     else if (intakeArm == 1) {
       //Runs the Target Positions:
-      intakeMotor.setTargetPosition(endTarget);
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       applyControlMotorPower(intakeMotor, power);
     }
@@ -256,17 +258,17 @@ public class Mechanisms extends Controller {
 
   /* MECHANISMS SERVO OPERATION METHODS */
 
-  //Operate Intake Claw:
-  public static void operateIntakeClaw() {
+  //Operate Intake Wheel:
+  public static void operateIntakeWheel() {
     //Checks the Case:
-    if (intakeClaw == 0) {
+    if (intakeWheel == 0) {
       //Sets the Servo:
-      intakeServo.setPosition(intakeStartPosition);
+      intakeServo.setPosition(intakeWheelStartPosition);
     }
 
-    else if (intakeClaw == 1) {
+    else if (intakeWheel == 1) {
       //Sets the Servo:
-      intakeServo.setPosition(intakeEndPosition);
+      intakeServo.setPosition(intakeWheelEndPosition);
     }
   }
 
@@ -310,5 +312,23 @@ public class Mechanisms extends Controller {
       //Sets the Servo:
       clawServo.setPosition(clawEndPosition);
     }
+  }
+
+  /* MECHANISMS UTILITY METHODS */
+
+  //Flywheel Initialization Method:
+  public static void setupFlywheel(double maxRPMValue) {
+    //Sets the Motor Configuration Type:
+    MotorConfigurationType motorConfigurationType = shooterMotor.getMotorType().clone();
+    motorConfigurationType.setAchieveableMaxRPMFraction(maxRPMValue);
+    shooterMotor.setMotorType(motorConfigurationType);
+  }
+
+  //Calculate Ticks from RPM Method:
+  public static double calculateTicks(double RPM) {
+    //Calculates and Returns the Values:
+    double RPS = (RPM / 60.0);
+    double TPS = (RPS * flywheelTicks);
+    return TPS;
   }
 }
