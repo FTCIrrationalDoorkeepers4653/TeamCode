@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Systems.Vision;
 import android.graphics.Bitmap;
 import java.util.ArrayList;
 import lib.Analyze;
+import lib.ImageCorrection;
 import lib.ImageProcessing;
 import lib.ImageRecognition;
 import lib.Positioning;
@@ -15,6 +16,7 @@ public class Vision extends Analyze {
   private static Positioning positioning = new Positioning();
   private static ImageRecognition recognition = new ImageRecognition();
   private static ImageProcessing processing = new ImageProcessing();
+  private static ImageCorrection correction = new ImageCorrection();
 
   //YOLO Detection Information Variables:
   private static ArrayList<Integer> detectionX = new ArrayList<Integer>();
