@@ -47,11 +47,8 @@ public class Mechanisms extends Controller {
   public static int shooter = 0;
   public static int shooterWait = 500;
   public static int shooterRevWait = (shooterWait * 2);
-
-  //Mechanism Flywheel Control Variables:
   public static double flywheelTicks = 28;
   public static double mainRPM = 3200.0;
-  public static double slowRPM = 2900.0;
 
   //Mechanism Ramp Variables:
   public static double rampStartPosition = 0.0;
@@ -64,8 +61,8 @@ public class Mechanisms extends Controller {
   public static double intakeArmDown = 250.0;
   public static int intakeArm = 0;
 
-  //Mechanism Intake Claw Variables:
-  public static double intakeWheel = 0;
+  //Mechanism Intake Wheel Variables:
+  public static int intakeWheel = 0;
   public static double intakeWheelStartPosition = 0.6;
   public static double intakeWheelEndPosition = 0.0;
 
@@ -135,8 +132,22 @@ public class Mechanisms extends Controller {
 
   //Automate Intake Method:
   public void automateIntake(double power) {
-    //Intake Arm With Time:
-    int time = calculateTime(robot.getAngleRotations(intakeArmDown), power);
+    //Time Calculation:
+    double rotations = robot.getAngleRotations(intakeArmDown);
+    int time = calculateTime(rotations, power);
+
+    //Checks the Case:
+    if (intakeArm == 0) {
+      //Sets the Intake Arm:
+      intakeArm++;
+    }
+
+    else {
+      //Sets the Intake Arm:
+      intakeArm--;
+    }
+
+    //Runs the Intake Arm:
     operateIntakeArm(power);
     completeCycle(time);
 
@@ -145,17 +156,60 @@ public class Mechanisms extends Controller {
     operateIntakeWheel();
   }
 
+  //Automate Intake Wheel Method:
+  public void automateIntakeWheel() {
+    //Checks the Case:
+    if (intakeWheel == 0) {
+      //Sets the Intake Wheel:
+      intakeWheel++;
+      operateIntakeWheel();
+    }
+
+    else {
+      //Sets the Intake Wheel:
+      intakeWheel--;
+      operateIntakeWheel();
+    }
+  }
+
   //Automate Arm Method:
   public void automateArm(double power) {
-    //Runs the Arm With Time:
-    int time = calculateTime(robot.getAngleRotations(armDown), power);
-    operateArm(power);
-    completeCycle(time);
+    //Time Calculation:
+    double rotations = robot.getAngleRotations(armDown);
+    int time = calculateTime(rotations, power);
 
     //Checks the Case:
-    if (arm == 1) {
+    if (arm == 0) {
+      //Operates the Arm:
+      arm++;
+      operateArm(power);
+      completeCycle(time);
+    }
+
+    else  {
+      //Operates the Arm:
+      arm--;
+      operateArm(power);
+      completeCycle(time);
+
       //Sets the Claw Position:
       claw = 0;
+      operateClaw();
+    }
+  }
+
+  //Automate Claw Method:
+  public void automateClaw() {
+    //Checks the Case:
+    if (claw == 0) {
+      //Sets the Claw:
+      claw++;
+      operateClaw();
+    }
+
+    else {
+      //Sets the Claw:
+      claw--;
       operateClaw();
     }
   }
@@ -173,6 +227,22 @@ public class Mechanisms extends Controller {
     shot = 0;
     operateRamp();
     operateShooter();
+  }
+
+  //Automate Flywheel Method:
+  public void automateFlywheel() {
+    //Checks the Case:
+    if (shooter == 0) {
+      //Sets the Shooter:
+      shooter++;
+      operateFlywheel();
+    }
+
+    else {
+      //Sets the Shooter:
+      shooter--;
+      operateFlywheel();
+    }
   }
 
   /* MECHANISM MOTOR OPERATION METHODS */
@@ -204,12 +274,6 @@ public class Mechanisms extends Controller {
     else if (shooter == 1) {
       //Sets the Motor:
       double ticks = calculateTicks(mainRPM);
-      applyControlMotorPowerEx(shooterMotor, ticks);
-    }
-
-    else if (shooter == 2) {
-      //Sets the Motor:
-      double ticks = calculateTicks(slowRPM);
       applyControlMotorPowerEx(shooterMotor, ticks);
     }
   }

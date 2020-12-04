@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name="Driver")
 public class Driver extends LinearOpMode {
-  /* DRIVER VARIABLES */
+  /* DRIVE VARIABLES */
 
   //Objects:
   private static Robot robot = new Robot();
@@ -18,11 +18,7 @@ public class Driver extends LinearOpMode {
   private GamePad driverPad;
   private GamePad operatorPad;
 
-  //Variables:
-  private static int alignment = 0;
-  private static int secondsLeft = 70;
-
-  /* OPMODE METHODS */
+  /* RUN METHODS */
 
   //RunOpMode Method:
   @Override
@@ -38,7 +34,6 @@ public class Driver extends LinearOpMode {
     robot.mechanisms.initMechanisms(hardwareMap);
     driverPad = new GamePad(gamepad1);
     operatorPad = new GamePad(gamepad2);
-    alignment = 0;
 
     //Wait for Start:
     waitForStart();
@@ -54,26 +49,17 @@ public class Driver extends LinearOpMode {
       driverPad.setGamePad();
       operatorPad.setGamePad();
 
-      //Intake Control Methods:
-      moveIntake();
-      moveIntakeWheel();
-
-      //Shooter Control Methods
+      //Mechanisms MethodsL:
       moveShooter();
-      moveFlywheel();
+      moveIntake();
+      moveWobble();
 
-      //Arm Control Methods:
-      moveArm();
-      moveClaw();
-
-      //Base Control Methods:
+      //Drive Train Methods:
       moveRobot();
-      aimRobotPowerShot();
-      aimRobotGoal();
+      aimRobot();
 
       //Sets Status:
       telemetry.addData("Status", "Running");
-      telemetry.addData("Time Remaining", (int)(secondsLeft - time.seconds()));
       telemetry.update();
     }
 
@@ -84,52 +70,31 @@ public class Driver extends LinearOpMode {
     telemetry.update();
   }
 
-  /* DRIVER INTAKE CONTROL METHODS */
+  /* MECHANISMS METHODS */
 
   //Moves the Intake Arm:
   public void moveIntake() {
     //Checks the Case:
     if (operatorPad.isXReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.intakeArm == 0) {
-        //Sets the Intake Arm:
-        robot.mechanisms.intakeArm++;
-      }
-
-      else if (robot.mechanisms.intakeArm == 1) {
-        //Sets the Intake Arm:
-        robot.mechanisms.intakeArm--;
-      }
-
       //Operates the Intake Arm:
       robot.mechanisms.automateIntake(robot.mainPower);
     }
-  }
 
-  //Moves the Intake Wheel:
-  public void moveIntakeWheel() {
     //Checks the Case:
     if (operatorPad.isBReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.intakeWheel == 0) {
-        //Sets the Intake Arm:
-        robot.mechanisms.intakeWheel++;
-      }
-
-      else if (robot.mechanisms.intakeWheel == 1) {
-        //Sets the Intake Arm:
-        robot.mechanisms.intakeWheel--;
-      }
-
       //Operates the Intake Wheel:
-      robot.mechanisms.operateIntakeWheel();
+      robot.mechanisms.automateIntakeWheel();
     }
   }
 
-  /* DRIVER SHOOTER CONTROL METHODS */
-
   //Moves the Shooter:
   public void moveShooter() {
+    //Checks the Case:
+    if (operatorPad.isLeftBumperReleased()) {
+      //Operates the Flywheel:
+      robot.mechanisms.automateFlywheel();
+    }
+
     //Checks the Case:
     if (operatorPad.isRightBumperReleased()) {
       //Shoots the Ring:
@@ -137,74 +102,22 @@ public class Driver extends LinearOpMode {
     }
   }
 
-  //Moves the Flywheel:
-  public void moveFlywheel() {
-    //Checks the Case:
-    if (operatorPad.isLeftBumperReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.shooter == 0) {
-        //Sets the Shooter:
-        robot.mechanisms.shooter++;
-      }
-
-      else if (robot.mechanisms.shooter == 1) {
-        //Sets the Shooter:
-        robot.mechanisms.shooter++;
-      }
-
-      else if (robot.mechanisms.shooter == 2) {
-        //Sets the Shooter:
-        robot.mechanisms.shooter -= 2;
-      }
-    }
-
-    //Operates the Flywheel:
-    robot.mechanisms.operateFlywheel();
-  }
-
-  /* DRIVER ARM CONTROL METHODS */
-
-  //Moves the Wobble Arm:
-  public void moveArm() {
+  //Moves the Wobble Claw:
+  public void moveWobble() {
     //Checks the Case:
     if (operatorPad.isAReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.arm == 0) {
-        //Sets the Arm:
-        robot.mechanisms.arm++;
-      }
-
-      else if (robot.mechanisms.arm == 1) {
-        //Sets the Arm:
-        robot.mechanisms.arm--;
-      }
-
       //Moves the Arm:
       robot.mechanisms.automateArm(robot.mainPower);
     }
-  }
 
-  //Moves the Wobble Claw:
-  public void moveClaw() {
     //Checks the Case:
     if (operatorPad.isYReleased()) {
-      //Checks the Case:
-      if (robot.mechanisms.claw == 0) {
-        //Changes the Claw:
-        robot.mechanisms.claw++;
-      }
-
-      else if (robot.mechanisms.claw == 1) {
-        //Changes the Claw:
-        robot.mechanisms.claw--;
-      }
-
       //Operates the Claw:
-      robot.mechanisms.operateClaw();
+      robot.mechanisms.automateClaw();
     }
   }
 
-  /* DRIVER BASE CONTROL METHODS */
+  /* DRIVE TRAIN METHODS */
 
   //Moves the Robot:
   public void moveRobot() {
@@ -265,51 +178,14 @@ public class Driver extends LinearOpMode {
     }
   }
 
-  //Aligns Robot to PowerShots:
-  public void aimRobotPowerShot() {
-    //Checks the Case:
-    if (driverPad.isYReleased()) {
-      //Checks the Case:
-      if (alignment == 0) {
-        //Sets Modes, Turns, and Resets:
-        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.mechanisms.turnGyro(50.0, robot.fastPower, true);
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        alignment++;
-      }
-
-      else if (alignment == 1) {
-        //Sets Modes, Turns, and Resets:
-        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.mechanisms.turnGyro(10.0, robot.fastPower, true);
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        alignment++;
-      }
-
-      else if (alignment == 2) {
-        //Sets Modes, Turns, and Resets:
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.mechanisms.turnGyro(10.0, robot.fastPower, true);
-        robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        alignment -= 2;
-      }
-    }
-  }
-
   //Aims the Robot to Goals:
-  public void aimRobotGoal() {
+  public void aimRobot() {
     //Checks the Case:
     if (driverPad.isAReleased()) {
       //Sets Modes, Turns, and Resets:
       robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      robot.mechanisms.turnGyro(70.0, robot.fastPower, true);
+      robot.mechanisms.turnGyro(-70.0, robot.fastPower, false);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }

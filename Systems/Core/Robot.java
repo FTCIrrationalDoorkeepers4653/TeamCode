@@ -34,7 +34,7 @@ public class Robot {
   /* DRIVE TRAIN AND MOTOR VARIABLES */
 
   //Drive Train Variables:
-  public static double robotDimensions = 17.8;
+  public static double robotDimensions = 17.5;
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
@@ -123,17 +123,6 @@ public class Robot {
       applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    /* Positions */
-
-    //Position Initialization:
-    mechanisms.resetCurrentPosition();
-    mechanisms.setRoadblocks(roadblockX, roadblockY);
-
-    //Controller Initialization:
-    mechanisms.initControl(Kp, Ki, Kd);
-    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
-    applyAllPowers(zeroPower);
-
     /* Sensors */
 
     //IMU Initialization:
@@ -149,6 +138,17 @@ public class Robot {
       vision.initDetector("", detector);
       vision.initPositioning(frameWidth, frameHeight, fieldDistance, offsetX, offSetY);
     }
+
+    /* Positions */
+
+    //Position Initialization:
+    mechanisms.resetCurrentPosition();
+    mechanisms.setRoadblocks(roadblockX, roadblockY);
+
+    //Controller Initialization:
+    mechanisms.initControl(Kp, Ki, Kd);
+    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
+    applyAllPowers(zeroPower);
   }
 
   /* VISION METHODS */
@@ -190,6 +190,42 @@ public class Robot {
 
   /* IMU METHODS */
 
+  //Gets the Rotations of Correction Method:
+  public static double getGyroCorrection(double expectedAngle) {
+    //Gets IMU Correction:
+    double imuReading = getTheta();
+    double correction = (expectedAngle - imuReading);
+
+    //Converts and Returns:
+    double rotations = calculateTurnRotations(correction);
+    return rotations;
+  }
+
+  //Gets the Robot Theta Position:
+  public static double getTheta() {
+    //Returns the Robot Theta:
+    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    return angles.firstAngle;
+  }
+
+  //Calculates If Value is Within Range:
+  public static boolean isWithinRange(double value, double check, double offset) {
+    //Main Boolean and Values:
+    boolean within = false;
+    double max = check + (check * offset);
+    double min = check - (check * offset);
+
+    //Checks the Case:
+    if (value >= min && value <= max) {
+      within = true;
+    }
+
+    //Returns the Boolean:
+    return within;
+  }
+
+  /* IMU CALCULATION METHODS */
+
   //Calculates Turn Rotations in Terms of Degrees:
   public static double calculateTurnRotations(double angleDegrees) {
     double angleInRadians = convertAngle(angleDegrees, false); //Degrees to Radians (for Arc Length)
@@ -202,53 +238,6 @@ public class Robot {
     //Returns Rotations Needed to Correct Angle (arc length = r * theta):
     double driveRotations = (r * angleInRadians);
     return driveRotations;
-  }
-
-  //Gets the Rotations of Correction Method:
-  public static double getGyroCorrection(double expectedAngle, double resetValue) {
-    //Gets IMU Reading:
-    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double imuReading = angles.firstAngle;
-    double imuResetReading = (imuReading + resetValue);
-
-    //Calculates Correction and Returns:
-    double correction = (expectedAngle - imuResetReading);
-    double rotations = calculateTurnRotations(correction);
-    return rotations;
-  }
-
-  //Resets Gyro Sensor Value:
-  public static double resetGyroValue() {
-    //Gets Current Value and Returns Reset:
-    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double currentIMUReading = angles.firstAngle;
-    double resetValue = -currentIMUReading;
-    return resetValue;
-  }
-
-  /* IMU UTILITY METHODS */
-
-  //Gets the Robot Theta Position:
-  public static double getTheta() {
-    //Returns the Robot Theta:
-    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    return angles.firstAngle;
-  }
-
-  //Calculates If Value is Within Range:
-  public static boolean isWithinRange(double value, double offset) {
-    //Main Boolean and Values:
-    boolean within = false;
-    double max = value + (value * offset);
-    double min = value - (value * offset);
-
-    //Checks the Case:
-    if (value >= min && value <= max) {
-      within = true;
-    }
-
-    //Returns the Boolean:
-    return within;
   }
 
   //Converts from Radians to Degrees:
@@ -317,7 +306,7 @@ public class Robot {
     int parts = getParts(localRotations);
 
     //Checks the Case:
-    if (rotations < 0) {
+    if (rotations > 0) {
       //Sets the Target Positions:
       leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
       leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
@@ -325,7 +314,7 @@ public class Robot {
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
     }
 
-    else if (rotations > 0) {
+    else if (rotations < 0) {
       //Sets the Target Positions:
       leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
       leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);

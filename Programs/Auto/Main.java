@@ -34,51 +34,44 @@ public class Main extends LinearOpMode {
 
     //Gets the Ring Position:
     position = robot.getPixelsPosition();
-    robot.mechanisms.shooter = 1;
-    robot.mechanisms.operateFlywheel();
+    robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
     robot.mechanisms.runToPosition(560.0, 420.0, robot.fastPower, true);
-    robot.mechanisms.turnGyro(77.0, robot.mainPower, true);
+    robot.mechanisms.turnGyro(-80.0, robot.mainPower, false);
 
     /* Shooting */
 
     //Waits and Shoots:
     robot.mechanisms.automateShooter();
     robot.mechanisms.completeCycle(robot.mechanisms.shooterRevWait);
+    robot.mechanisms.automateShooter();
 
     //Waits and Shoots:
-    robot.mechanisms.automateShooter();
     robot.mechanisms.completeCycle(robot.mechanisms.shooterRevWait);
     robot.mechanisms.automateShooter();
-
-    //Turns off Flywheel:
-    robot.mechanisms.shooter = 0;
-    robot.mechanisms.operateFlywheel();
+    robot.mechanisms.automateFlywheel();
 
     /* Wobble Goal Drop */
 
     //Checks the Case:
     if (position == 1) {
       //Turns and Drops Wobble:
-      robot.mechanisms.arm = 1;
-      robot.mechanisms.turnGyro(-10.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(10.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(680.0, 380.0, robot.fastPower, false);
       robot.mechanisms.automateArm(robot.mainPower);
     }
 
     else if (position == 2) {
       //Turns and Drops Wobble:
-      robot.mechanisms.arm = 1;
-      robot.mechanisms.turnGyro(-60.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(60.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 320.0, robot.fastPower, false);
       robot.mechanisms.automateArm(robot.mainPower);
     }
 
     else {
       //Turns and Moves to Wobble Target:
-      robot.mechanisms.arm = 1;
-      robot.mechanisms.turnGyro(-50.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(50.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(640.0, 140.0, robot.fastPower, false);
 
       //Drops Wobble and Parks:

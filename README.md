@@ -51,3 +51,5 @@ Shooting During Autonomous Especially.
 Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correction on Images.
 
 - 12/1/2020 - Added Dynamic Autonomous Direction Changes, Better Path Planning Implementation, Better Turning to Position, and Continued Work on Vision Lens Correction. 
+
+- 12/4/2020 - Changed Automation Mechanisms to Better Program and Interface with. Tweaked Autonomous and Scoring Strategy to Focus More on High Goal Consistency.
