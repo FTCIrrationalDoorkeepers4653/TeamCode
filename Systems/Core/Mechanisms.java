@@ -88,7 +88,7 @@ public class Mechanisms extends Controller {
     clawServo.setPosition(clawStartPosition);
     shooterServo.setPosition(shooterStartPosition);
     rampServo.setPosition(rampStartPosition);
-    intakeServo.setPosition(intakeWheelStartPosition);
+    intakeServo.setPosition(intakeWheelEndPosition);
 
     /* Setup */
 
