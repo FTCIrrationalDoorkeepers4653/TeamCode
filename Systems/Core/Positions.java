@@ -52,22 +52,6 @@ public class Positions extends LinearOpMode {
 
   /* POSITION MOVEMENT METHODS */
 
-  //Turn to Position Method:
-  public void turnToPosition(double targetX, double targetY, double power, boolean correct) {
-    //Gets the Triangle:
-    double start[] = {positionX, positionY};
-    double end [] = {targetX, targetY};
-    double triangle[] = getTriangle(start, end);
-
-    //Checks the Case:
-    if (isRoadClear(targetX, targetY)) {
-      //Turns and Sets New Position:
-      double turnAngle = (-theta + triangle[3]);
-      turnGyro(turnAngle, Math.abs(power), correct);
-      theta = robot.getTheta();
-    }
-  }
-
   //Move to Position Method:
   public void runToPosition(double targetX, double targetY, double power, boolean correct) {
     //Gets the Triangle:
@@ -88,37 +72,60 @@ public class Positions extends LinearOpMode {
     }
   }
 
-  //Find Open Paths to Target Method:
-  public static boolean isRoadClear(double targetX, double targetY) {
-    //Main Variables:
-    int turns = 0;
-    int counter = 0;
-    double mainLine[] = findLineEquation(positionX, positionY, targetX, targetY);
-
-    //Loops through Array:
-    mainLoop: while (turns < roadblockX.size()) {
-      //Checks the Case:
-      if (!isPointOnLine(mainLine, roadblockX.get(turns), roadblockY.get(turns))) {
-        //Adds to the Counter:
-        counter++;
-      }
-
-      turns++;
-    }
+  //Turn to Position Method:
+  public void turnToPosition(double targetX, double targetY, double power, boolean correct) {
+    //Gets the Triangle:
+    double start[] = {positionX, positionY};
+    double end [] = {targetX, targetY};
+    double triangle[] = getTriangle(start, end);
 
     //Checks the Case:
-    if (counter == roadblockX.size()) {
-      //Returns the Value:
-      return true;
+    if (isRoadClear(targetX, targetY)) {
+      //Turns and Sets New Position:
+      double turnAngle = (-theta + triangle[3]);
+      turnGyro(turnAngle, Math.abs(power), correct);
+      theta = robot.getTheta();
     }
+  }
 
-    else {
-      //Returns the Value:
-      return false;
+  //Shift to Position Method:
+  public void shiftToPosition(double targetX, double targetY, double power, boolean correct) {
+    //Gets the Triangle:
+    double start[] = {positionX, positionY};
+    double end [] = {targetX, targetY};
+    double triangle[] = getTriangle(start, end);
+
+    //Checks the Case:
+    if (isRoadClear(targetX, targetY)) {
+      //Shifts to Position:
+      double rotations = (signCorrection(power) * getConvertedRotations(triangle[2]));
+      shiftGyro(rotations, Math.abs(power), correct);
+
+      //Sets the New Position:
+      positionX = targetX;
+      positionY = targetY;
+      theta = robot.getTheta();
     }
   }
 
   /* POSITION CORE METHODS */
+
+  //Runs with Gyro Corrects:
+  public void runGyro(double rotations, double power, boolean correct) {
+    //Calculates and Runs:
+    int timeRequired = Math.abs(calculateTime(Math.abs(rotations), Math.abs(power)));
+    robot.runRobot(rotations, Math.abs(power));
+    completeCycle(timeRequired);
+
+    //Checks the Case:
+    if (correct) {
+      //Corrects the Motion:
+      gyroCorrect(theta, Math.abs(power));
+    }
+
+    //Sets the Current Theta:
+    theta = robot.getTheta();
+  }
 
   //Makes turns with Gyro Corrections:
   public void turnGyro(double angle, double power, boolean correct) {
@@ -128,7 +135,7 @@ public class Positions extends LinearOpMode {
     int timeRequired = Math.abs(calculateTime(Math.abs(turnValue), Math.abs(power)));
 
     //Turns Robot:
-    robot.turnRobot(turnValue, power);
+    robot.turnRobot(turnValue, Math.abs(power));
     completeCycle(timeRequired);
 
     //Checks the Case:
@@ -141,11 +148,11 @@ public class Positions extends LinearOpMode {
     theta = robot.getTheta();
   }
 
-  //Runs with Gyro Corrects:
-  public void runGyro(double rotations, double power, boolean correct) {
-    //Calculates and Runs:
+  //Shifts with Gyro Corrects:
+  public void shiftGyro(double rotations, double power, boolean correct) {
+    //Calculates and Shifts:
     int timeRequired = Math.abs(calculateTime(Math.abs(rotations), Math.abs(power)));
-    robot.runRobot(rotations, power);
+    robot.shiftRobot(rotations, Math.abs(power));
     completeCycle(timeRequired);
 
     //Checks the Case:
@@ -187,6 +194,36 @@ public class Positions extends LinearOpMode {
 
   /* POSITION PATH METHODS */
 
+  //Find Open Paths to Target Method:
+  public static boolean isRoadClear(double targetX, double targetY) {
+    //Main Variables:
+    int turns = 0;
+    int counter = 0;
+    double mainLine[] = findLineEquation(positionX, positionY, targetX, targetY);
+
+    //Loops through Array:
+    mainLoop: while (turns < roadblockX.size()) {
+      //Checks the Case:
+      if (!isPointOnLine(mainLine, roadblockX.get(turns), roadblockY.get(turns))) {
+        //Adds to the Counter:
+        counter++;
+      }
+
+      turns++;
+    }
+
+    //Checks the Case:
+    if (counter == roadblockX.size()) {
+      //Returns the Value:
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
   //Finds the Equation of Line:
   public static double[] findLineEquation(double x, double y, double targetX, double targetY) {
     //Finds the Initial Values:
@@ -215,6 +252,8 @@ public class Positions extends LinearOpMode {
       return false;
     }
   }
+
+  /* POSITION UTILITY METHODS */
 
   //Gets Position Triangle:
   public static double[] getTriangle(double startCoordinates[], double endCoordinates[]) {
@@ -258,8 +297,6 @@ public class Positions extends LinearOpMode {
     //Returns the Angle:
     return localAngle;
   }
-
-  /* POSITION UTILITY METHODS */
 
   //Calculates Time Required To Complete Operation:
   public static int calculateTime(double rotations, double power) {

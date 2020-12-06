@@ -51,6 +51,7 @@ public class Robot {
 
   //Motor Powers:
   public static double zeroPower = 0.0;
+  public static double slowPower = 0.4;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
   public static double uncoPower = 1.0;
@@ -320,6 +321,33 @@ public class Robot {
       leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
       rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
       rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
+    }
+
+    //Sets the Motor Powers:
+    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
+    mechanisms.applyControlMotorPower(leftFrontMotor, power);
+    mechanisms.applyControlMotorPower(leftBackMotor, power);
+    mechanisms.applyControlMotorPower(rightFrontMotor, power);
+    mechanisms.applyControlMotorPower(rightBackMotor, power);
+  }
+
+  //Robot Strafe Motion:
+  public static void shiftRobot(double rotations, double power) {
+    //Checks the Case:
+    if (rotations > 0) {
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - getParts(rotations));
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + getParts(rotations));
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + getParts(rotations));
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - getParts(rotations));
+    }
+
+    else if (rotations < 0) {
+      //Sets the Target Positions:
+      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + getParts(rotations));
+      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - getParts(rotations));
+      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - getParts(rotations));
+      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + getParts(rotations));
     }
 
     //Sets the Motor Powers:

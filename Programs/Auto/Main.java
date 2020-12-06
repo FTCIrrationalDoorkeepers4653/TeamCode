@@ -60,12 +60,34 @@ public class Main extends LinearOpMode {
       robot.mechanisms.turnGyro(10.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(680.0, 380.0, robot.fastPower, false);
       robot.mechanisms.automateArm(robot.mainPower);
+
+      //Turns and Moves to Second Wobble:
+      robot.mechanisms.turnGyro(-90.0, robot.mainPower, true);
+      robot.mechanisms.runToPosition(640.0, 640.0, robot.fastPower, false);
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.automateArm(robot.mainPower);
+
+      //Moves and Turns Back to Drop:
+      robot.mechanisms.runToPosition(680.0, 380.0, -robot.fastPower, false);
+      robot.mechanisms.turnGyro(90.0, robot.mainPower, true);
+      robot.mechanisms.automateArm(robot.mainPower);
     }
 
     else if (position == 2) {
       //Turns and Drops Wobble:
       robot.mechanisms.turnGyro(60.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 320.0, robot.fastPower, false);
+      robot.mechanisms.automateArm(robot.mainPower);
+
+      //Turns and Moves to Second Wobble:
+      robot.mechanisms.turnGyro(-112.0, robot.mainPower, true);
+      robot.mechanisms.runToPosition(640.0, 640.0, robot.fastPower, false);
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.automateArm(robot.mainPower);
+
+      //Moves and Turns Back to Drop:
+      robot.mechanisms.runToPosition(600.0, 380.0, -robot.fastPower, false);
+      robot.mechanisms.turnGyro(112.0, robot.mainPower, true);
       robot.mechanisms.automateArm(robot.mainPower);
     }
 
@@ -74,7 +96,15 @@ public class Main extends LinearOpMode {
       robot.mechanisms.turnGyro(50.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(640.0, 140.0, robot.fastPower, false);
 
-      //Drops Wobble and Parks:
+      //Turns and Moves to Second Wobble:
+      robot.mechanisms.turnGyro(-102.0, robot.mainPower, true);
+      robot.mechanisms.runToPosition(640.0, 640.0, robot.fastPower, false);
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.automateArm(robot.mainPower);
+
+      //Moves, Drops, Parks:
+      robot.mechanisms.runToPosition(640.0, 140.0, -robot.fastPower, false);
+      robot.mechanisms.turnGyro(102.0, robot.mainPower, true);
       robot.mechanisms.automateArm(robot.mainPower);
       robot.mechanisms.runToPosition(550.0, 310.0, -robot.fastPower, false);
     }

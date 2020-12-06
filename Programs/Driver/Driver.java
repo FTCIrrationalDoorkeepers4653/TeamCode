@@ -77,7 +77,7 @@ public class Driver extends LinearOpMode {
     //Checks the Case:
     if (operatorPad.isXReleased()) {
       //Operates the Intake Arm:
-      robot.mechanisms.automateIntake(robot.mainPower);
+      robot.mechanisms.automateIntake(robot.slowPower);
     }
 
     //Checks the Case:
@@ -185,7 +185,7 @@ public class Driver extends LinearOpMode {
       //Sets Modes, Turns, and Resets:
       robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      robot.mechanisms.turnGyro(-70.0, robot.fastPower, false);
+      robot.mechanisms.turnGyro(-72.0, robot.fastPower, false);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
