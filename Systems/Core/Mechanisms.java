@@ -40,7 +40,7 @@ public class Mechanisms extends Controller {
 
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.9;
-  public static double shooterEndPosition = 0.3;
+  public static double shooterEndPosition = 0.4;
   public static int shot = 0;
 
   //Mechanism Flywheel Variables:

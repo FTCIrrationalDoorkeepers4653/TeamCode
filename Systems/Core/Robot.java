@@ -62,6 +62,8 @@ public class Robot {
   private static double Kp = 0.05;
   private static double Ki = 0.001;
   private static double Kd = 0.008;
+  private static double errorMargin = 10;
+  private static int stopPID = 500;
 
   //Positioning Variables:
   private static double roadblockX[] = {0.0, 760.0, 0.0, 760.0};
@@ -147,7 +149,7 @@ public class Robot {
     mechanisms.setRoadblocks(roadblockX, roadblockY);
 
     //Controller Initialization:
-    mechanisms.initControl(Kp, Ki, Kd);
+    mechanisms.initControl(Kp, Ki, Kd, errorMargin, stopPID);
     mechanisms.setupControlInterface(TicksPerRev, maxRPM);
     applyAllPowers(zeroPower);
   }

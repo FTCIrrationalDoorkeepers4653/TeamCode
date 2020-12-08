@@ -37,8 +37,8 @@ public class Side extends LinearOpMode {
     robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition(560.0, 420.0, robot.fastPower, true);
-    robot.mechanisms.turnGyro(-82.0, robot.mainPower, true);
+    robot.mechanisms.runToPosition(560.0, 410.0, robot.fastPower, true);
+    robot.mechanisms.turnGyro(-80.0, robot.mainPower, true);
 
     /* Shooting */
 

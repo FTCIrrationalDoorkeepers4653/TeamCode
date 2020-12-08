@@ -17,6 +17,8 @@ public class Controller extends Positions {
   private static double Kp = 0.0;
   private static double Ki = 0.0;
   private static double Kd = 0.0;
+  private static double errorMargin = 0;
+  private static int stopPID = 0;
 
   //Controller Interface Variables:
   private static double TPR = 0.0;
@@ -30,11 +32,14 @@ public class Controller extends Positions {
   }
 
   //Control Initialization Method:
-  public static void initControl(double proportional, double integral, double derivative) {
+  public static void initControl(double proportional, double integral, double derivative,
+    double margin, int stop) {
     //Sets the Controller Values:
     Kp = proportional;
     Ki = integral;
     Kd = derivative;
+    errorMargin = margin;
+    stopPID = stop;
   }
 
   //Control Motor Interface Setup Method:
@@ -42,6 +47,70 @@ public class Controller extends Positions {
     //Sets the Motor Interface Variables:
     TPR = ticksPerRev;
     RPM = maxRPM;
+  }
+
+  /* CONTROLLER PID METHODS */
+
+  //Control PID Method:
+  public static void applyPID(DcMotor motor) {
+    //Gets the Values:
+    double error = motor.getCurrentPosition();
+    double lastError = 0;
+    double integral = 0;
+    int count = 0;
+
+    //Loops for Power:
+    mainLoop: while (Math.abs(error) <= errorMargin && count < stopPID) {
+      //Gets the Errors:
+      error = (motor.getCurrentPosition() - motor.getTargetPosition());
+      double deltaError = (lastError - error);
+      integral += (deltaError * time.time());
+      double derivative = (deltaError / time.time());
+
+      //Gets the PID Values:
+      double P = (Kp * error);
+      double I = (Ki * integral);
+      double D = (Kd * derivative);
+      double power = (P + I + D);
+
+      //Sets the Power and Resets:
+      motor.setPower(power);
+      error = lastError;
+      time.reset();
+
+      count++;
+    }
+  }
+
+  //Control PID Method (Secondary):
+  public static void applyPID(DcMotorEx motor) {
+    //Gets the Values:
+    double error = motor.getCurrentPosition();
+    double lastError = 0;
+    double integral = 0;
+    int count = 0;
+
+    //Loops for Power:
+    mainLoop: while (Math.abs(error) <= errorMargin && count < stopPID) {
+      //Gets the Errors:
+      error = (motor.getCurrentPosition() - motor.getTargetPosition());
+      double deltaError = (lastError - error);
+      integral += (deltaError * time.time());
+      double derivative = (deltaError / time.time());
+
+      //Gets the PID Values:
+      double P = (Kp * error);
+      double I = (Ki * integral);
+      double D = (Kd * derivative);
+      double power = (P + I + D);
+
+      //Sets the Power and Resets:
+      motor.setPower(power);
+      error = lastError;
+      time.reset();
+
+      count++;
+    }
   }
 
   /* CONTROLLER CONTROL METHODS */
@@ -73,7 +142,7 @@ public class Controller extends Positions {
 
     //Calculates and Returns the Power:
     double error = controlError(current, target, initialDifference);
-    double controlledPower = (error * Kp * power);
+    double controlledPower = (error * power);
     return controlledPower;
   }
 
@@ -87,7 +156,7 @@ public class Controller extends Positions {
 
     //Calculates and Returns the Power:
     double error = controlError(current, target, initialDifference);
-    double controlledPower = (error * Kp * power);
+    double controlledPower = (error * power);
     return controlledPower;
   }
 

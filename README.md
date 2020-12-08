@@ -55,3 +55,6 @@ Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correctio
 - 12/4/2020 - Changed Automation Mechanisms to Better Program and Interface with. Tweaked Autonomous and Scoring Strategy to Focus More on High Goal Consistency.
 
 - 12/6/2020 - Added the Grabbing of the Second Wobble Goal to Main Autonomous and Began Testing Main Autonomous for Upcoming Scrimmage.
+
+- 12/8/2020 - Updated Side Autonomous Code for New Magazine and Shooter. Began Testing anf Tuning the Main Autonomous for Upcoming Scrimmage. Also, Began PID Control
+Programming.
