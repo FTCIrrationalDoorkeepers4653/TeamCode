@@ -58,3 +58,5 @@ Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correctio
 
 - 12/8/2020 - Updated Side Autonomous Code for New Magazine and Shooter. Began Testing anf Tuning the Main Autonomous for Upcoming Scrimmage. Also, Began PID Control
 Programming.
+
+- 12/12/2020 - Updated Autonomous Programs and Post-Scrimmage Bug Fixes. We Hope to Get Main Auto Working for NC Scrimmage.

@@ -33,14 +33,14 @@ public class Mechanisms extends Controller {
 
   //Mechanism Claw Variables:
   public static double clawStartPosition = 0.2;
-  public static double clawEndPosition = 0.6;
+  public static double clawEndPosition = 1.0;
   public static int claw = 0;
 
   /* MECHANISM SHOOTER CONTROL VARIABLES */
 
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.9;
-  public static double shooterEndPosition = 0.4;
+  public static double shooterEndPosition = 0.6;
   public static int shot = 0;
 
   //Mechanism Flywheel Variables:
@@ -48,7 +48,7 @@ public class Mechanisms extends Controller {
   public static int shooterWait = 500;
   public static int shooterRevWait = (shooterWait * 2);
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3200.0;
+  public static double mainRPM = 3275.0;
 
   //Mechanism Ramp Variables:
   public static double rampStartPosition = 0.0;
@@ -63,8 +63,8 @@ public class Mechanisms extends Controller {
 
   //Mechanism Intake Wheel Variables:
   public static int intakeWheel = 0;
-  public static double intakeWheelStartPosition = 0.6;
-  public static double intakeWheelEndPosition = 0.0;
+  public static double intakeWheelStartPosition = 0.3;
+  public static double intakeWheelEndPosition = 0.2;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -86,9 +86,9 @@ public class Mechanisms extends Controller {
 
     //Servo Mechanism Setup:
     clawServo.setPosition(clawStartPosition);
+    intakeServo.setPosition(intakeWheelEndPosition);
     shooterServo.setPosition(shooterStartPosition);
     rampServo.setPosition(rampStartPosition);
-    intakeServo.setPosition(intakeWheelEndPosition);
 
     /* Setup */
 
@@ -184,6 +184,10 @@ public class Mechanisms extends Controller {
       arm++;
       operateArm(power);
       completeCycle(time);
+
+      //Sets the Claw Position:
+      claw = 0;
+      operateClaw();
     }
 
     else  {
@@ -191,10 +195,6 @@ public class Mechanisms extends Controller {
       arm--;
       operateArm(power);
       completeCycle(time);
-
-      //Sets the Claw Position:
-      claw = 0;
-      operateClaw();
     }
   }
 
@@ -268,13 +268,13 @@ public class Mechanisms extends Controller {
     if (shooter == 0) {
       //Sets the Motor:
       double ticks = calculateTicks(robot.zeroPower);
-      applyControlMotorPowerEx(shooterMotor, ticks);
+      shooterMotor.setVelocity(ticks);
     }
 
     else if (shooter == 1) {
       //Sets the Motor:
       double ticks = calculateTicks(mainRPM);
-      applyControlMotorPowerEx(shooterMotor, ticks);
+      shooterMotor.setVelocity(ticks);
     }
   }
 
@@ -288,14 +288,14 @@ public class Mechanisms extends Controller {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(baseArmMotor, power);
+      baseArmMotor.setPower(power);
     }
 
     else if (arm == 1) {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(baseArmMotor, power);
+      baseArmMotor.setPower(power);
     }
   }
 
@@ -309,14 +309,14 @@ public class Mechanisms extends Controller {
       //Runs the Target Positions:
       intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(intakeMotor, power);
+      intakeMotor.setPower(power);
     }
 
     else if (intakeArm == 1) {
       //Runs the Target Positions:
       intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      applyControlMotorPower(intakeMotor, power);
+      intakeMotor.setPower(power);
     }
   }
 

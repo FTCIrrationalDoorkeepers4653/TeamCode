@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name="Test")
-public class Test extends LinearOpMode {
+public class Test extends OpMode {
   /* TEST VARIABLES */
 
   //Objects and Variables:
@@ -14,29 +14,32 @@ public class Test extends LinearOpMode {
 
   /* OPMODE METHODS */
 
+  //Init Method:
   @Override
-  public void runOpMode() {
+  public void init() {
     //Status Updates:
     telemetry.addData("Status", "Initialized");
     telemetry.update();
 
     //Hardware Initialization:
     robot.init(hardwareMap, false, true);
+  }
 
-    //Waits for Start:
-    waitForStart();
+  //Loop Method:
+  @Override
+  public void loop() {
+    //Gets the Position:
+    position = robot.getPixelsPosition();
 
-    //Loops Until Stop:
-    mainLoop: while (opModeIsActive()) {
-      //Gets the Position:
-      position = robot.getPixelsPosition();
+    //Status Updates:
+    telemetry.addData("Position", position);
+    telemetry.update();
+  }
 
-      //Telemetry Data:
-      telemetry.addData("Position", position);
-      telemetry.update();
-    }
-
-    //Status Update:
+  //Stop Method:
+  @Override
+  public void stop() {
+    //Status Updates:
     telemetry.addData("Status", "Stopped");
     telemetry.update();
   }

@@ -39,7 +39,6 @@ public class Robot {
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
   public static double TicksPerRev = 1120.0;
-  public static double maxRPM = 150.0;
   public static double POSITION_RATIO = (144.0 / 760.0);
 
   //Drive Train Augmentation Variables:
@@ -51,9 +50,10 @@ public class Robot {
 
   //Motor Powers:
   public static double zeroPower = 0.0;
-  public static double slowPower = 0.4;
+  public static double slowPower = 0.3;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
+  public static double firePower = 0.8;
   public static double uncoPower = 1.0;
 
   /* POSITION VARIABLES */
@@ -62,7 +62,8 @@ public class Robot {
   private static double Kp = 0.05;
   private static double Ki = 0.001;
   private static double Kd = 0.008;
-  private static double errorMargin = 10;
+  private static double Kc = 2.0;
+  private static double errorMargin = 0.1;
   private static int stopPID = 500;
 
   //Positioning Variables:
@@ -144,13 +145,10 @@ public class Robot {
 
     /* Positions */
 
-    //Position Initialization:
+    //Controllers Initialization:
     mechanisms.resetCurrentPosition();
     mechanisms.setRoadblocks(roadblockX, roadblockY);
-
-    //Controller Initialization:
-    mechanisms.initControl(Kp, Ki, Kd, errorMargin, stopPID);
-    mechanisms.setupControlInterface(TicksPerRev, maxRPM);
+    mechanisms.initControl(Kp, Ki, Kd, Kc, errorMargin, stopPID);
     applyAllPowers(zeroPower);
   }
 
@@ -296,10 +294,7 @@ public class Robot {
 
     //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlMotorPower(leftFrontMotor, power);
-    mechanisms.applyControlMotorPower(leftBackMotor, power);
-    mechanisms.applyControlMotorPower(rightFrontMotor, power);
-    mechanisms.applyControlMotorPower(rightBackMotor, power);
+    applyAllPowers(power);
   }
 
   //Robot Turn Motion with Rotations:
@@ -327,10 +322,7 @@ public class Robot {
 
     //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlMotorPower(leftFrontMotor, power);
-    mechanisms.applyControlMotorPower(leftBackMotor, power);
-    mechanisms.applyControlMotorPower(rightFrontMotor, power);
-    mechanisms.applyControlMotorPower(rightBackMotor, power);
+    applyAllPowers(power);
   }
 
   //Robot Strafe Motion:
@@ -354,10 +346,7 @@ public class Robot {
 
     //Sets the Motor Powers:
     applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    mechanisms.applyControlMotorPower(leftFrontMotor, power);
-    mechanisms.applyControlMotorPower(leftBackMotor, power);
-    mechanisms.applyControlMotorPower(rightFrontMotor, power);
-    mechanisms.applyControlMotorPower(rightBackMotor, power);
+    applyAllPowers(power);
   }
 
   /* ROBOT MOTOR UTILITY METHODS */

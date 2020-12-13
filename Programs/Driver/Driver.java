@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,23 +9,21 @@ import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name="Driver")
-public class Driver extends LinearOpMode {
+public class Driver extends OpMode {
   /* DRIVE VARIABLES */
 
   //Objects:
-  private static Robot robot = new Robot();
+  private Robot robot = new Robot();
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
   private GamePad operatorPad;
 
   /* RUN METHODS */
 
-  //RunOpMode Method:
+  //Init Method:
   @Override
-  public void runOpMode() {
-    /* Initialization */
-
-    //Sets Status:
+  public void init() {
+    //Status Updates:
     telemetry.addData("Status", "Initialized");
     telemetry.update();
 
@@ -34,38 +32,27 @@ public class Driver extends LinearOpMode {
     robot.mechanisms.initMechanisms(hardwareMap);
     driverPad = new GamePad(gamepad1);
     operatorPad = new GamePad(gamepad2);
+  }
 
-    //Wait for Start:
-    waitForStart();
+  //Loop Method:
+  public void loop() {
+    //GamePad Methods:
+    driverPad.setGamePad();
+    operatorPad.setGamePad();
 
-    /* Run */
+    //Drive Train Methods:
+    moveRobot();
+    aimRobot();
 
-    //Starts the Timer:
-    time.reset();
+    //Mechanisms Methods:
+    moveShooter();
+    moveIntake();
+    moveWobble();
+  }
 
-    //Loop Until Stop:
-    mainLoop: while (opModeIsActive()) {
-      //GamePad Method Calls:
-      driverPad.setGamePad();
-      operatorPad.setGamePad();
-
-      //Mechanisms MethodsL:
-      moveShooter();
-      moveIntake();
-      moveWobble();
-
-      //Drive Train Methods:
-      moveRobot();
-      aimRobot();
-
-      //Sets Status:
-      telemetry.addData("Status", "Running");
-      telemetry.update();
-    }
-
-    /* Stop */
-
-    //Sets Status:
+  //Stop Method:
+  public void stop() {
+    //Status Updates:
     telemetry.addData("Status", "Stopped");
     telemetry.update();
   }
@@ -139,42 +126,42 @@ public class Driver extends LinearOpMode {
     //Checks the Case:
     if (forward != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, -forward);
-      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, -forward);
-      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -forward);
-      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -forward);
+      robot.leftFrontMotor.setPower(-forward);
+      robot.leftBackMotor.setPower(-forward);
+      robot.rightFrontMotor.setPower(-forward);
+      robot.rightBackMotor.setPower(-forward);
     }
 
     else if (turn != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, turn);
-      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, turn);
-      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -turn);
-      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -turn);
+      robot.leftFrontMotor.setPower(turn);
+      robot.leftBackMotor.setPower(turn);
+      robot.rightFrontMotor.setPower(-turn);
+      robot.rightBackMotor.setPower(-turn);
     }
 
     else if (left != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, -left);
-      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, left);
-      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, left);
-      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, -left);
+      robot.leftFrontMotor.setPower(-left);
+      robot.leftBackMotor.setPower(left);
+      robot.rightFrontMotor.setPower(left);
+      robot.rightBackMotor.setPower(-left);
     }
 
     else if (right != robot.zeroPower) {
       //Sets the Motor Power:
-      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, right);
-      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, -right);
-      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, -right);
-      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, right);
+      robot.leftFrontMotor.setPower(right);
+      robot.leftBackMotor.setPower(-right);
+      robot.rightFrontMotor.setPower(-right);
+      robot.rightBackMotor.setPower(right);
     }
 
     else {
       //Sets the Motor Power:
-      robot.mechanisms.applyControlMotorPower(robot.leftFrontMotor, robot.zeroPower);
-      robot.mechanisms.applyControlMotorPower(robot.leftBackMotor, robot.zeroPower);
-      robot.mechanisms.applyControlMotorPower(robot.rightFrontMotor, robot.zeroPower);
-      robot.mechanisms.applyControlMotorPower(robot.rightBackMotor, robot.zeroPower);
+      robot.leftFrontMotor.setPower(robot.zeroPower);
+      robot.leftBackMotor.setPower(robot.zeroPower);
+      robot.rightFrontMotor.setPower(robot.zeroPower);
+      robot.rightBackMotor.setPower(robot.zeroPower);
     }
   }
 
@@ -185,7 +172,7 @@ public class Driver extends LinearOpMode {
       //Sets Modes, Turns, and Resets:
       robot.applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      robot.mechanisms.turnGyro(-70.0, robot.fastPower, false);
+      robot.mechanisms.turnGyro(-72.0, robot.fastPower, false);
       robot.applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       robot.applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }

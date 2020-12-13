@@ -253,8 +253,6 @@ public class Positions extends LinearOpMode {
     }
   }
 
-  /* POSITION UTILITY METHODS */
-
   //Gets Position Triangle:
   public static double[] getTriangle(double startCoordinates[], double endCoordinates[]) {
     //Main Array Variable:
@@ -282,6 +280,8 @@ public class Positions extends LinearOpMode {
     //Returns the Triangle:
     return triangle;
   }
+
+  /* POSITION UTILITY METHODS */
 
   //Gets the Transformed Angle:
   public static double transformAngle(double angle, double xDiff, double yDiff) {
