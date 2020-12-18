@@ -14,6 +14,8 @@ public class Side extends LinearOpMode {
   private double startY = 760.0;
   private int position = 0;
 
+  /* OPMODE METHODS */
+
   @Override
   public void runOpMode() {
     /* Initialization */
@@ -44,11 +46,7 @@ public class Side extends LinearOpMode {
 
     //Waits and Shoots:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.shooterRevWait);
     robot.mechanisms.automateShooter();
-
-    //Waits and Shoots:
-    robot.mechanisms.completeCycle(robot.mechanisms.shooterRevWait);
     robot.mechanisms.automateShooter();
     robot.mechanisms.automateFlywheel();
 
@@ -56,30 +54,25 @@ public class Side extends LinearOpMode {
 
     //Checks the Case:
     if (position == 1) {
-      //Turns and Drops Wobble:
+      //Drops Wobble:
       robot.mechanisms.turnGyro(5.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(680.0, 380.0, robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.slowPower);
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm(robot.easyPower);
     }
 
     else if (position == 2) {
-      //Turns and Drops Wobble:
+      //Drops Wobble:
       robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 320.0, robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.slowPower);
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm(robot.easyPower);
     }
 
     else {
-      //Turns and Moves to Wobble Target:
+      //Drops Wobble and Parks:
       robot.mechanisms.turnGyro(45.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(640.0, 140.0, robot.fastPower, false);
-
-      //Drops Wobble and Parks:
-      robot.mechanisms.automateArm(robot.slowPower);
+      robot.mechanisms.automateArm(robot.easyPower);
       robot.mechanisms.runToPosition(550.0, 310.0, -robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.mainPower);
     }
 
     /* Stop */

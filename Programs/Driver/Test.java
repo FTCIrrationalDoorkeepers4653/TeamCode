@@ -14,7 +14,6 @@ public class Test extends OpMode {
 
   /* OPMODE METHODS */
 
-  //Init Method:
   @Override
   public void init() {
     //Status Updates:
@@ -25,7 +24,6 @@ public class Test extends OpMode {
     robot.init(hardwareMap, false, true);
   }
 
-  //Loop Method:
   @Override
   public void loop() {
     //Gets the Position:
@@ -36,7 +34,6 @@ public class Test extends OpMode {
     telemetry.update();
   }
 
-  //Stop Method:
   @Override
   public void stop() {
     //Status Updates:

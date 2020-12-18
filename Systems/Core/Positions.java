@@ -21,7 +21,7 @@ public class Positions extends LinearOpMode {
 
   @Override
   public void runOpMode() {
-    /* Access Methods */
+    /* Access Hardware Methods */
   }
 
   //Set Current Position Method:

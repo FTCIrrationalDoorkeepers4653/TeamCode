@@ -60,3 +60,5 @@ Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correctio
 Programming.
 
 - 12/12/2020 - Updated Autonomous Programs and Post-Scrimmage Bug Fixes. We Hope to Get Main Auto Working for NC Scrimmage.
+
+- 12/18/2020 - Updated Autonomous for New Wobble Goal Arm, Still Working on Grabbing Second Wobble Goal in Main Autonomous. Hope to Finish Auto Before Jan 1.

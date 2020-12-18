@@ -45,8 +45,7 @@ public class Mechanisms extends Controller {
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
-  public static int shooterWait = 500;
-  public static int shooterRevWait = (shooterWait * 2);
+  public static int shooterWait = 750;
   public static double flywheelTicks = 28;
   public static double mainRPM = 3275.0;
 
@@ -227,6 +226,7 @@ public class Mechanisms extends Controller {
     shot = 0;
     operateRamp();
     operateShooter();
+    completeCycle(shooterWait);
   }
 
   //Automate Flywheel Method:

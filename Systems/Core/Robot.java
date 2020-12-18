@@ -46,10 +46,11 @@ public class Robot {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 0.3;
-  public static double speedControl = 4.0;
+  public static double speedControl = 3.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
+  public static double easyPower = 0.1;
   public static double slowPower = 0.3;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
@@ -92,7 +93,7 @@ public class Robot {
   private static double distanceOfField = 13.0, camZoom = 1.0;
   private static double fieldDistance = (distanceOfField * camZoom);
 
-  /* HARDWARE INITIALIZATION METHODS */
+  /* INITIALIZATION METHODS */
 
   //Initialization Method:
   public static void init(HardwareMap hardwareMap, boolean type, boolean camera) {
@@ -393,5 +394,19 @@ public class Robot {
     int parts = (int)(angle * degreesPerTick);
     double rotations = (parts / TicksPerRev);
     return rotations;
+  }
+
+  //Gets the Speed Based on Slow Parameters:
+  public static double getSpeedControl(double speed, boolean control) {
+    //Checks the Case:
+    if (control) {
+      //Returns the Speed:
+      return (speed / speedControl);
+    }
+
+    else {
+      //Returns the Speed:
+      return speed;
+    }
   }
 }
