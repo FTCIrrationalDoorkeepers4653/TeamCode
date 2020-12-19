@@ -55,23 +55,24 @@ public class Side extends LinearOpMode {
     //Checks the Case:
     if (position == 1) {
       //Drops Wobble:
+      robot.mechanisms.automateArm(robot.mainPower);
       robot.mechanisms.turnGyro(5.0, robot.mainPower, true);
-      robot.mechanisms.runToPosition(680.0, 380.0, robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.easyPower);
+      robot.mechanisms.runToPosition(720.0, 380.0, robot.fastPower, false);
     }
 
     else if (position == 2) {
       //Drops Wobble:
+      robot.mechanisms.automateArm(robot.mainPower);
       robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
-      robot.mechanisms.runToPosition(600.0, 320.0, robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.easyPower);
+      robot.mechanisms.runToPosition(600.0, 300.0, robot.fastPower, false);
     }
 
     else {
       //Drops Wobble and Parks:
+      robot.mechanisms.automateArm(robot.mainPower);
       robot.mechanisms.turnGyro(45.0, robot.mainPower, true);
-      robot.mechanisms.runToPosition(640.0, 140.0, robot.fastPower, false);
-      robot.mechanisms.automateArm(robot.easyPower);
+      robot.mechanisms.runToPosition(640.0, 120.0, robot.fastPower, false);
+      robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(550.0, 310.0, -robot.fastPower, false);
     }
 

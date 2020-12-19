@@ -61,4 +61,5 @@ Programming.
 
 - 12/12/2020 - Updated Autonomous Programs and Post-Scrimmage Bug Fixes. We Hope to Get Main Auto Working for NC Scrimmage.
 
-- 12/18/2020 - Updated Autonomous for New Wobble Goal Arm, Still Working on Grabbing Second Wobble Goal in Main Autonomous. Hope to Finish Auto Before Jan 1.
+- 12/18/2020 - Updated Autonomous for New Wobble Goal Arm, Still Working on Grabbing Second Wobble Goal in Main Autonomous. Finished Two Positions of Grabbing, but Still 
+Need to Work on Third Position. Hope to Finish by Jan 1.

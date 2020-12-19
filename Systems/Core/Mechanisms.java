@@ -84,8 +84,8 @@ public class Mechanisms extends Controller {
     intakeServo = hardwareMap.servo.get("intakeServo");
 
     //Servo Mechanism Setup:
-    clawServo.setPosition(clawStartPosition);
-    intakeServo.setPosition(intakeWheelEndPosition);
+    clawServo.setPosition(clawEndPosition);
+    intakeServo.setPosition(intakeWheelStartPosition);
     shooterServo.setPosition(shooterStartPosition);
     rampServo.setPosition(rampStartPosition);
 
@@ -119,8 +119,8 @@ public class Mechanisms extends Controller {
     /* Variables */
 
     //Resetting Positions:
-    arm = 0;
     claw = 0;
+    arm = 0;
     shooter = 0;
     shot = 0;
     intakeArm = 0;
@@ -183,10 +183,6 @@ public class Mechanisms extends Controller {
       arm++;
       operateArm(power);
       completeCycle(time);
-
-      //Sets the Claw Position:
-      claw = 0;
-      operateClaw();
     }
 
     else  {
@@ -369,12 +365,12 @@ public class Mechanisms extends Controller {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
-      clawServo.setPosition(clawStartPosition);
+      clawServo.setPosition(clawEndPosition);
     }
 
     else if (claw == 1) {
       //Sets the Servo:
-      clawServo.setPosition(clawEndPosition);
+      clawServo.setPosition(clawStartPosition);
     }
   }
 
