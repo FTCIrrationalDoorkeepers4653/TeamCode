@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 public class Mechanisms extends Controller {
   /* MECHANISMS SETUP VARIABLES */
 
-  //Objects:
+  //Robot Object:
   private static Robot robot = new Robot();
 
   //Motor Mechanisms:
@@ -22,8 +22,6 @@ public class Mechanisms extends Controller {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
-  public static Servo rampServo;
-  public static Servo intakeServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
@@ -49,21 +47,10 @@ public class Mechanisms extends Controller {
   public static double flywheelTicks = 28;
   public static double mainRPM = 3275.0;
 
-  //Mechanism Ramp Variables:
-  public static double rampStartPosition = 0.0;
-  public static double rampEndPosition = 0.3;
-  public static int ramp = 0;
-
   /* MECHANISM INTAKE CONTROL VARIABLES */
 
   //Mechanism Intake Variables:
-  public static double intakeArmDown = 250.0;
-  public static int intakeArm = 0;
-
-  //Mechanism Intake Wheel Variables:
-  public static int intakeWheel = 0;
-  public static double intakeWheelStartPosition = 0.3;
-  public static double intakeWheelEndPosition = 0.2;
+  public static int intake = 0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -80,20 +67,16 @@ public class Mechanisms extends Controller {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
-    rampServo = hardwareMap.servo.get("rampServo");
-    intakeServo = hardwareMap.servo.get("intakeServo");
 
     //Servo Mechanism Setup:
     clawServo.setPosition(clawEndPosition);
-    intakeServo.setPosition(intakeWheelStartPosition);
     shooterServo.setPosition(shooterStartPosition);
-    rampServo.setPosition(rampStartPosition);
 
     /* Setup */
 
     //Mechanism Motors Behavior:
     baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
     //Mechanism Motors Direction:
@@ -108,7 +91,7 @@ public class Mechanisms extends Controller {
 
     //Mechanism Motors Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     //Mechanism Motors Powers:
@@ -123,51 +106,24 @@ public class Mechanisms extends Controller {
     arm = 0;
     shooter = 0;
     shot = 0;
-    intakeArm = 0;
-    intakeWheel = 0;
+    intake = 0;
   }
 
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
   public void automateIntake(double power) {
-    //Time Calculation:
-    double rotations = robot.getAngleRotations(intakeArmDown);
-    int time = calculateTime(rotations, power);
-
     //Checks the Case:
-    if (intakeArm == 0) {
+    if (intake == 0) {
       //Sets the Intake Arm:
-      intakeArm++;
+      intake++;
+      operateIntake(power);
     }
 
     else {
       //Sets the Intake Arm:
-      intakeArm--;
-    }
-
-    //Runs the Intake Arm:
-    operateIntakeArm(power);
-    completeCycle(time);
-
-    //Sets the Intake Wheel:
-    intakeWheel = 0;
-    operateIntakeWheel();
-  }
-
-  //Automate Intake Wheel Method:
-  public void automateIntakeWheel() {
-    //Checks the Case:
-    if (intakeWheel == 0) {
-      //Sets the Intake Wheel:
-      intakeWheel++;
-      operateIntakeWheel();
-    }
-
-    else {
-      //Sets the Intake Wheel:
-      intakeWheel--;
-      operateIntakeWheel();
+      intake--;
+      operateIntake(power);
     }
   }
 
@@ -212,15 +168,12 @@ public class Mechanisms extends Controller {
   //Automate Shooter Method:
   public void automateShooter() {
     //Shoots Ring (Flywheel Must Be On):
-    ramp = 0;
     shot = 1;
-    operateRamp();
     operateShooter();
     completeCycle(shooterWait);
 
     //Resets the Shooter:
     shot = 0;
-    operateRamp();
     operateShooter();
     completeCycle(shooterWait);
   }
@@ -241,7 +194,7 @@ public class Mechanisms extends Controller {
     }
   }
 
-  /* MECHANISM MOTOR OPERATION METHODS */
+  /* MECHANISM OPERATION METHODS */
 
   //Mechanism Finish Run Method:
   public static void mechanismsFinishRun() {
@@ -296,53 +249,16 @@ public class Mechanisms extends Controller {
   }
 
   //Operates the Intake Arm:
-  public static void operateIntakeArm(double power) {
-    //Target Variable:
-    int endTarget = robot.getParts(robot.getAngleRotations(intakeArmDown));
-
+  public static void operateIntake(double power) {
     //Checks the Case:
-    if (intakeArm == 0) {
-      //Runs the Target Positions:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    if (intake == 0) {
+      //Runs the Intake:
       intakeMotor.setPower(power);
     }
 
-    else if (intakeArm == 1) {
+    else if (intake == 1) {
       //Runs the Target Positions:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      intakeMotor.setPower(power);
-    }
-  }
-
-  /* MECHANISMS SERVO OPERATION METHODS */
-
-  //Operate Intake Wheel:
-  public static void operateIntakeWheel() {
-    //Checks the Case:
-    if (intakeWheel == 0) {
-      //Sets the Servo:
-      intakeServo.setPosition(intakeWheelStartPosition);
-    }
-
-    else if (intakeWheel == 1) {
-      //Sets the Servo:
-      intakeServo.setPosition(intakeWheelEndPosition);
-    }
-  }
-
-  //Operate Ramp:
-  public static void operateRamp() {
-    //Checks the Case:
-    if (ramp == 0) {
-      //Sets the Servo:
-      rampServo.setPosition(rampStartPosition);
-    }
-
-    else if (ramp == 1) {
-      //Sets the Servo:
-      rampServo.setPosition(rampEndPosition);
+      intakeMotor.setPower(robot.zeroPower);
     }
   }
 

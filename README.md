@@ -63,3 +63,5 @@ Programming.
 
 - 12/18/2020 - Updated Autonomous for New Wobble Goal Arm, Still Working on Grabbing Second Wobble Goal in Main Autonomous. Finished Two Positions of Grabbing, but Still 
 Need to Work on Third Position. Hope to Finish by Jan 1.
+
+- 12/22/2020 - Finished Fine-Tuning Two Wobble Goal Autonomous for Upcoming Competition Season. Also, Coded for New Inatake Being Built, for Faster Cycle Times.
