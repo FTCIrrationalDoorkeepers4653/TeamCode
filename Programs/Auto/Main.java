@@ -72,7 +72,7 @@ public class Main extends LinearOpMode {
     }
 
     else if (position == 2) {
-      //Drops Wobble:;
+      //Drops Wobble:
       robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, robot.uncoPower, false);
       robot.mechanisms.automateArm(robot.mainPower);
@@ -86,7 +86,7 @@ public class Main extends LinearOpMode {
 
       //Moves and Turns Back to Drop:
       robot.mechanisms.turnGyro(155.0, robot.mainPower, true);
-      robot.mechanisms.runToPosition(600.0, 340.0, robot.uncoPower, false);
+      robot.mechanisms.runToPosition(600.0, 320.0, robot.uncoPower, false);
     }
 
     else {
@@ -97,16 +97,16 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.automateClaw();
-      robot.mechanisms.turnGyro(-145.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(-142.0, robot.mainPower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 600.0, robot.uncoPower, false);
       robot.mechanisms.automateClaw();
 
       //Moves, Drops, Parks:
-      robot.mechanisms.turnGyro(165.0, robot.uncoPower, true);
-      robot.mechanisms.runToPosition(640.0, 140.0, robot.uncoPower, false);
+      robot.mechanisms.turnGyro(162.0, robot.uncoPower, true);
+      robot.mechanisms.runToPosition(640.0, 100.0, robot.uncoPower, false);
       robot.mechanisms.automateClaw();
-      robot.mechanisms.runToPosition(640.0, 340.0, -robot.uncoPower, false);
+      robot.mechanisms.runToPosition(640.0, 300.0, -robot.uncoPower, false);
     }
 
     /* Stop */

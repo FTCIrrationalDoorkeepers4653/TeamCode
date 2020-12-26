@@ -61,7 +61,7 @@ public class Side extends LinearOpMode {
     }
 
     else if (position == 2) {
-      //Drops Wobble:;
+      //Drops Wobble:
       robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, robot.fastPower, false);
       robot.mechanisms.automateArm(robot.mainPower);

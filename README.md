@@ -67,3 +67,5 @@ Need to Work on Third Position. Hope to Finish by Jan 1.
 - 12/22/2020 - Finished Fine-Tuning Two Wobble Goal Autonomous for Upcoming Competition Season. Also, Coded for New Inatake Being Built, for Faster Cycle Times.
 
 - 12/25/2020 - Finished Autonomous for New Wobble Goal Arm and Full 71 Point Autonomous Done. Team Working on Refining Intake and Driver Practice.
+
+- 12/26/2020 - Tweaked Autonomous and New Wobble Goal Arm for More Consistency and Speed. Future Updates Will Include Optimized Code for New Intake System.
