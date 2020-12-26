@@ -26,7 +26,7 @@ public class Mechanisms extends Controller {
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 200.0;
+  public static double armDown = 180.0;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -40,10 +40,10 @@ public class Mechanisms extends Controller {
   public static double shooterStartPosition = 0.9;
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
+  public static int shooterWait = 500;
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
-  public static int shooterWait = 750;
   public static double flywheelTicks = 28;
   public static double mainRPM = 3275.0;
 
@@ -69,7 +69,7 @@ public class Mechanisms extends Controller {
     shooterServo = hardwareMap.servo.get("shooterServo");
 
     //Servo Mechanism Setup:
-    clawServo.setPosition(clawEndPosition);
+    clawServo.setPosition(clawStartPosition);
     shooterServo.setPosition(shooterStartPosition);
 
     /* Setup */
@@ -281,12 +281,12 @@ public class Mechanisms extends Controller {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
-      clawServo.setPosition(clawEndPosition);
+      clawServo.setPosition(clawStartPosition);
     }
 
     else if (claw == 1) {
       //Sets the Servo:
-      clawServo.setPosition(clawStartPosition);
+      clawServo.setPosition(clawEndPosition);
     }
   }
 
