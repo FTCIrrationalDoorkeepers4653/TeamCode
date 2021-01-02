@@ -34,7 +34,7 @@ public class Robot {
   /* DRIVE TRAIN AND MOTOR VARIABLES */
 
   //Drive Train Variables:
-  public static double robotDimensions = 17.5;
+  public static double robotDimensions = 17.0;
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
@@ -45,13 +45,15 @@ public class Robot {
   public static double wheelRPM = 100.0;
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
-  public static double gyroStabilization = 0.3;
+  public static double gyroStabilization = 10.0;
   public static double speedControl = 3.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
+  public static double slowPower = 0.2;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
+  public static double firePower = 0.8;
   public static double uncoPower = 1.0;
 
   /* POSITION VARIABLES */
@@ -210,17 +212,19 @@ public class Robot {
   //Calculates If Value is Within Range:
   public static boolean isWithinRange(double value, double check, double offset) {
     //Main Boolean and Values:
-    boolean within = false;
-    double max = check + (check * offset);
-    double min = check - (check * offset);
+    double max = check + offset;
+    double min = check - offset;
 
     //Checks the Case:
     if (value >= min && value <= max) {
-      within = true;
+      //Returns the Value:
+      return true;
     }
 
-    //Returns the Boolean:
-    return within;
+    else {
+      //Returns the Value:
+      return false;
+    }
   }
 
   /* IMU CALCULATION METHODS */

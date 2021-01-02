@@ -69,3 +69,6 @@ Need to Work on Third Position. Hope to Finish by Jan 1.
 - 12/25/2020 - Finished Autonomous for New Wobble Goal Arm and Full 71 Point Autonomous Done. Team Working on Refining Intake and Driver Practice.
 
 - 12/26/2020 - Tweaked Autonomous and New Wobble Goal Arm for More Consistency and Speed. Future Updates Will Include Optimized Code for New Intake System.
+
+- 1/1/2021 - Tweaked Autonomous with Better Odometry Positioning and Gyroscopic Turning. Made the 56 and 71 Point Autonomous Programs More Consistent and Efficient. Still
+Working on Getting New Intake System Up and Running.

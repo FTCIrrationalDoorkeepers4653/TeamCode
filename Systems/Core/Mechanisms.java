@@ -22,6 +22,8 @@ public class Mechanisms extends Controller {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
+  public static Servo intakeServo;
+  public static Servo intakeBaseServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
@@ -51,6 +53,14 @@ public class Mechanisms extends Controller {
 
   //Mechanism Intake Variables:
   public static int intake = 0;
+  public static double intakeDown = 80.0;
+
+  //Mechanism Intake Claw Variables:
+  public static int intakeClaw = 0;
+  public static double intakeLeftStartPosition = 0.3;
+  public static double intakeLeftEndPosition = 0.0;
+  public static double intakeRightStartPosition = 0.0;
+  public static double intakeRightEndPosition = 0.5;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -67,10 +77,14 @@ public class Mechanisms extends Controller {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
+    intakeServo = hardwareMap.servo.get("intakeServo");
+    intakeBaseServo = hardwareMap.servo.get("intakeBaseServo");
 
     //Servo Mechanism Setup:
-    clawServo.setPosition(clawStartPosition);
+    clawServo.setPosition(clawEndPosition);
     shooterServo.setPosition(shooterStartPosition);
+    intakeServo.setPosition(intakeLeftEndPosition);
+    intakeBaseServo.setPosition(intakeRightEndPosition);
 
     /* Setup */
 
@@ -81,7 +95,7 @@ public class Mechanisms extends Controller {
 
     //Mechanism Motors Direction:
     baseArmMotor.setDirection(DcMotor.Direction.REVERSE);
-    intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     shooterMotor.setDirection(DcMotor.Direction.REVERSE);
 
     //Mechanism Motors Encoders Reset:
@@ -91,7 +105,7 @@ public class Mechanisms extends Controller {
 
     //Mechanism Motors Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     //Mechanism Motors Powers:
@@ -107,23 +121,50 @@ public class Mechanisms extends Controller {
     shooter = 0;
     shot = 0;
     intake = 0;
+    intakeClaw = 0;
   }
 
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
   public void automateIntake(double power) {
+    //Time Calculation:
+    double rotations = robot.getAngleRotations(intakeDown);
+    int time = calculateTime(rotations, power);
+
     //Checks the Case:
     if (intake == 0) {
       //Sets the Intake Arm:
       intake++;
       operateIntake(power);
+      completeCycle(time);
     }
 
     else {
       //Sets the Intake Arm:
       intake--;
       operateIntake(power);
+      completeCycle(time);
+    }
+
+    //Operates the Claw:
+    intakeClaw = 0;
+    operateIntakeClaw();
+  }
+
+  //Automate Intake Claw Method:
+  public void automateIntakeClaw() {
+    //Checks the Case:
+    if (intakeClaw == 0) {
+      //Operates the Intake Claw:
+      intakeClaw++;
+      operateIntakeClaw();
+    }
+
+    else {
+      //Operates the Intake Claw:
+      intakeClaw--;
+      operateIntakeClaw();
     }
   }
 
@@ -139,6 +180,10 @@ public class Mechanisms extends Controller {
       arm++;
       operateArm(power);
       completeCycle(time);
+
+      //Opens the Claw:
+      claw = 0;
+      operateClaw();
     }
 
     else  {
@@ -250,15 +295,38 @@ public class Mechanisms extends Controller {
 
   //Operates the Intake Arm:
   public static void operateIntake(double power) {
+    //Target Variable:
+    int endTarget = robot.getParts(robot.getAngleRotations(intakeDown));
+
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
+      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       intakeMotor.setPower(power);
     }
 
     else if (intake == 1) {
       //Runs the Target Positions:
-      intakeMotor.setPower(robot.zeroPower);
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
+      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      intakeMotor.setPower(power);
+    }
+  }
+
+  //Operates the Intake Claw:
+  public static void operateIntakeClaw() {
+    //Checks the Case:
+    if (intakeClaw == 0) {
+      //Sets the Servo Positions:
+      intakeServo.setPosition(intakeLeftStartPosition);
+      intakeBaseServo.setPosition(intakeRightStartPosition);
+    }
+
+    else if (intakeClaw == 1) {
+      //Sets the Servo Positions:
+      intakeServo.setPosition(intakeLeftEndPosition);
+      intakeBaseServo.setPosition(intakeRightEndPosition);
     }
   }
 

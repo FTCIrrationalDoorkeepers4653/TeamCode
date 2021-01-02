@@ -96,7 +96,13 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (operatorPad.isXReleased()) {
       //Operates the Intake Arm:
-      robot.mechanisms.automateIntake(robot.uncoPower);
+      robot.mechanisms.automateIntake(robot.slowPower);
+    }
+
+    //Checks the Case:
+    if (operatorPad.isBReleased()) {
+      //Operates the Intake Claw:
+      robot.mechanisms.automateIntakeClaw();
     }
   }
 

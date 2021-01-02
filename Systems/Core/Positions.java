@@ -131,7 +131,7 @@ public class Positions extends LinearOpMode {
   public void turnGyro(double angle, double power, boolean correct) {
     //Calculates Turn:
     double turnValue = robot.calculateTurnRotations(angle);
-    double expected = (theta + turnValue);
+    double expected = (theta + angle);
     int timeRequired = Math.abs(calculateTime(Math.abs(turnValue), Math.abs(power)));
 
     //Turns Robot:
