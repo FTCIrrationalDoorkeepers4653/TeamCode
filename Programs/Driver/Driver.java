@@ -62,7 +62,15 @@ public class Driver extends OpMode {
     double rightY = -robot.getSpeedControl(driverPad.rightY, driverPad.leftBumper);
 
     //Checks the Case:
-    if (leftY > 0 && rightY == 0) {
+    if (leftY != 0 && rightY != 0) {
+      //Sets the Motor Powers:
+      robot.leftFrontMotor.setPower(leftY);
+      robot.leftBackMotor.setPower(leftY);
+      robot.rightFrontMotor.setPower(rightY);
+      robot.rightBackMotor.setPower(rightY);
+    }
+
+    else if (leftY > 0 && rightY == 0) {
       //Sets the Motor Powers:
       robot.leftFrontMotor.setPower(-leftY);
       robot.leftBackMotor.setPower(leftY);
@@ -80,10 +88,10 @@ public class Driver extends OpMode {
 
     else {
       //Sets the Motor Powers:
-      robot.leftFrontMotor.setPower(leftY);
-      robot.leftBackMotor.setPower(leftY);
-      robot.rightFrontMotor.setPower(rightY);
-      robot.rightBackMotor.setPower(rightY);
+      robot.leftFrontMotor.setPower(robot.zeroPower);
+      robot.leftBackMotor.setPower(robot.zeroPower);
+      robot.rightFrontMotor.setPower(robot.zeroPower);
+      robot.rightBackMotor.setPower(robot.zeroPower);
     }
   }
 

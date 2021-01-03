@@ -72,3 +72,6 @@ Need to Work on Third Position. Hope to Finish by Jan 1.
 
 - 1/1/2021 - Tweaked Autonomous with Better Odometry Positioning and Gyroscopic Turning. Made the 56 and 71 Point Autonomous Programs More Consistent and Efficient. Still
 Working on Getting New Intake System Up and Running.
+
+- 1/3/2021 - Fixed TeleOp Driving Bug and Improved the Driver Mechanum Controls for Smoother Movements. Continuing Work on Fixing Code for the Intake Control. Hope to Finish
+All Subsystems and Code Operation Very Soon.  
