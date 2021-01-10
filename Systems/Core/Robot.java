@@ -46,14 +46,13 @@ public class Robot {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 10.0;
-  public static double speedControl = 3.0;
+  public static double speedControl = 4.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
-  public static double slowPower = 0.2;
+  public static double slowPower = 0.3;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
-  public static double firePower = 0.8;
   public static double uncoPower = 1.0;
 
   /* POSITION VARIABLES */

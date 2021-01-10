@@ -74,4 +74,6 @@ Need to Work on Third Position. Hope to Finish by Jan 1.
 Working on Getting New Intake System Up and Running.
 
 - 1/3/2021 - Fixed TeleOp Driving Bug and Improved the Driver Mechanum Controls for Smoother Movements. Continuing Work on Fixing Code for the Intake Control. Hope to Finish
-All Subsystems and Code Operation Very Soon.  
+All Subsystems and Code Operation Very Soon.
+
+- 1/9/2021 - Fixed TeleOp Slow Mode Controls and the Controls for the New Intake System. Also, We Fixed the Autonomous for the IMU and For Improved Consistency.  

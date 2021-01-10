@@ -67,12 +67,12 @@ public class Side extends LinearOpMode {
       robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, robot.fastPower, true);
       robot.mechanisms.automateClaw();
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm(robot.slowPower);
     }
 
     else {
       //Drops Wobble and Parks:
-      robot.mechanisms.turnGyro(50.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(52.0, robot.mainPower, true);
       robot.mechanisms.runToPosition(640.0, 160.0, robot.fastPower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.automateArm(robot.mainPower);

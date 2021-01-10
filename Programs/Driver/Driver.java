@@ -59,31 +59,41 @@ public class Driver extends OpMode {
 
     //Gets the GamePad Control Values:
     double leftY = -robot.getSpeedControl(driverPad.leftY, driverPad.leftBumper);
-    double rightY = -robot.getSpeedControl(driverPad.rightY, driverPad.leftBumper);
+    double rightX = -robot.getSpeedControl(driverPad.rightX, driverPad.leftBumper);
+    double leftTrigger = -robot.getSpeedControl(driverPad.leftTrigger, driverPad.leftBumper);
+    double rightTrigger = -robot.getSpeedControl(driverPad.rightTrigger, driverPad.leftBumper);
 
     //Checks the Case:
-    if (leftY != 0 && rightY != 0) {
+    if (leftY != 0) {
       //Sets the Motor Powers:
       robot.leftFrontMotor.setPower(leftY);
       robot.leftBackMotor.setPower(leftY);
-      robot.rightFrontMotor.setPower(rightY);
-      robot.rightBackMotor.setPower(rightY);
-    }
-
-    else if (leftY > 0 && rightY == 0) {
-      //Sets the Motor Powers:
-      robot.leftFrontMotor.setPower(-leftY);
-      robot.leftBackMotor.setPower(leftY);
       robot.rightFrontMotor.setPower(leftY);
-      robot.rightBackMotor.setPower(-leftY);
+      robot.rightBackMotor.setPower(leftY);
     }
 
-    else if (leftY == 0 && rightY > 0) {
+    else if (rightX != 0) {
       //Sets the Motor Powers:
-      robot.leftFrontMotor.setPower(rightY);
-      robot.leftBackMotor.setPower(-rightY);
-      robot.rightFrontMotor.setPower(-rightY);
-      robot.rightBackMotor.setPower(rightY);
+      robot.leftFrontMotor.setPower(-rightX);
+      robot.leftBackMotor.setPower(-rightX);
+      robot.rightFrontMotor.setPower(rightX);
+      robot.rightBackMotor.setPower(rightX);
+    }
+
+    else if (leftTrigger != 0) {
+      //Sets the Motor Powers:
+      robot.leftFrontMotor.setPower(leftTrigger);
+      robot.leftBackMotor.setPower(-leftTrigger);
+      robot.rightFrontMotor.setPower(-leftTrigger);
+      robot.rightBackMotor.setPower(leftTrigger);
+    }
+
+    else if (rightTrigger != 0) {
+      //Sets the Motor Powers:
+      robot.leftFrontMotor.setPower(-rightTrigger);
+      robot.leftBackMotor.setPower(rightTrigger);
+      robot.rightFrontMotor.setPower(rightTrigger);
+      robot.rightBackMotor.setPower(-rightTrigger);
     }
 
     else {

@@ -53,14 +53,15 @@ public class Mechanisms extends Controller {
 
   //Mechanism Intake Variables:
   public static int intake = 0;
-  public static double intakeDown = 80.0;
+  public static double intakeDown = 210.0;
+  public static int intakeWait = 250;
 
   //Mechanism Intake Claw Variables:
   public static int intakeClaw = 0;
-  public static double intakeLeftStartPosition = 0.3;
-  public static double intakeLeftEndPosition = 0.0;
-  public static double intakeRightStartPosition = 0.0;
-  public static double intakeRightEndPosition = 0.5;
+  public static double intakeLeftStartPosition = 0.0;
+  public static double intakeLeftEndPosition = 0.5;
+  public static double intakeRightStartPosition = 0.1;
+  public static double intakeRightEndPosition = 0.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -138,6 +139,10 @@ public class Mechanisms extends Controller {
       intake++;
       operateIntake(power);
       completeCycle(time);
+
+      //Operates the Claw:
+      intakeClaw = 0;
+      operateIntakeClaw();
     }
 
     else {
@@ -145,11 +150,16 @@ public class Mechanisms extends Controller {
       intake--;
       operateIntake(power);
       completeCycle(time);
-    }
 
-    //Operates the Claw:
-    intakeClaw = 0;
-    operateIntakeClaw();
+      //Operates the Claw:
+      intakeClaw = 0;
+      operateIntakeClaw();
+
+      //Operates the Claw:
+      completeCycle(intakeWait);
+      intakeClaw = 1;
+      operateIntakeClaw();
+    }
   }
 
   //Automate Intake Claw Method:
@@ -180,10 +190,6 @@ public class Mechanisms extends Controller {
       arm++;
       operateArm(power);
       completeCycle(time);
-
-      //Opens the Claw:
-      claw = 0;
-      operateClaw();
     }
 
     else  {
@@ -301,14 +307,14 @@ public class Mechanisms extends Controller {
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       intakeMotor.setPower(power);
     }
 
     else if (intake == 1) {
       //Runs the Target Positions:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
+      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       intakeMotor.setPower(power);
     }
