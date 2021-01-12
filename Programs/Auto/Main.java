@@ -44,10 +44,19 @@ public class Main extends LinearOpMode {
 
     /* Shooting */
 
-    //Shoots and Shuts Off:
+    //Shoots Ring:
     robot.mechanisms.automateShooter();
+    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
+
+    //Shoots Ring:
     robot.mechanisms.automateShooter();
+    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
+
+    //Shoots Ring:
     robot.mechanisms.automateShooter();
+    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
+
+    //Turns Off Flywheel:
     robot.mechanisms.automateFlywheel();
     robot.mechanisms.automateClaw();
 
@@ -94,20 +103,20 @@ public class Main extends LinearOpMode {
 
     else {
       //Drops Wobble and Parks:
-      robot.mechanisms.turnGyro(52.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(52.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 160.0, robot.uncoPower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.automateArm(robot.mainPower);
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.automateClaw();
-      robot.mechanisms.turnGyro(-148.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(-148.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 600.0, robot.uncoPower, true);
       robot.mechanisms.automateClaw();
 
       //Moves, Drops, Parks:
-      robot.mechanisms.turnGyro(165.0, robot.uncoPower, true);
+      robot.mechanisms.turnGyro(165.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 280.0, -robot.uncoPower, true);

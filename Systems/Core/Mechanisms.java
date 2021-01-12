@@ -22,7 +22,6 @@ public class Mechanisms extends Controller {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
-  public static Servo intakeServo;
   public static Servo intakeBaseServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
@@ -43,6 +42,7 @@ public class Mechanisms extends Controller {
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
   public static int shooterWait = 500;
+  public static int autoWait = 250;
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
@@ -58,10 +58,8 @@ public class Mechanisms extends Controller {
 
   //Mechanism Intake Claw Variables:
   public static int intakeClaw = 0;
-  public static double intakeLeftStartPosition = 0.0;
-  public static double intakeLeftEndPosition = 0.5;
-  public static double intakeRightStartPosition = 0.1;
-  public static double intakeRightEndPosition = 0.0;
+  public static double intakeRightStartPosition = 0.0;
+  public static double intakeRightEndPosition = 0.5;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -78,13 +76,11 @@ public class Mechanisms extends Controller {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
-    intakeServo = hardwareMap.servo.get("intakeServo");
     intakeBaseServo = hardwareMap.servo.get("intakeBaseServo");
 
     //Servo Mechanism Setup:
     clawServo.setPosition(clawEndPosition);
     shooterServo.setPosition(shooterStartPosition);
-    intakeServo.setPosition(intakeLeftEndPosition);
     intakeBaseServo.setPosition(intakeRightEndPosition);
 
     /* Setup */
@@ -135,31 +131,22 @@ public class Mechanisms extends Controller {
 
     //Checks the Case:
     if (intake == 0) {
-      //Sets the Intake Arm:
+      //Sets the Intake:
       intake++;
-      operateIntake(power);
-      completeCycle(time);
-
-      //Operates the Claw:
-      intakeClaw = 0;
-      operateIntakeClaw();
     }
 
     else {
       //Sets the Intake Arm:
       intake--;
-      operateIntake(power);
-      completeCycle(time);
-
-      //Operates the Claw:
-      intakeClaw = 0;
-      operateIntakeClaw();
-
-      //Operates the Claw:
-      completeCycle(intakeWait);
-      intakeClaw = 1;
-      operateIntakeClaw();
     }
+
+    //Operates the Arm:
+    operateIntake(power);
+    completeCycle(time);
+
+    //Operates the Claw:
+    intakeClaw = 0;
+    operateIntakeClaw();
   }
 
   //Automate Intake Claw Method:
@@ -188,16 +175,16 @@ public class Mechanisms extends Controller {
     if (arm == 0) {
       //Operates the Arm:
       arm++;
-      operateArm(power);
-      completeCycle(time);
     }
 
     else  {
       //Operates the Arm:
       arm--;
-      operateArm(power);
-      completeCycle(time);
     }
+
+    //Operates the Arm:
+    operateArm(power);
+    completeCycle(time);
   }
 
   //Automate Claw Method:
@@ -325,13 +312,11 @@ public class Mechanisms extends Controller {
     //Checks the Case:
     if (intakeClaw == 0) {
       //Sets the Servo Positions:
-      intakeServo.setPosition(intakeLeftStartPosition);
       intakeBaseServo.setPosition(intakeRightStartPosition);
     }
 
     else if (intakeClaw == 1) {
       //Sets the Servo Positions:
-      intakeServo.setPosition(intakeLeftEndPosition);
       intakeBaseServo.setPosition(intakeRightEndPosition);
     }
   }
