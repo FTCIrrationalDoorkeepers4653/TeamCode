@@ -79,3 +79,6 @@ All Subsystems and Code Operation Very Soon.
 - 1/9/2021 - Fixed TeleOp Slow Mode Controls and the Controls for the New Intake System. Also, We Fixed the Autonomous for the IMU and For Improved Consistency.  
 
 - 1/11/2021 - Fixed Controls for New Intake Mechanism and Finished Timing and Correcting Shooting and Turning in Autonomous. Thus, Completed 71-Point Autonomous.
+
+- 1/12/2021 - Finalized and Formatted Code for Both Autonomous Programs and for the New Intake System. Hopefully, the New Code Will Make for a More Consistent Autonomous
+and Faster TeleOp Cycles.

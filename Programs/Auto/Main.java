@@ -44,19 +44,12 @@ public class Main extends LinearOpMode {
 
     /* Shooting */
 
-    //Shoots Ring:
+    //Shoots Rings:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
-
-    //Shoots Ring:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
-
-    //Shoots Ring:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
 
-    //Turns Off Flywheel:
+    //Turns off Flywheel:
     robot.mechanisms.automateFlywheel();
     robot.mechanisms.automateClaw();
 
@@ -116,7 +109,7 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateClaw();
 
       //Moves, Drops, Parks:
-      robot.mechanisms.turnGyro(165.0, robot.firePower, true);
+      robot.mechanisms.turnGyro(166.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, true);
       robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 280.0, -robot.uncoPower, true);

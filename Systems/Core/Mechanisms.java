@@ -42,7 +42,7 @@ public class Mechanisms extends Controller {
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
   public static int shooterWait = 500;
-  public static int autoWait = 250;
+  public static int revWait = (shooterWait + (shooterWait / 2));
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
@@ -54,7 +54,6 @@ public class Mechanisms extends Controller {
   //Mechanism Intake Variables:
   public static int intake = 0;
   public static double intakeDown = 210.0;
-  public static int intakeWait = 250;
 
   //Mechanism Intake Claw Variables:
   public static int intakeClaw = 0;
@@ -213,7 +212,7 @@ public class Mechanisms extends Controller {
     //Resets the Shooter:
     shot = 0;
     operateShooter();
-    completeCycle(shooterWait);
+    completeCycle(revWait);
   }
 
   //Automate Flywheel Method:

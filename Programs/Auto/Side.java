@@ -44,19 +44,12 @@ public class Side extends LinearOpMode {
 
     /* Shooting */
 
-    //Shoots Ring:
+    //Shoots Rings:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
-
-    //Shoots Ring:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
-
-    //Shoots Ring:
     robot.mechanisms.automateShooter();
-    robot.mechanisms.completeCycle(robot.mechanisms.autoWait);
 
-    //Turns Off Flywheel:
+    //Turns off Flywheel:
     robot.mechanisms.automateFlywheel();
     robot.mechanisms.automateClaw();
 
