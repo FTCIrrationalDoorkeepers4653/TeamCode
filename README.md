@@ -82,3 +82,5 @@ All Subsystems and Code Operation Very Soon.
 
 - 1/12/2021 - Finalized and Formatted Code for Both Autonomous Programs and for the New Intake System. Hopefully, the New Code Will Make for a More Consistent Autonomous
 and Faster TeleOp Cycles.
+
+- 1/13/2021 - Optimized Subsystem Handshake for Better Speed and Cycle Times. Also, Updated Some Backup Vision Systems for Vision Implementation.

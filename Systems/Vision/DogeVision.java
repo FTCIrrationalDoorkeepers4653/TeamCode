@@ -40,7 +40,7 @@ public class DogeVision extends DogeCVDetector {
   public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
   //Create the default filters and scorers
-  public DogeCVColorFilter yellowFilter = new HSVColorFilter(new Scalar(255, 215, 0), new Scalar(100, 100, 100)); //Default DogeVision filter
+  public DogeCVColorFilter yellowFilter = new HSVColorFilter(new Scalar(253, 168, 53), new Scalar(100, 100, 100)); //Default DogeVision filter
 
   public RatioScorer ratioScorer = new RatioScorer(1.0, 3);          // Used to find perfect squares
   public MaxAreaScorer maxAreaScorer = new MaxAreaScorer(0.01);                    // Used to find largest objects
