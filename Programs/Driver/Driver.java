@@ -139,7 +139,7 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (operatorPad.isRightBumperReleased()) {
       //Shoots the Ring:
-      robot.mechanisms.automateShooter();
+      robot.mechanisms.automateShooter(true, true, false);
     }
   }
 

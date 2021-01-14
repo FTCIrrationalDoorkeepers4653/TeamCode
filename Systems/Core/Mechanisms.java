@@ -42,7 +42,7 @@ public class Mechanisms extends Controller {
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
   public static int shooterWait = 500;
-  public static int revWait = (shooterWait + (shooterWait / 2));
+  public static int revWait = (shooterWait - 100);
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
@@ -203,16 +203,32 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Shooter Method:
-  public void automateShooter() {
-    //Shoots Ring (Flywheel Must Be On):
+  public void automateShooter(boolean start, boolean middle, boolean end) {
+    //Shoots Ring:
     shot = 1;
     operateShooter();
-    completeCycle(shooterWait);
+
+    //Checks the Case:
+    if (start) {
+      //Waits for the Ring to Shoot:
+      completeCycle(shooterWait);
+    }
 
     //Resets the Shooter:
     shot = 0;
     operateShooter();
-    completeCycle(revWait);
+
+    //Checks the Case:
+    if (middle) {
+      //Waits for Ring to Reset:
+      completeCycle(shooterWait);
+    }
+
+    //Checks the Case:
+    if (end) {
+      //Waits for Flywheel to Rev:
+      completeCycle(revWait);
+    }
   }
 
   //Automate Flywheel Method:

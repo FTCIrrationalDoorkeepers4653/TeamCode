@@ -53,7 +53,6 @@ public class Robot {
   public static double slowPower = 0.3;
   public static double mainPower = 0.5;
   public static double fastPower = 0.6;
-  public static double firePower = 0.8;
   public static double uncoPower = 1.0;
 
   /* POSITION VARIABLES */
