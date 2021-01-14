@@ -84,3 +84,5 @@ All Subsystems and Code Operation Very Soon.
 and Faster TeleOp Cycles.
 
 - 1/13/2021 - Optimized Subsystem Handshake for Better Speed and Cycle Times. Also, Updated Some Backup Vision Systems for Vision Implementation.
+
+- 1/14/2021 - Optimized Some of the Shooter RPM Values to Account for All Possible Field Shooting Positions. Optimized Intake Arm for Faster Cycles as Well. 
