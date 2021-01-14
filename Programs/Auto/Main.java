@@ -39,14 +39,14 @@ public class Main extends LinearOpMode {
     robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition(560.0, 410.0, robot.uncoPower, true);
+    robot.mechanisms.runToPosition(560.0, 410.0, robot.firePower, true);
     robot.mechanisms.turnGyro(-85.0, robot.mainPower, true);
 
     /* Shooting */
 
     //Shoots Rings:
-    robot.mechanisms.automateShooter(true, true, true);
-    robot.mechanisms.automateShooter(true, true, true);
+    robot.mechanisms.automateShooter(true, true, false);
+    robot.mechanisms.automateShooter(true, true, false);
     robot.mechanisms.automateShooter(true, false, false);
 
     //Turns off Flywheel:
