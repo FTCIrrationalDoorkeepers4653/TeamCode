@@ -31,9 +31,9 @@ public class Mechanisms extends Controller {
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 1.0;
-  public static double clawTeleStartPosition = 0.5;
-  public static double clawEndPosition = 0.2;
+  public static double clawStartPosition = 0.2;
+  public static double clawTeleStartPosition = 0.6;
+  public static double clawEndPosition = 1.0;
   public static int claw = 0;
 
   /* MECHANISM SHOOTER CONTROL VARIABLES */
@@ -42,8 +42,8 @@ public class Mechanisms extends Controller {
   public static double shooterStartPosition = 0.9;
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
-  public static int shooterWait = 500;
-  public static int revWait = (shooterWait - 100);
+  public static int shooterWait = 600;
+  public static int revWait = (shooterWait/2);
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
@@ -109,16 +109,20 @@ public class Mechanisms extends Controller {
     baseArmMotor.setPower(robot.zeroPower);
     intakeMotor.setPower(robot.zeroPower);
     shooterMotor.setPower(robot.zeroPower);
+  }
 
-    /* Variables */
-
-    //Resetting Positions:
-    claw = 0;
-    arm = 0;
-    shooter = 0;
-    shot = 0;
-    intake = 0;
-    intakeClaw = 0;
+  //Custom Values Initialization Method:
+  public static void initCustomValues(int values[]) {
+    //Checks the Case:
+    if (values.length == 6) {
+      //Sets the Values:
+      claw = values[0];
+      arm = values[1];
+      shooter = values[2];
+      shot = values[3];
+      intake = values[4];
+      intakeClaw = values[5];
+    }
   }
 
   /* MECHANISM AUTOMATION METHODS */

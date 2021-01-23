@@ -13,6 +13,7 @@ public class Main extends LinearOpMode {
   private double startX = 560.0;
   private double startY = 760.0;
   private int position = 0;
+  private int values[] = {0, 0, 0, 0, 0, 0};
 
   /* OPMODE METHODS */
 
@@ -27,6 +28,7 @@ public class Main extends LinearOpMode {
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
     robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initCustomValues(values);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
 
     //Waits for Start:
@@ -64,9 +66,7 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(-95.0, robot.fastPower, true);
-      robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 630.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
@@ -83,9 +83,7 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(-137.0, robot.fastPower, true);
-      robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 660.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
@@ -102,9 +100,7 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(-148.0, robot.fastPower, true);
-      robot.mechanisms.automateClaw();
       robot.mechanisms.runToPosition(640.0, 600.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 

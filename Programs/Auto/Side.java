@@ -13,6 +13,7 @@ public class Side extends LinearOpMode {
   private double startX = 560.0;
   private double startY = 760.0;
   private int position = 0;
+  private int values[] = {0, 0, 0, 0, 0, 0};
 
   /* OPMODE METHODS */
 
@@ -27,6 +28,7 @@ public class Side extends LinearOpMode {
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
     robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initCustomValues(values);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
 
     //Waits for Start:

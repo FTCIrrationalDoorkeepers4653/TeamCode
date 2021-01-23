@@ -15,6 +15,7 @@ public class Backup extends OpMode {
   private Robot robot = new Robot();
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
+  private int values[] = {0, 1, 0, 0, 0, 0};
 
   /* OPMODE METHODS */
 
@@ -27,6 +28,7 @@ public class Backup extends OpMode {
     //Initialize Robot:
     robot.init(hardwareMap, false, false);
     robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initCustomValues(values);
     driverPad = new GamePad(gamepad1);
   }
 
