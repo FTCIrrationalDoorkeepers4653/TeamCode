@@ -44,7 +44,7 @@ Will Continue to Work on Vision Positioning and Turning Algorithms.
 - 11/5/2020 - Added an Another Powershot to Autonomous, Added Vision Positioning Support, Coded for Intake and Flywheel/Shooter, Fixed and Tuned Motion Profiling, 
 Added a Custom GamePad Class, Tuned and Automated the TeleOp Further, and Made Code Easier and More Modular to Work With.
 
-- 11/18/2020 - Began Tweaking Autonomous and Mechanisms Parameters to Fine Tun Robot Movements for Perfection. We Are Still Working on Developing Shooter and More Consistent 
+- 11/18/2020 - Began Tweaking Autonomous and Mechanisms Parameters to Fine Tune Robot Movements for Perfection. We Are Still Working on Developing Shooter and More Consistent 
 Shooting During Autonomous Especially.
 
 - 11/21/2020 - Continued upon Improving the Autonomous Programs (Main and Side) for Upcoming Scrimmage in NC. Also, We Fixed and Updated the Gyro-Correction Algorithm.
@@ -56,7 +56,7 @@ Lastly, We Continued Working on the FTC_IDK_VISION_LIB By Adding Noise Correctio
 
 - 12/6/2020 - Added the Grabbing of the Second Wobble Goal to Main Autonomous and Began Testing Main Autonomous for Upcoming Scrimmage.
 
-- 12/8/2020 - Updated Side Autonomous Code for New Magazine and Shooter. Began Testing anf Tuning the Main Autonomous for Upcoming Scrimmage. Also, Began PID Control
+- 12/8/2020 - Updated Side Autonomous Code for New Magazine and Shooter. Began Testing and Tuning the Main Autonomous for Upcoming Scrimmage. Also, Began PID Control
 Programming.
 
 - 12/12/2020 - Updated Autonomous Programs and Post-Scrimmage Bug Fixes. We Hope to Get Main Auto Working for NC Scrimmage.
