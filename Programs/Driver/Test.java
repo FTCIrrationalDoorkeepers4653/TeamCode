@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @TeleOp(name="Test")
+@Disabled
 public class Test extends OpMode {
   /* TEST VARIABLES */
 

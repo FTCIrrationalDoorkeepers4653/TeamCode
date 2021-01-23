@@ -27,12 +27,13 @@ public class Mechanisms extends Controller {
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 180.0;
+  public static double armDown = 240.0;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 0.2;
-  public static double clawEndPosition = 1.0;
+  public static double clawStartPosition = 1.0;
+  public static double clawTeleStartPosition = 0.5;
+  public static double clawEndPosition = 0.2;
   public static int claw = 0;
 
   /* MECHANISM SHOOTER CONTROL VARIABLES */
@@ -86,7 +87,7 @@ public class Mechanisms extends Controller {
 
     //Mechanism Motors Behavior:
     baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
     //Mechanism Motors Direction:
@@ -123,10 +124,10 @@ public class Mechanisms extends Controller {
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
-  public void automateIntake(double power) {
+  public void automateIntake() {
     //Time Calculation:
     double rotations = robot.getAngleRotations(intakeDown);
-    int time = calculateTime(rotations, power);
+    int time = calculateTime(rotations, robot.slowPower);
 
     //Checks the Case:
     if (intake == 0) {
@@ -140,7 +141,7 @@ public class Mechanisms extends Controller {
     }
 
     //Operates the Arm:
-    operateIntake(power);
+    operateIntake();
     completeCycle(time);
 
     //Operates the Claw:
@@ -165,10 +166,10 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Arm Method:
-  public void automateArm(double power) {
+  public void automateArm() {
     //Time Calculation:
     double rotations = robot.getAngleRotations(armDown);
-    int time = calculateTime(rotations, power);
+    int time = calculateTime(rotations, robot.slowPower);
 
     //Checks the Case:
     if (arm == 0) {
@@ -182,7 +183,7 @@ public class Mechanisms extends Controller {
     }
 
     //Operates the Arm:
-    operateArm(power);
+    operateArm();
     completeCycle(time);
   }
 
@@ -199,6 +200,22 @@ public class Mechanisms extends Controller {
       //Sets the Claw:
       claw--;
       operateClaw();
+    }
+  }
+
+  //Automate Claw TeleOp Method:
+  public void automateClawTele() {
+    //Checks the Case:
+    if (claw == 0) {
+      //Sets the Claw:
+      claw++;
+      operateClawTele();
+    }
+
+    else {
+      //Sets the Claw:
+      claw--;
+      operateClawTele();
     }
   }
 
@@ -281,28 +298,28 @@ public class Mechanisms extends Controller {
   }
 
   //Operates the Arm:
-  public static void operateArm(double power) {
+  public static void operateArm() {
     //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
 
     //Checks the Case:
     if (arm == 0) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(power);
+      baseArmMotor.setPower(robot.slowPower);
     }
 
     else if (arm == 1) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(power);
+      baseArmMotor.setPower(robot.slowPower);
     }
   }
 
   //Operates the Intake Arm:
-  public static void operateIntake(double power) {
+  public static void operateIntake() {
     //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(intakeDown));
 
@@ -311,14 +328,14 @@ public class Mechanisms extends Controller {
       //Runs the Intake:
       intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      intakeMotor.setPower(power);
+      intakeMotor.setPower(robot.slowPower);
     }
 
     else if (intake == 1) {
       //Runs the Target Positions:
       intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
       intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      intakeMotor.setPower(power);
+      intakeMotor.setPower(robot.slowPower);
     }
   }
 
@@ -356,6 +373,20 @@ public class Mechanisms extends Controller {
     if (claw == 0) {
       //Sets the Servo:
       clawServo.setPosition(clawStartPosition);
+    }
+
+    else if (claw == 1) {
+      //Sets the Servo:
+      clawServo.setPosition(clawEndPosition);
+    }
+  }
+
+  //Operate Claw TeleOp:
+  public static void operateClawTele() {
+    //Checks the Case:
+    if (claw == 0) {
+      //Sets the Servo:
+      clawServo.setPosition(clawTeleStartPosition);
     }
 
     else if (claw == 1) {

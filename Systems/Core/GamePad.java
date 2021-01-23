@@ -44,6 +44,12 @@ public class GamePad {
   private boolean wasLeftJoyPressed = false;
   private boolean wasRightJoyPressed = false;
 
+  //Control Dpad Tracker Variables:
+  private boolean wasDpadUpPressed = false;
+  private boolean wasDpadDownPressed = false;
+  private boolean wasDpadLeftPressed = false;
+  private boolean wasDpadRightPressed = false;
+
   //Control Triggers Tracker Variables:
   private boolean wasLeftBumperPressed = false;
   private boolean wasRightBumperPressed = false;
@@ -126,6 +132,92 @@ public class GamePad {
     if (wasRightJoyPressed && !rightJoyButton) {
       //Returns the Value:
       wasRightJoyPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  /* GAMEPAD DPAD METHODS */
+
+  //DPad Up Released:
+  public boolean isDpadUpReleased() {
+    //Checks the Case:
+    if (dPadUp) {
+      //Sets the Button Press:
+      wasDpadUpPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasDpadUpPressed && !dPadUp) {
+      //Returns the Value:
+      wasDpadUpPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  //DPad Down Released:
+  public boolean isDpadDownReleased() {
+    //Checks the Case:
+    if (dPadDown) {
+      //Sets the Button Press:
+      wasDpadDownPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasDpadDownPressed && !dPadDown) {
+      //Returns the Value:
+      wasDpadDownPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  //DPad Left Released:
+  public boolean isDpadLeftReleased() {
+    //Checks the Case:
+    if (dPadLeft) {
+      //Sets the Button Press:
+      wasDpadLeftPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasDpadLeftPressed && !dPadLeft) {
+      //Returns the Value:
+      wasDpadLeftPressed = false;
+      return true;
+    }
+
+    else {
+      //Returns the Value:
+      return false;
+    }
+  }
+
+  //DPad Right Released:
+  public boolean isDpadRightReleased() {
+    //Checks the Case:
+    if (dPadRight) {
+      //Sets the Button Press:
+      wasDpadRightPressed = true;
+    }
+
+    //Checks the Case:
+    if (wasDpadRightPressed && !dPadRight) {
+      //Returns the Value:
+      wasDpadRightPressed = false;
       return true;
     }
 

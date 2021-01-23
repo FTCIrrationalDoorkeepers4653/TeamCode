@@ -86,3 +86,6 @@ and Faster TeleOp Cycles.
 - 1/13/2021 - Optimized Subsystem Handshake for Better Speed and Cycle Times. Also, Updated Some Backup Vision Systems for Vision Implementation.
 
 - 1/14/2021 - Optimized Some of the Shooter RPM Values to Account for All Possible Field Shooting Positions. Optimized Intake Arm for Faster Cycles as Well. 
+
+- 1/22/2021 - Optimized for the New Wobble Goal Arm Addition in Autonomous and Driver-Control Periods. Also, Optimized Driver-Control Loops and Button Mappings. 
+Lastly, Added a One GamePad Driver-Control System for Driver Practice and as a Backup TeleOp.

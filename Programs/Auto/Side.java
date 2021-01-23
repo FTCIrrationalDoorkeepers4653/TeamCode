@@ -39,8 +39,8 @@ public class Side extends LinearOpMode {
     robot.mechanisms.automateFlywheel();
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition(560.0, 410.0, robot.fastPower, true);
-    robot.mechanisms.turnGyro(-85.0, robot.mainPower, true);
+    robot.mechanisms.runToPosition(560.0, 410.0, robot.firePower, true);
+    robot.mechanisms.turnGyro(-85.0, robot.fastPower, true);
 
     /* Shooting */
 
@@ -58,26 +58,26 @@ public class Side extends LinearOpMode {
     //Checks the Case:
     if (position == 1) {
       //Drops Wobble:
-      robot.mechanisms.turnGyro(5.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(5.0, robot.fastPower, true);
       robot.mechanisms.runToPosition(660.0, 380.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm();
     }
 
     else if (position == 2) {
       //Drops Wobble:
-      robot.mechanisms.turnGyro(55.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(55.0, robot.fastPower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
-      robot.mechanisms.automateArm(robot.slowPower);
+      robot.mechanisms.automateArm();
     }
 
     else {
       //Drops Wobble and Parks:
-      robot.mechanisms.turnGyro(52.0, robot.mainPower, true);
+      robot.mechanisms.turnGyro(52.0, robot.fastPower, true);
       robot.mechanisms.runToPosition(640.0, 160.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
-      robot.mechanisms.automateArm(robot.mainPower);
+      robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -robot.firePower, true);
     }
 
