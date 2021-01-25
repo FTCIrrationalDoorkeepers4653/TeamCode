@@ -91,3 +91,6 @@ and Faster TeleOp Cycles.
 Lastly, Added a One GamePad Driver-Control System for Driver Practice and as a Backup TeleOp.
 
 - 1/23/2021 - Optimized Driver Controls and Autonomous for Wobble Goal Arm for the Final Time Before NC Qualifying Tournament #1.
+
+- 1/25/2021 - Added an Endgame Drop Feature for the Wobble Goal Arm, and Tightened up the Autonomous Before the Tournament Ahead. Also, Made Some Minor Code Cleanliness
+Improvements. 

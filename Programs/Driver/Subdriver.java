@@ -2,21 +2,19 @@ package org.firstinspires.ftc.teamcode.Programs.Driver;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
-@TeleOp(name="Driver")
-public class Driver extends OpMode {
+@TeleOp(name="Subdriver")
+public class Subdriver extends OpMode {
   /* DRIVE VARIABLES */
 
   //Objects:
   private Robot robot = new Robot();
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
-  private GamePad operatorPad;
   private int values[] = {0, 2, 0, 0, 0, 0};
 
   /* OPMODE METHODS */
@@ -32,7 +30,6 @@ public class Driver extends OpMode {
     robot.mechanisms.initMechanisms(hardwareMap);
     robot.mechanisms.initCustomValues(values);
     driverPad = new GamePad(gamepad1);
-    operatorPad = new GamePad(gamepad2);
   }
 
   @Override
@@ -55,9 +52,8 @@ public class Driver extends OpMode {
 
   //Moves the Robot:
   public void moveRobot() {
-    //Sets the GamePads:
+    //Sets the GamePad Values:
     driverPad.setGamePad();
-    operatorPad.setGamePad();
 
     //Gets the GamePad Control Values:
     double leftY = -robot.getSpeedControl(driverPad.leftY, driverPad.leftBumper);
@@ -109,18 +105,17 @@ public class Driver extends OpMode {
 
   //Moves the Intake Arm:
   public void moveIntake() {
-    //Sets the GamePads:
+    //Sets the GamePad:
     driverPad.setGamePad();
-    operatorPad.setGamePad();
 
     //Checks the Case:
-    if (operatorPad.isXReleased()) {
+    if (driverPad.isXReleased()) {
       //Operates the Intake Arm:
       robot.mechanisms.automateIntake();
     }
 
     //Checks the Case:
-    if (operatorPad.isBReleased()) {
+    if (driverPad.isBReleased()) {
       //Operates the Intake Claw:
       robot.mechanisms.automateIntakeClaw();
     }
@@ -128,18 +123,19 @@ public class Driver extends OpMode {
 
   //Moves the Shooter:
   public void moveShooter() {
-    //Sets the GamePads:
+    //Sets the GamePad:
     driverPad.setGamePad();
-    operatorPad.setGamePad();
+    boolean flywheel = driverPad.isDpadUpReleased() || driverPad.isDpadDownReleased() ||
+      driverPad.isDpadLeftReleased() || driverPad.isDpadRightReleased();
 
     //Checks the Case:
-    if (operatorPad.isLeftBumperReleased()) {
+    if (flywheel) {
       //Operates the Flywheel:
       robot.mechanisms.automateFlywheel();
     }
 
     //Checks the Case:
-    if (operatorPad.isRightBumperReleased()) {
+    if (driverPad.isRightBumperReleased()) {
       //Shoots the Ring:
       robot.mechanisms.automateShooter(true, true);
     }
@@ -147,18 +143,17 @@ public class Driver extends OpMode {
 
   //Moves the Wobble Claw:
   public void moveWobble() {
-    //Sets the GamePads:
+    //Sets the GamePad:
     driverPad.setGamePad();
-    operatorPad.setGamePad();
 
     //Checks the Case:
-    if (operatorPad.isAReleased()) {
+    if (driverPad.isAReleased()) {
       //Moves the Arm:
       robot.mechanisms.automateArmTele();
     }
 
     //Checks the Case:
-    if (operatorPad.isYReleased()) {
+    if (driverPad.isYReleased()) {
       //Operates the Claw:
       robot.mechanisms.automateClawTele();
     }

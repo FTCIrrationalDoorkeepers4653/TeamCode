@@ -47,9 +47,9 @@ public class Main extends LinearOpMode {
     /* Shooting */
 
     //Shoots Rings:
-    robot.mechanisms.automateShooter(true, true, false);
-    robot.mechanisms.automateShooter(true, true, false);
-    robot.mechanisms.automateShooter(true, false, false);
+    robot.mechanisms.automateShooter(true, true);
+    robot.mechanisms.automateShooter(true, true);
+    robot.mechanisms.automateShooter(true, false);
 
     //Turns off Flywheel:
     robot.mechanisms.automateFlywheel();
@@ -67,7 +67,7 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-95.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(640.0, 630.0, robot.firePower, true);
+      robot.mechanisms.runToPosition(640.0, 610.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
       //Moves and Turns Back to Drop:
@@ -84,7 +84,7 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-137.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(640.0, 660.0, robot.firePower, true);
+      robot.mechanisms.runToPosition(640.0, 640.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
       //Moves and Turns Back to Drop:

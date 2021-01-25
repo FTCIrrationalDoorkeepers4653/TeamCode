@@ -28,6 +28,7 @@ public class Mechanisms extends Controller {
 
   //Mechanism Arm Variables:
   public static double armDown = 240.0;
+  public static double armMid = (armDown/2.0);
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -43,7 +44,6 @@ public class Mechanisms extends Controller {
   public static double shooterEndPosition = 0.6;
   public static int shot = 0;
   public static int shooterWait = 600;
-  public static int revWait = (shooterWait/2);
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
@@ -189,6 +189,40 @@ public class Mechanisms extends Controller {
     //Operates the Arm:
     operateArm();
     completeCycle(time);
+
+    //Operates the Claw:
+    claw = 0;
+    operateClaw();
+  }
+
+  //Automate Arm in TeleOp Method:
+  public void automateArmTele() {
+    //End Time Calculations:
+    double rotationsEnd = robot.getAngleRotations(armDown);
+    int timeEnd = calculateTime(rotationsEnd, robot.slowPower);
+
+    //Mid Time Calculations:
+    double rotationsMid = robot.getAngleRotations(armMid);
+    int timeMid = calculateTime(rotationsMid, robot.slowPower);
+
+    //Checks the Case:
+    if (arm == 0 || arm == 1) {
+      //Operates the Arm:
+      arm++;
+      operateArmTele();
+      completeCycle(timeMid);
+
+      //Operates the Claw:
+      claw = 0;
+      operateClawTele();
+    }
+
+    else {
+      //Operates the Arm:
+      arm -= 2;
+      operateArmTele();
+      completeCycle(timeEnd);
+    }
   }
 
   //Automate Claw Method:
@@ -224,7 +258,7 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Shooter Method:
-  public void automateShooter(boolean start, boolean middle, boolean end) {
+  public void automateShooter(boolean start, boolean middle) {
     //Shoots Ring:
     shot = 1;
     operateShooter();
@@ -243,12 +277,6 @@ public class Mechanisms extends Controller {
     if (middle) {
       //Waits for Ring to Reset:
       completeCycle(shooterWait);
-    }
-
-    //Checks the Case:
-    if (end) {
-      //Waits for Flywheel to Rev:
-      completeCycle(revWait);
     }
   }
 
@@ -317,6 +345,35 @@ public class Mechanisms extends Controller {
     else if (arm == 1) {
       //Runs the Target Positions:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
+      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      baseArmMotor.setPower(robot.slowPower);
+    }
+  }
+
+  //Operates the Arm in TeleOp:
+  public static void operateArmTele() {
+    //Target Variable:
+    int endTarget = robot.getParts(robot.getAngleRotations(armDown));
+    int midTarget = robot.getParts(robot.getAngleRotations(armMid));
+
+    //Checks the Case:
+    if (arm == 0) {
+      //Runs the Target Positions:
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
+      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      baseArmMotor.setPower(robot.slowPower);
+    }
+
+    else if (arm == 1) {
+      //Runs the Target Positions:
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - midTarget);
+      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      baseArmMotor.setPower(robot.slowPower);
+    }
+
+    else if (arm == 2) {
+      //Runs the Target Positions:
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - midTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
     }
