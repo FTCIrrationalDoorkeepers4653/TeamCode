@@ -154,7 +154,7 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (operatorPad.isAReleased()) {
       //Moves the Arm:
-      robot.mechanisms.automateArmTele();
+      robot.mechanisms.automateArm();
     }
 
     //Checks the Case:

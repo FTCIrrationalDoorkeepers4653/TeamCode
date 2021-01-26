@@ -67,6 +67,7 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-95.0, robot.fastPower, true);
+      robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 610.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
@@ -84,6 +85,7 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-137.0, robot.fastPower, true);
+      robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 640.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
@@ -101,6 +103,7 @@ public class Main extends LinearOpMode {
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-148.0, robot.fastPower, true);
+      robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 600.0, robot.firePower, true);
       robot.mechanisms.automateClaw();
 

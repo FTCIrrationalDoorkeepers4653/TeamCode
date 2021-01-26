@@ -149,7 +149,7 @@ public class Subdriver extends OpMode {
     //Checks the Case:
     if (driverPad.isAReleased()) {
       //Moves the Arm:
-      robot.mechanisms.automateArmTele();
+      robot.mechanisms.automateArm();
     }
 
     //Checks the Case:

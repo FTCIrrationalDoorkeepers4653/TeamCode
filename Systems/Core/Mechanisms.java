@@ -171,32 +171,6 @@ public class Mechanisms extends Controller {
 
   //Automate Arm Method:
   public void automateArm() {
-    //Time Calculation:
-    double rotations = robot.getAngleRotations(armDown);
-    int time = calculateTime(rotations, robot.slowPower);
-
-    //Checks the Case:
-    if (arm == 0) {
-      //Operates the Arm:
-      arm++;
-    }
-
-    else  {
-      //Operates the Arm:
-      arm--;
-    }
-
-    //Operates the Arm:
-    operateArm();
-    completeCycle(time);
-
-    //Operates the Claw:
-    claw = 0;
-    operateClaw();
-  }
-
-  //Automate Arm in TeleOp Method:
-  public void automateArmTele() {
     //End Time Calculations:
     double rotationsEnd = robot.getAngleRotations(armDown);
     int timeEnd = calculateTime(rotationsEnd, robot.slowPower);
@@ -209,18 +183,14 @@ public class Mechanisms extends Controller {
     if (arm == 0 || arm == 1) {
       //Operates the Arm:
       arm++;
-      operateArmTele();
+      operateArm();
       completeCycle(timeMid);
-
-      //Operates the Claw:
-      claw = 0;
-      operateClawTele();
     }
 
     else {
       //Operates the Arm:
       arm -= 2;
-      operateArmTele();
+      operateArm();
       completeCycle(timeEnd);
     }
   }
@@ -329,29 +299,8 @@ public class Mechanisms extends Controller {
     }
   }
 
-  //Operates the Arm:
-  public static void operateArm() {
-    //Target Variable:
-    int endTarget = robot.getParts(robot.getAngleRotations(armDown));
-
-    //Checks the Case:
-    if (arm == 0) {
-      //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
-      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(robot.slowPower);
-    }
-
-    else if (arm == 1) {
-      //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - endTarget);
-      baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      baseArmMotor.setPower(robot.slowPower);
-    }
-  }
-
   //Operates the Arm in TeleOp:
-  public static void operateArmTele() {
+  public static void operateArm() {
     //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
     int midTarget = robot.getParts(robot.getAngleRotations(armMid));
