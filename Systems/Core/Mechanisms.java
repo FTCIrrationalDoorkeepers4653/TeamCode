@@ -28,7 +28,8 @@ public class Mechanisms extends Controller {
 
   //Mechanism Arm Variables:
   public static double armDown = 240.0;
-  public static double armMid = (armDown/2.0);
+  public static double armMid = (armDown / 3.0);
+  public static double armSecond = (armMid * 2.0);
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -179,12 +180,23 @@ public class Mechanisms extends Controller {
     double rotationsMid = robot.getAngleRotations(armMid);
     int timeMid = calculateTime(rotationsMid, robot.slowPower);
 
+    //Second Time Calculations:
+    double rotationsSecond = robot.getAngleRotations(armSecond);
+    int timeSecond = calculateTime(rotationsSecond, robot.slowPower);
+
     //Checks the Case:
-    if (arm == 0 || arm == 1) {
+    if (arm == 0) {
       //Operates the Arm:
       arm++;
       operateArm();
       completeCycle(timeMid);
+    }
+
+    else if (arm == 1) {
+      //Operates the Arm:
+      arm++;
+      operateArm();
+      completeCycle(timeSecond);
     }
 
     else {
@@ -299,11 +311,12 @@ public class Mechanisms extends Controller {
     }
   }
 
-  //Operates the Arm in TeleOp:
+  //Operates the Arm:
   public static void operateArm() {
     //Target Variable:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
     int midTarget = robot.getParts(robot.getAngleRotations(armMid));
+    int secondTarget = robot.getParts(robot.getAngleRotations(armSecond));
 
     //Checks the Case:
     if (arm == 0) {
@@ -322,7 +335,7 @@ public class Mechanisms extends Controller {
 
     else if (arm == 2) {
       //Runs the Target Positions:
-      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - midTarget);
+      baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - secondTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
     }
