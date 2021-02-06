@@ -49,7 +49,7 @@ public class Mechanisms extends Controller {
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3260.0;
+  public static double mainRPM = 3175.0;
 
   /* MECHANISM INTAKE CONTROL VARIABLES */
 
