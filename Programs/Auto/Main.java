@@ -13,7 +13,7 @@ public class Main extends LinearOpMode {
   private double startX = 560.0;
   private double startY = 760.0;
   private int position = 0;
-  private int values[] = {0, 0, 0, 0, 0, 0};
+  private int values[] = {1, 0, 0, 0, 0};
 
   /* OPMODE METHODS */
 
@@ -36,82 +36,77 @@ public class Main extends LinearOpMode {
 
     /* Detection */
 
-    //Gets the Ring Position:
-    position = robot.getPixelsPosition();
+    //Gets the Ring Position and Setup:
     robot.mechanisms.automateFlywheel();
+    position = robot.getPixelsPosition();
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition(560.0, 410.0, robot.firePower, true);
-    robot.mechanisms.turnGyro(-85.0, robot.fastPower, true);
+    robot.mechanisms.runToPosition(560.0, 410.0, robot.firePower, 0.2, true);
+    robot.mechanisms.turnGyro(-85.0, robot.firePower, 0.2, true);
 
     /* Shooting */
 
     //Shoots Rings:
-    robot.mechanisms.automateShooter(true, true);
-    robot.mechanisms.automateShooter(true, true);
-    robot.mechanisms.automateShooter(true, false);
-
-    //Turns off Flywheel:
+    robot.mechanisms.automateShooter(100);
+    robot.mechanisms.automateShooter(700);
+    robot.mechanisms.automateShooter(700);
     robot.mechanisms.automateFlywheel();
-    robot.mechanisms.automateClaw();
 
     /* Wobble Goal Drop */
 
     //Checks the Case:
     if (position == 1) {
       //Drops Wobble:
-      robot.mechanisms.turnGyro(5.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(660.0, 380.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      robot.mechanisms.turnGyro(5.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(660.0, 380.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.turnGyro(-95.0, robot.fastPower, true);
+      robot.mechanisms.turnGyro(-95.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.runToPosition(640.0, 610.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      robot.mechanisms.runToPosition(640.0, 610.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
 
       //Moves and Turns Back to Drop:
-      robot.mechanisms.turnGyro(152.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(640.0, 400.0, robot.firePower, true);
+      robot.mechanisms.turnGyro(152.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(640.0, 400.0, robot.firePower, 0.2, true);
     }
 
     else if (position == 2) {
       //Drops Wobble:
-      robot.mechanisms.turnGyro(55.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(600.0, 360.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      robot.mechanisms.turnGyro(55.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(600.0, 360.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.turnGyro(-137.0, robot.fastPower, true);
+      robot.mechanisms.turnGyro(-137.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.runToPosition(640.0, 640.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      robot.mechanisms.runToPosition(640.0, 640.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
 
       //Moves and Turns Back to Drop:
-      robot.mechanisms.turnGyro(166.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(600.0, 320.0, robot.firePower, true);
+      robot.mechanisms.turnGyro(166.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(600.0, 320.0, robot.firePower, 0.2, true);
     }
 
     else {
-      //Drops Wobble and Parks:
-      robot.mechanisms.turnGyro(52.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(640.0, 160.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      //Drops Wobble:
+      robot.mechanisms.turnGyro(52.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(640.0, 160.0, robot.uncoPower, 0.4, true);
+      robot.mechanisms.automateClaw(false);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
-      robot.mechanisms.turnGyro(-148.0, robot.fastPower, true);
+      robot.mechanisms.turnGyro(-148.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.runToPosition(640.0, 600.0, robot.firePower, true);
-      robot.mechanisms.automateClaw();
+      robot.mechanisms.runToPosition(640.0, 600.0, robot.uncoPower, 0.4, true);
+      robot.mechanisms.automateClaw(false);
 
       //Moves, Drops, Parks:
-      robot.mechanisms.turnGyro(166.0, robot.fastPower, true);
-      robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, true);
-      robot.mechanisms.automateClaw();
-      robot.mechanisms.runToPosition(640.0, 280.0, -robot.uncoPower, true);
+      robot.mechanisms.turnGyro(166.0, robot.firePower, 0.2, true);
+      robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, 0.4, true);
     }
 
     /* Stop */

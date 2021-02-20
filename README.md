@@ -94,3 +94,5 @@ Lastly, Added a One GamePad Driver-Control System for Driver Practice and as a B
 
 - 1/25/2021 - Added an Endgame Drop Feature for the Wobble Goal Arm, and Tightened up the Autonomous Before the Tournament Ahead. Also, Made Some Minor Code Cleanliness
 Improvements. 
+
+- 2/19/2021 - Fixed New Configurations for Autonomous Values for the Robot Rebuild from 2/12 - 2/19. Also, Made Minor Improvements to Intake and Wobble Goal Controls.

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Systems.Core;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,13 +21,12 @@ public class Mechanisms extends Controller {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
-  public static Servo intakeBaseServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
   public static double armDown = 240.0;
-  public static double armMid = (armDown / 3.0);
+  public static double armMid = (armDown / 2.5);
   public static double armSecond = (armMid * 2.0);
   public static int arm = 0;
 
@@ -43,24 +41,15 @@ public class Mechanisms extends Controller {
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.9;
   public static double shooterEndPosition = 0.6;
+  public static int shooterWait = 500;
   public static int shot = 0;
-  public static int shooterWait = 600;
+  public static int intake = 0;
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3175.0;
+  public static double mainRPM = 3220.0;
 
-  /* MECHANISM INTAKE CONTROL VARIABLES */
-
-  //Mechanism Intake Variables:
-  public static int intake = 0;
-  public static double intakeDown = 210.0;
-
-  //Mechanism Intake Claw Variables:
-  public static int intakeClaw = 0;
-  public static double intakeRightStartPosition = 0.0;
-  public static double intakeRightEndPosition = 0.5;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -77,18 +66,16 @@ public class Mechanisms extends Controller {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
-    intakeBaseServo = hardwareMap.servo.get("intakeBaseServo");
 
     //Servo Mechanism Setup:
     clawServo.setPosition(clawEndPosition);
     shooterServo.setPosition(shooterStartPosition);
-    intakeBaseServo.setPosition(intakeRightEndPosition);
 
     /* Setup */
 
     //Mechanism Motors Behavior:
     baseArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
     //Mechanism Motors Direction:
@@ -115,14 +102,13 @@ public class Mechanisms extends Controller {
   //Custom Values Initialization Method:
   public static void initCustomValues(int values[]) {
     //Checks the Case:
-    if (values.length == 6) {
+    if (values.length == 5) {
       //Sets the Values:
       claw = values[0];
       arm = values[1];
       shooter = values[2];
       shot = values[3];
       intake = values[4];
-      intakeClaw = values[5];
     }
   }
 
@@ -130,10 +116,6 @@ public class Mechanisms extends Controller {
 
   //Automate Intake Method:
   public void automateIntake() {
-    //Time Calculation:
-    double rotations = robot.getAngleRotations(intakeDown);
-    int time = calculateTime(rotations, robot.slowPower);
-
     //Checks the Case:
     if (intake == 0) {
       //Sets the Intake:
@@ -141,33 +123,12 @@ public class Mechanisms extends Controller {
     }
 
     else {
-      //Sets the Intake Arm:
+      //Sets the Intake:
       intake--;
     }
 
-    //Operates the Arm:
+    //Operates the Intake:
     operateIntake();
-    completeCycle(time);
-
-    //Operates the Claw:
-    intakeClaw = 0;
-    operateIntakeClaw();
-  }
-
-  //Automate Intake Claw Method:
-  public void automateIntakeClaw() {
-    //Checks the Case:
-    if (intakeClaw == 0) {
-      //Operates the Intake Claw:
-      intakeClaw++;
-      operateIntakeClaw();
-    }
-
-    else {
-      //Operates the Intake Claw:
-      intakeClaw--;
-      operateIntakeClaw();
-    }
   }
 
   //Automate Arm Method:
@@ -208,58 +169,52 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Claw Method:
-  public void automateClaw() {
+  public void automateClaw(boolean teleOp) {
     //Checks the Case:
-    if (claw == 0) {
-      //Sets the Claw:
-      claw++;
-      operateClaw();
+    if (!teleOp) {
+      //Checks the Case:
+      if (claw == 0) {
+        //Sets the Claw:
+        claw++;
+        operateClaw();
+      } else {
+        //Sets the Claw:
+        claw--;
+        operateClaw();
+      }
     }
 
     else {
-      //Sets the Claw:
-      claw--;
-      operateClaw();
-    }
-  }
+      //Checks the Case:
+      if (claw == 0) {
+        //Sets the Claw:
+        claw++;
+        operateClawTele();
+      }
 
-  //Automate Claw TeleOp Method:
-  public void automateClawTele() {
-    //Checks the Case:
-    if (claw == 0) {
-      //Sets the Claw:
-      claw++;
-      operateClawTele();
-    }
-
-    else {
-      //Sets the Claw:
-      claw--;
-      operateClawTele();
+      else {
+        //Sets the Claw:
+        claw--;
+        operateClawTele();
+      }
     }
   }
 
   //Automate Shooter Method:
-  public void automateShooter(boolean start, boolean middle) {
+  public void automateShooter(int start) {
+    //Waits for the Ring to Shoot:
+    completeCycle(start);
+
     //Shoots Ring:
     shot = 1;
     operateShooter();
 
-    //Checks the Case:
-    if (start) {
-      //Waits for the Ring to Shoot:
-      completeCycle(shooterWait);
-    }
+    //Waits for Ring to Reset:
+    completeCycle(shooterWait);
 
     //Resets the Shooter:
     shot = 0;
     operateShooter();
-
-    //Checks the Case:
-    if (middle) {
-      //Waits for Ring to Reset:
-      completeCycle(shooterWait);
-    }
   }
 
   //Automate Flywheel Method:
@@ -282,17 +237,10 @@ public class Mechanisms extends Controller {
 
   //Mechanism Finish Run Method:
   public static void mechanismsFinishRun() {
-    //Resets Powers:
+    //Resets Motors:
     baseArmMotor.setPower(robot.zeroPower);
-    intakeMotor.setPower(robot.zeroPower);
-
-    //Resets the Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    //Sets Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   //Operates the Flywheel:
@@ -343,36 +291,15 @@ public class Mechanisms extends Controller {
 
   //Operates the Intake Arm:
   public static void operateIntake() {
-    //Target Variable:
-    int endTarget = robot.getParts(robot.getAngleRotations(intakeDown));
-
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() + endTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      intakeMotor.setPower(robot.slowPower);
+      intakeMotor.setPower(robot.zeroPower);
     }
 
     else if (intake == 1) {
-      //Runs the Target Positions:
-      intakeMotor.setTargetPosition(intakeMotor.getCurrentPosition() - endTarget);
-      intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-      intakeMotor.setPower(robot.slowPower);
-    }
-  }
-
-  //Operates the Intake Claw:
-  public static void operateIntakeClaw() {
-    //Checks the Case:
-    if (intakeClaw == 0) {
-      //Sets the Servo Positions:
-      intakeBaseServo.setPosition(intakeRightStartPosition);
-    }
-
-    else if (intakeClaw == 1) {
-      //Sets the Servo Positions:
-      intakeBaseServo.setPosition(intakeRightEndPosition);
+      //Runs the Intake:
+      intakeMotor.setPower(-robot.uncoPower);
     }
   }
 

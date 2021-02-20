@@ -34,7 +34,7 @@ public class Robot {
   /* DRIVE TRAIN AND MOTOR VARIABLES */
 
   //Drive Train Variables:
-  public static double robotDimensions = 17.0;
+  public static double robotDimensions = 21.0;
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
