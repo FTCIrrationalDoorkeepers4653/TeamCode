@@ -131,7 +131,7 @@ public class Backup extends OpMode {
     //Checks the Case:
     if (operatorPad.isBReleased()) {
       //Operates the Flywheel:
-      robot.mechanisms.automateFlywheel();
+      robot.mechanisms.automateFlywheel(false);
     }
 
     //Checks the Case:

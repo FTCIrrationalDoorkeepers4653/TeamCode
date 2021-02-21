@@ -96,3 +96,6 @@ Lastly, Added a One GamePad Driver-Control System for Driver Practice and as a B
 Improvements. 
 
 - 2/19/2021 - Fixed New Configurations for Autonomous Values for the Robot Rebuild from 2/12 - 2/19. Also, Made Minor Improvements to Intake and Wobble Goal Controls.
+
+- 2/21/2021 - Fixed Flywheel Revving Issues with New REV FLywheel and 6mm Compression for Optimal Performance. Also, Changed FLywheel Speed Controls in Autonomous and TeleOp 
+to Match New Flywheel Design.

@@ -37,7 +37,7 @@ public class Main extends LinearOpMode {
     /* Detection */
 
     //Gets the Ring Position and Setup:
-    robot.mechanisms.automateFlywheel();
+    robot.mechanisms.automateFlywheel(true);
     position = robot.getPixelsPosition();
 
     //Moves to Shooting Position:
@@ -48,9 +48,9 @@ public class Main extends LinearOpMode {
 
     //Shoots Rings:
     robot.mechanisms.automateShooter(100);
-    robot.mechanisms.automateShooter(700);
-    robot.mechanisms.automateShooter(700);
-    robot.mechanisms.automateFlywheel();
+    robot.mechanisms.automateShooter(600);
+    robot.mechanisms.automateShooter(600);
+    robot.mechanisms.automateFlywheel(true);
 
     /* Wobble Goal Drop */
 

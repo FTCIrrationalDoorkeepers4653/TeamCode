@@ -123,7 +123,7 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (driverPad.isBReleased()) {
       //Operates the Flywheel:
-      robot.mechanisms.automateFlywheel();
+      robot.mechanisms.automateFlywheel(false);
     }
 
     //Checks the Case:

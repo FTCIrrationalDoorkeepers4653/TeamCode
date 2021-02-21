@@ -46,12 +46,11 @@ public class Robot {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 10.0;
-  public static double speedControl = 4.0;
+  public static double speedControl = 3.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
   public static double slowPower = 0.3;
-  public static double fastPower = 0.6;
   public static double firePower = 0.8;
   public static double uncoPower = 1.0;
 
@@ -77,7 +76,7 @@ public class Robot {
   private static boolean flash = true;
   private static int zoom = 20;
   private static int x = 0, y = 0, width = 51, height = 26;
-  private static int firstCount = 20, secondCount = 400;
+  private static int firstCount = 20, secondCount = 700;
   private static double resizeRatio = 0.2;
   private static String vuforiaKey =
   "AR7KPuz/////AAABmSKvAg58mkBSqvvfxvaYqxMN8S2CvbOIzcpLyLVqb9hLPXQf3hPCERtF9azaj5sBUezFRBqdVA53ZAsNmlWW/" +

@@ -40,7 +40,7 @@ public class Mechanisms extends Controller {
 
   //Mechanism Shooter Variables:
   public static double shooterStartPosition = 0.9;
-  public static double shooterEndPosition = 0.6;
+  public static double shooterEndPosition = 0.5;
   public static int shooterWait = 500;
   public static int shot = 0;
   public static int intake = 0;
@@ -48,8 +48,8 @@ public class Mechanisms extends Controller {
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3220.0;
-
+  public static double mainRPM = 3900.0;
+  public static double autoRPM = 3800.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -218,18 +218,18 @@ public class Mechanisms extends Controller {
   }
 
   //Automate Flywheel Method:
-  public void automateFlywheel() {
+  public void automateFlywheel(boolean auto) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Shooter:
       shooter++;
-      operateFlywheel();
+      operateFlywheel(auto);
     }
 
     else {
       //Sets the Shooter:
       shooter--;
-      operateFlywheel();
+      operateFlywheel(auto);
     }
   }
 
@@ -244,7 +244,7 @@ public class Mechanisms extends Controller {
   }
 
   //Operates the Flywheel:
-  public static void operateFlywheel() {
+  public static void operateFlywheel(boolean auto) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor:
@@ -253,9 +253,18 @@ public class Mechanisms extends Controller {
     }
 
     else if (shooter == 1) {
-      //Sets the Motor:
-      double ticks = calculateTicks(mainRPM);
-      shooterMotor.setVelocity(ticks);
+      //Checks the Case:
+      if (auto) {
+        //Sets the Motor:
+        double ticks = calculateTicks(autoRPM);
+        shooterMotor.setVelocity(ticks);
+      }
+
+      else {
+        //Sets the Motor:
+        double ticks = calculateTicks(mainRPM);
+        shooterMotor.setVelocity(ticks);
+      }
     }
   }
 
@@ -282,7 +291,7 @@ public class Mechanisms extends Controller {
     }
 
     else if (arm == 2) {
-      //Runs the Target Positions:
+      //Runs Motor to Position:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - secondTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
