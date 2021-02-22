@@ -95,7 +95,6 @@ public class Side extends LinearOpMode {
 
     //Status Update:
     telemetry.addData("Status", "Stopped");
-    telemetry.addData("Position", position);
     telemetry.update();
   }
 }

@@ -71,6 +71,7 @@ public class Main extends LinearOpMode {
       //Moves and Turns Back to Drop:
       robot.mechanisms.turnGyro(152.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(640.0, 400.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
     }
 
     else if (position == 2) {
@@ -89,6 +90,7 @@ public class Main extends LinearOpMode {
       //Moves and Turns Back to Drop:
       robot.mechanisms.turnGyro(166.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(600.0, 320.0, robot.firePower, 0.2, true);
+      robot.mechanisms.automateClaw(false);
     }
 
     else {
@@ -107,13 +109,13 @@ public class Main extends LinearOpMode {
       //Moves, Drops, Parks:
       robot.mechanisms.turnGyro(166.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, 0.4, true);
+      robot.mechanisms.automateClaw(false);
     }
 
     /* Stop */
 
     //Status Update:
     telemetry.addData("Status", "Stopped");
-    telemetry.addData("Position", position);
     telemetry.update();
   }
 }
