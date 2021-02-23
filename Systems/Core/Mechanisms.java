@@ -25,8 +25,8 @@ public class Mechanisms extends Controller {
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 240.0;
-  public static double armMid = (armDown / 2.5);
+  public static double armDown = 180.0;
+  public static double armMid = (armDown / 2.0);
   public static double armSecond = (armMid * 2.0);
   public static int arm = 0;
 
@@ -270,7 +270,7 @@ public class Mechanisms extends Controller {
 
   //Operates the Arm:
   public static void operateArm() {
-    //Target Variable:
+    //Target Variables:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
     int midTarget = robot.getParts(robot.getAngleRotations(armMid));
     int secondTarget = robot.getParts(robot.getAngleRotations(armSecond));

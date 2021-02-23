@@ -87,8 +87,8 @@ public class Side extends LinearOpMode {
       //Drops Wobble and Parks:
       robot.mechanisms.automateClaw(false);
       robot.mechanisms.automateArm();
-      robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -robot.firePower, 0.2, true);
+      robot.mechanisms.automateArm();
     }
 
     /* Stop */
