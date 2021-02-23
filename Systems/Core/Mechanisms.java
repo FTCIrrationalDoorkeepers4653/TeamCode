@@ -26,8 +26,8 @@ public class Mechanisms extends Controller {
 
   //Mechanism Arm Variables:
   public static double armDown = 180.0;
-  public static double armMid = (armDown / 2.0);
-  public static double armSecond = (armMid * 2.0);
+  public static double armMid = (armDown / 2.5);
+  public static double armSecond = (armDown - armMid);
   public static int arm = 0;
 
   //Mechanism Claw Variables:
