@@ -48,13 +48,13 @@ public class Mechanisms extends Controller {
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3900.0;
+  public static double mainRPM = 3800.0;
   public static double autoRPM = 3800.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
   //Initializes the Mechanisms:
-  public static void initMechanisms(HardwareMap hardwareMap) {
+  public static void initMechanisms(HardwareMap hardwareMap, boolean auto) {
     /* Initialization */
 
     //Motor Mechanism Maps:
@@ -67,9 +67,18 @@ public class Mechanisms extends Controller {
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
 
-    //Servo Mechanism Setup:
-    clawServo.setPosition(clawEndPosition);
-    shooterServo.setPosition(shooterStartPosition);
+    //Checks the Case:
+    if (auto) {
+      //Servo Mechanism Setup:
+      clawServo.setPosition(clawEndPosition);
+      shooterServo.setPosition(shooterStartPosition);
+    }
+
+    else {
+      //Servo Mechanism Setup:
+      clawServo.setPosition(clawStartPosition);
+      shooterServo.setPosition(shooterStartPosition);
+    }
 
     /* Setup */
 

@@ -16,6 +16,7 @@ public class Driver extends OpMode {
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
   private int values[] = {0, 2, 0, 0, 0};
+  private boolean auto = false;
 
   /* OPMODE METHODS */
 
@@ -27,7 +28,7 @@ public class Driver extends OpMode {
 
     //Initialize Robot:
     robot.init(hardwareMap, false, false);
-    robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
     driverPad = new GamePad(gamepad1);
   }

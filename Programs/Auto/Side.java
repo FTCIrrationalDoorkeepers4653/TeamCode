@@ -16,6 +16,8 @@ public class Side extends LinearOpMode {
   private double startY = 760.0;
   private int position = 0;
   private int values[] = {1, 0, 0, 0, 0};
+  private boolean auto = true;
+  private boolean teleOp = false;
 
   /* OPMODE METHODS */
 
@@ -29,7 +31,7 @@ public class Side extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
-    robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
 
@@ -39,7 +41,7 @@ public class Side extends LinearOpMode {
     /* Detection */
 
     //Gets the Ring Position and Setup:
-    robot.mechanisms.automateFlywheel(true);
+    robot.mechanisms.automateFlywheel(auto);
     position = robot.getPixelsPosition();
 
     //Moves to Shooting Position:
@@ -52,7 +54,7 @@ public class Side extends LinearOpMode {
     robot.mechanisms.automateShooter(100);
     robot.mechanisms.automateShooter(600);
     robot.mechanisms.automateShooter(600);
-    robot.mechanisms.automateFlywheel(true);
+    robot.mechanisms.automateFlywheel(auto);
 
     /* Wobble Goal Drop */
 
@@ -63,7 +65,7 @@ public class Side extends LinearOpMode {
       robot.mechanisms.runToPosition(660.0, 380.0, robot.firePower, 0.2, true);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.automateArm();
     }
@@ -74,7 +76,7 @@ public class Side extends LinearOpMode {
       robot.mechanisms.runToPosition(600.0, 360.0, robot.firePower, 0.2, true);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.automateArm();
     }
@@ -85,7 +87,7 @@ public class Side extends LinearOpMode {
       robot.mechanisms.runToPosition(640.0, 160.0, robot.firePower, 0.2, true);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();

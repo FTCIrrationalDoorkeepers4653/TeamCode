@@ -14,6 +14,8 @@ public class Main extends LinearOpMode {
   private double startY = 760.0;
   private int position = 0;
   private int values[] = {1, 0, 0, 0, 0};
+  private boolean auto = true;
+  private boolean teleOp = false;
 
   /* OPMODE METHODS */
 
@@ -27,7 +29,7 @@ public class Main extends LinearOpMode {
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
-    robot.mechanisms.initMechanisms(hardwareMap);
+    robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
 
@@ -37,7 +39,7 @@ public class Main extends LinearOpMode {
     /* Detection */
 
     //Gets the Ring Position and Setup:
-    robot.mechanisms.automateFlywheel(true);
+    robot.mechanisms.automateFlywheel(auto);
     position = robot.getPixelsPosition();
 
     //Moves to Shooting Position:
@@ -50,7 +52,7 @@ public class Main extends LinearOpMode {
     robot.mechanisms.automateShooter(100);
     robot.mechanisms.automateShooter(600);
     robot.mechanisms.automateShooter(600);
-    robot.mechanisms.automateFlywheel(true);
+    robot.mechanisms.automateFlywheel(auto);
 
     /* Wobble Goal Drop */
 
@@ -59,57 +61,57 @@ public class Main extends LinearOpMode {
       //Drops Wobble:
       robot.mechanisms.turnGyro(5.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(660.0, 380.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-96.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 610.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Moves and Turns Back to Drop:
       robot.mechanisms.turnGyro(153.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(640.0, 400.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
     }
 
     else if (position == 2) {
       //Drops Wobble:
       robot.mechanisms.turnGyro(55.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(600.0, 360.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-138.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 640.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Moves and Turns Back to Drop:
       robot.mechanisms.turnGyro(167.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(600.0, 320.0, robot.firePower, 0.2, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
     }
 
     else {
       //Drops Wobble:
       robot.mechanisms.turnGyro(52.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(640.0, 160.0, robot.uncoPower, 0.4, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
 
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-149.0, robot.firePower, 0.2, true);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 600.0, robot.uncoPower, 0.4, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Moves, Drops, Parks:
       robot.mechanisms.turnGyro(167.0, robot.firePower, 0.2, true);
       robot.mechanisms.runToPosition(640.0, 120.0, robot.uncoPower, 0.4, true);
-      robot.mechanisms.automateClaw(false);
+      robot.mechanisms.automateClaw(teleOp);
     }
 
     /* Stop */
