@@ -34,6 +34,7 @@ public class Backup extends OpMode {
     robot.init(hardwareMap, false, false);
     robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
+    robot.mechanisms.setCurrentPosition(0.0, 0.0, robot.getTheta());
     driverPad = new GamePad(gamepad1);
     operatorPad = new GamePad(gamepad2);
   }
@@ -45,6 +46,7 @@ public class Backup extends OpMode {
     moveIntake();
     moveShooter();
     moveWobble();
+    moveAuto();
   }
 
   @Override
@@ -158,6 +160,27 @@ public class Backup extends OpMode {
     if (operatorPad.isYReleased()) {
       //Operates the Claw:
       robot.mechanisms.automateClaw(true);
+    }
+  }
+
+  //Movement Automation:
+  public void moveAuto() {
+    //Sets the GamePad Values:
+    driverPad.setGamePad();
+
+    //Checks the Case:
+    if (driverPad.isDpadUpReleased()) {
+      //Robot Moves Forward and Shoots:
+      robot.mechanisms.runToPosition(0.0, 10.0, robot.firePower, 0.0, false);
+      robot.mechanisms.automateShooter(0);
+
+      //Robot Turns Left and Shoots:
+      robot.mechanisms.turnGyro(4.0, robot.firePower, 0.0, false);
+      robot.mechanisms.automateShooter(500);
+
+      //Robot Turns Left and Shoots:
+      robot.mechanisms.turnGyro(8.0, robot.firePower, 0.0, false);
+      robot.mechanisms.automateShooter(500);
     }
   }
 }

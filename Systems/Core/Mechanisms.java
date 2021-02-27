@@ -25,8 +25,8 @@ public class Mechanisms extends Controller {
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
-  public static double armDown = 180.0;
-  public static double armMid = (armDown / 2.5);
+  public static double armDown = 220.0;
+  public static double armMid = (armDown / 3.0);
   public static double armSecond = (armDown - armMid);
   public static int arm = 0;
 
@@ -317,7 +317,7 @@ public class Mechanisms extends Controller {
 
     else if (intake == 1) {
       //Runs the Intake:
-      intakeMotor.setPower(-robot.uncoPower);
+      intakeMotor.setPower(-robot.firePower);
     }
   }
 

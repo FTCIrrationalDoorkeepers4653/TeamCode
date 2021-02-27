@@ -99,3 +99,5 @@ Improvements.
 
 - 2/21/2021 - Fixed Flywheel Revving Issues with New REV FLywheel and 6mm Compression for Optimal Performance. Also, Changed FLywheel Speed Controls in Autonomous and TeleOp 
 to Match New Flywheel Design. Also, Changed Auto to Comply with Rule G10 About Robot Contact.
+
+- 2/27/2021 - Added Autonomous Powershot Shooting for Endgame Integrated with Odometry and Autonomous Shooting. 
