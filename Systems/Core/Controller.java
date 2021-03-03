@@ -14,80 +14,76 @@ public class Controller extends Positions {
   private static ElapsedTime time = new ElapsedTime();
 
   //Controller Variables:
-  private static double Kp = 0.0;
-  private static double Ki = 0.0;
-  private static double Kd = 0.0;
-  private static double Kc = 0.0;
-  private static double errorMargin = 0;
-  private static int stopPID = 0;
+  private static double speed = 0.0;
+  private static double constant = 0.0;
+  private static double timeOut = 0.0;
 
   /* CONTROLLER SETUP METHODS */
 
   //Constructor:
-  public Controller() {
+  public Controller(double Kc, double power, double time) {
+    //Sets the Constant:
     super();
+    constant = Kc;
+    speed = power;
+    timeOut = time;
   }
 
-  //Control Initialization Method:
-  public static void initControl(double proportional, double integral, double derivative,
-    double coefficient, double margin, int stop) {
-    //Sets the Controller Values:
-    Kp = proportional;
-    Ki = integral;
-    Kd = derivative;
-    Kc = coefficient;
-    errorMargin = margin;
-    stopPID = stop;
-  }
-
-  /* CONTROLLER PID METHODS */
-
-  //Control PID Method:
-  public static void applyPID(DcMotor motor) {
-    //Gets the Values:
-    double error = motor.getCurrentPosition();
-    double lastError = 0;
-    double integral = 0;
-    int count = 0;
-
-    //Loops for Power:
-    mainLoop: while (Math.abs(error) <= errorMargin && count < stopPID) {
-      //Gets the Errors:
-      error = (motor.getCurrentPosition() - motor.getTargetPosition());
-      double deltaError = (lastError - error);
-      integral += (deltaError * time.time());
-      double derivative = (deltaError / time.time());
-
-      //Gets the PID Values:
-      double P = (Kp * error);
-      double I = (Ki * integral);
-      double D = (Kd * derivative);
-      double power = (P + I + D);
-
-      //Sets the Power and Resets:
-      motor.setPower(power);
-      error = lastError;
-      time.reset();
-
-      count++;
-    }
-  }
-
-  //Controller Control Method:
-  public static void applyController(DcMotor motor) {
+  //Controller Motor Control Method:
+  public static void applyController(DcMotor lF, DcMotor lB, DcMotor rF, DcMotor rB) {
     //Gets Error Values:
-    int initialDifference = Math.abs(Math.abs(motor.getTargetPosition())
-        - Math.abs(motor.getCurrentPosition()));
-    int count = 0;
+    int initialLF = Math.abs(Math.abs(lF.getTargetPosition())
+        - Math.abs(lF.getCurrentPosition()));
+    int initialLB = Math.abs(Math.abs(lB.getTargetPosition())
+        - Math.abs(lB.getCurrentPosition()));
+    int initialRF = Math.abs(Math.abs(rF.getTargetPosition())
+        - Math.abs(rF.getCurrentPosition()));
+    int initialRB = Math.abs(Math.abs(rB.getTargetPosition())
+        - Math.abs(rB.getCurrentPosition()));
+
+    //Gets the Powers:
+    double powerLF = controlPower(lF, initialLF);
+    double powerLB = controlPower(lB, initialLB);
+    double powerRF = controlPower(rF, initialRF);
+    double powerRB = controlPower(rB, initialRB);
+
+    //Sets the Powers:
+    lF.setPower(powerLF);
+    lB.setPower(powerLB);
+    rF.setPower(powerRF);
+    rB.setPower(powerRB);
+    time.reset();
+    time.startTime();
 
     //Loops for Power:
-    mainLoop: while (controlError(motor.getCurrentPosition(), motor.getTargetPosition(),
-      initialDifference) <= errorMargin && count < stopPID) {
-      //Sets the Motor Power:
-      double power = controlPower(motor, initialDifference);
-      motor.setPower(power);
+    mainLoop: while (lF.isBusy() || lB.isBusy() || rF.isBusy() || rB.isBusy()) {
+      //Checks the Case:
+      if (time.seconds() >= timeOut) {
+        //Breaks the Loop:
+        break mainLoop;
+      }
 
-      count++;
+      //Gets the Motor Powers:
+      powerLF = controlPower(lF, initialLF);
+      powerLB = controlPower(lB, initialLB);
+      powerRF = controlPower(rF, initialRF);
+      powerRB = controlPower(rB, initialRB);
+
+      //Checks the Case:
+      if (powerLF <= speed || powerLB <= speed || powerRF <= speed
+          || powerRB <= speed) {
+        //Gets and Sets the Power:
+        powerLF = speed;
+        powerLB = speed;
+        powerRF = speed;
+        powerRB = speed;
+      }
+
+      //Sets the Powers:
+      lF.setPower(powerLF);
+      lB.setPower(powerLB);
+      rF.setPower(powerRF);
+      rB.setPower(powerRB);
     }
   }
 
@@ -96,12 +92,12 @@ public class Controller extends Positions {
   //Control Power Calculation Method (DcMotor):
   public static double controlPower(DcMotor motor, int initialDifference) {
     //Gets the Values:
-    int current = motor.getCurrentPosition();
-    int target = motor.getTargetPosition();
+    int current = Math.abs(motor.getCurrentPosition());
+    int target = Math.abs(motor.getTargetPosition());
 
     //Calculates and Returns the Power:
     double error = controlError(current, target, initialDifference);
-    double controlledPower = Math.abs(error * Kc);
+    double controlledPower = Math.abs(error * constant);
     return controlledPower;
   }
 

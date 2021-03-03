@@ -101,3 +101,5 @@ Improvements.
 to Match New Flywheel Design. Also, Changed Auto to Comply with Rule G10 About Robot Contact.
 
 - 2/27/2021 - Added Autonomous Powershot Shooting for Endgame Integrated with Odometry and Autonomous Shooting. 
+
+- 3/3/2021 - Optimized Shooting and Parking in Autonomous and Automated Powershot hitting in Endgame. 

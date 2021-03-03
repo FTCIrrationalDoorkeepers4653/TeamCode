@@ -15,7 +15,7 @@ public class Driver extends OpMode {
   private Robot robot = new Robot();
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
-  private int values[] = {0, 2, 0, 0, 0};
+  private int values[] = {0, 2, 0, 0, 0, 0};
   private boolean auto = false;
 
   /* OPMODE METHODS */
@@ -131,8 +131,10 @@ public class Driver extends OpMode {
 
     //Checks the Case:
     if (driverPad.isRightBumperReleased()) {
-      //Shoots the Ring:
+      //Shoots Rings:
       robot.mechanisms.automateShooter(0);
+      robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
+      robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
     }
   }
 
@@ -162,15 +164,15 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (driverPad.isDpadUpReleased()) {
       //Robot Moves Forward and Shoots:
-      robot.mechanisms.runToPosition(0.0, 10.0, robot.firePower, 0.0, false);
+      robot.mechanisms.runToPosition(0.0, 15.0, 1, robot.firePower, false);
       robot.mechanisms.automateShooter(0);
 
       //Robot Turns Left and Shoots:
-      robot.mechanisms.turnGyro(4.0, robot.firePower, 0.0, false);
+      robot.mechanisms.turnGyro(4.0, robot.firePower, false);
       robot.mechanisms.automateShooter(500);
 
       //Robot Turns Left and Shoots:
-      robot.mechanisms.turnGyro(8.0, robot.firePower, 0.0, false);
+      robot.mechanisms.turnGyro(8.0, robot.firePower, false);
       robot.mechanisms.automateShooter(500);
     }
   }

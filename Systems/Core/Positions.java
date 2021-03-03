@@ -53,7 +53,8 @@ public class Positions extends LinearOpMode {
   /* POSITION MOVEMENT METHODS */
 
   //Move to Position Method:
-  public void runToPosition(double targetX, double targetY, double power, double powerOffset, boolean correct) {
+  public void runToPosition(double targetX, double targetY, double direction, double power,
+    boolean correct) {
     //Gets the Triangle:
     double start[] = {positionX, positionY};
     double end [] = {targetX, targetY};
@@ -62,8 +63,8 @@ public class Positions extends LinearOpMode {
     //Checks the Case:
     if (isRoadClear(targetX, targetY)) {
       //Runs to Position:
-      double rotations = (signCorrection(power) * getConvertedRotations(triangle[2]));
-      runGyro(rotations, Math.abs(power), powerOffset, correct);
+      double rotations = (direction * getConvertedRotations(triangle[2]));
+      runGyro(rotations, power, correct);
 
       //Sets the New Position:
       positionX = targetX;
@@ -73,7 +74,7 @@ public class Positions extends LinearOpMode {
   }
 
   //Turn to Position Method:
-  public void turnToPosition(double targetX, double targetY, double power, double powerOffset, boolean correct) {
+  public void turnToPosition(double targetX, double targetY, double power, boolean correct) {
     //Gets the Triangle:
     double start[] = {positionX, positionY};
     double end [] = {targetX, targetY};
@@ -83,13 +84,14 @@ public class Positions extends LinearOpMode {
     if (isRoadClear(targetX, targetY)) {
       //Turns and Sets New Position:
       double turnAngle = (-theta + triangle[3]);
-      turnGyro(turnAngle, Math.abs(power), powerOffset, correct);
+      turnGyro(turnAngle, power, correct);
       theta = robot.getTheta();
     }
   }
 
   //Shift to Position Method:
-  public void shiftToPosition(double targetX, double targetY, double power, double powerOffset, boolean correct) {
+  public void shiftToPosition(double targetX, double targetY, double direction, double power,
+    boolean correct) {
     //Gets the Triangle:
     double start[] = {positionX, positionY};
     double end [] = {targetX, targetY};
@@ -98,8 +100,8 @@ public class Positions extends LinearOpMode {
     //Checks the Case:
     if (isRoadClear(targetX, targetY)) {
       //Shifts to Position:
-      double rotations = (signCorrection(power) * getConvertedRotations(triangle[2]));
-      shiftGyro(rotations, Math.abs(power), powerOffset, correct);
+      double rotations = (direction * getConvertedRotations(triangle[2]));
+      shiftGyro(rotations, power, correct);
 
       //Sets the New Position:
       positionX = targetX;
@@ -111,16 +113,14 @@ public class Positions extends LinearOpMode {
   /* POSITION CORE METHODS */
 
   //Runs with Gyro Corrects:
-  public void runGyro(double rotations, double power, double powerOffset, boolean correct) {
-    //Calculates and Runs:
-    int timeRequired = Math.abs(calculateTime(Math.abs(rotations), Math.abs(power)));
-    robot.runRobot(rotations, Math.abs(power));
-    completeCycle(timeRequired);
+  public void runGyro(double rotations, double power, boolean correct) {
+    //Runs:
+    robot.runRobot(rotations, power);
 
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(theta, Math.abs(power), powerOffset);
+      gyroCorrect(theta, power);
     }
 
     //Sets the Current Theta:
@@ -128,20 +128,16 @@ public class Positions extends LinearOpMode {
   }
 
   //Makes turns with Gyro Corrections:
-  public void turnGyro(double angle, double power, double powerOffset, boolean correct) {
-    //Calculates Turn:
+  public void turnGyro(double angle, double power, boolean correct) {
+    //Calculates and Turns:
     double turnValue = robot.calculateTurnRotations(angle);
     double expected = (theta + angle);
-    int timeRequired = Math.abs(calculateTime(Math.abs(turnValue), Math.abs(power)));
-
-    //Turns Robot:
-    robot.turnRobot(turnValue, Math.abs(power));
-    completeCycle(timeRequired);
+    robot.turnRobot(turnValue, power);
 
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(expected, Math.abs(power), powerOffset);
+      gyroCorrect(expected, power);
     }
 
     //Sets the Current Theta:
@@ -149,16 +145,14 @@ public class Positions extends LinearOpMode {
   }
 
   //Shifts with Gyro Corrects:
-  public void shiftGyro(double rotations, double power, double powerOffset, boolean correct) {
-    //Calculates and Shifts:
-    int timeRequired = Math.abs(calculateTime(Math.abs(rotations), Math.abs(power)));
-    robot.shiftRobot(rotations, Math.abs(power));
-    completeCycle(timeRequired);
+  public void shiftGyro(double rotations, double power, boolean correct) {
+    //Shifts:
+    robot.shiftRobot(rotations, power);
 
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(theta, Math.abs(power), powerOffset);
+      gyroCorrect(theta, power);
     }
 
     //Sets the Current Theta:
@@ -166,31 +160,17 @@ public class Positions extends LinearOpMode {
   }
 
   //Gyro Correction Method (Reset Gyro Before):
-  public void gyroCorrect(double expectedAngle, double power, double powerOffset) {
+  public void gyroCorrect(double expectedAngle, double power) {
     //Checks the Case:
     if (robot.isWithinRange(robot.getTheta(), expectedAngle, robot.gyroStabilization)) {
-      //Gyro Correction Calculation:
+      //Gyro Correction:
       double gyroValue = robot.getGyroCorrection(expectedAngle);
-      int timeRequired = Math.abs(calculateTime(Math.abs(gyroValue), Math.abs(power)));
-      double correctPower = (power - powerOffset);
-
-      //Makes Correction:
-      robot.turnRobot(gyroValue, Math.abs(correctPower));
-      completeCycle(timeRequired);
+      double correctPower = ((robot.gyroPower/power) * power);
+      robot.turnRobot(gyroValue, correctPower);
     }
 
     //Sets the Current Theta:
     theta = robot.getTheta();
-  }
-
-  //Completes an Main Cycle:
-  public void completeCycle(int timeMillis) {
-    //Finishes the Run:
-    idle();
-    sleep(timeMillis);
-    robot.finishRun();
-    robot.mechanisms.mechanismsFinishRun();
-    idle();
   }
 
   /* POSITION PATH METHODS */
@@ -299,39 +279,12 @@ public class Positions extends LinearOpMode {
     return localAngle;
   }
 
-  //Calculates Time Required To Complete Operation:
-  public static int calculateTime(double rotations, double power) {
-    //Calculates the Time and Returns:
-    double timeInSeconds = Math.abs((rotations / (robot.wheelRPS * power)));
-    int timeInMillis = (int) (timeInSeconds * 1000.0);
-    return timeInMillis;
-  }
-
   //Get Converted Rotations:
   public static double getConvertedRotations(double pixelDistance) {
     //Converts and Returns Data:
     double coordinatesToInches = (pixelDistance * robot.POSITION_RATIO);
     double inchesToRotations = (coordinatesToInches / robot.wheelCirc);
     return inchesToRotations;
-  }
-
-  //Sign Correction Function:
-  public static double signCorrection(double value) {
-    //Checks the Value:
-    if (value > 0) {
-      //Returns the Value:
-      return 1;
-    }
-
-    else if (value < 0) {
-      //Returns the Value:
-      return -1;
-    }
-
-    else {
-      //Returns the Value:
-      return 0;
-    }
   }
 
   //Array to ArrayList Method:

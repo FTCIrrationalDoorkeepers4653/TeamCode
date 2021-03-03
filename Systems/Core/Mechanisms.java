@@ -21,6 +21,7 @@ public class Mechanisms extends Controller {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
+  public static Servo parkServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
@@ -28,6 +29,7 @@ public class Mechanisms extends Controller {
   public static double armDown = 220.0;
   public static double armMid = (armDown / 3.0);
   public static double armSecond = (armDown - armMid);
+  public static int armWait = 1000;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -51,7 +53,20 @@ public class Mechanisms extends Controller {
   public static double mainRPM = 3800.0;
   public static double autoRPM = 3800.0;
 
+  /* MECHANISM PARK CONTROL VARIABLES */
+
+  //Mechanism Park Servo Variables:
+  public static int park = 0;
+  public static double parkStartPosition = 0.0;
+  public static double parkEndPosition = 0.8;
+
   /* MECHANISMS INITIALIZATION METHODS */
+
+  //Constructor:
+  public Mechanisms(double Kc, double power, double time) {
+    //Passes the Value:
+    super(Kc, power, time);
+  }
 
   //Initializes the Mechanisms:
   public static void initMechanisms(HardwareMap hardwareMap, boolean auto) {
@@ -66,18 +81,21 @@ public class Mechanisms extends Controller {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
+    parkServo = hardwareMap.servo.get("parkServo");
 
     //Checks the Case:
     if (auto) {
       //Servo Mechanism Setup:
       clawServo.setPosition(clawEndPosition);
       shooterServo.setPosition(shooterStartPosition);
+      parkServo.setPosition(parkStartPosition);
     }
 
     else {
       //Servo Mechanism Setup:
       clawServo.setPosition(clawStartPosition);
       shooterServo.setPosition(shooterStartPosition);
+      parkServo.setPosition(parkStartPosition);
     }
 
     /* Setup */
@@ -111,13 +129,14 @@ public class Mechanisms extends Controller {
   //Custom Values Initialization Method:
   public static void initCustomValues(int values[]) {
     //Checks the Case:
-    if (values.length == 5) {
+    if (values.length == 6) {
       //Sets the Values:
       claw = values[0];
       arm = values[1];
       shooter = values[2];
       shot = values[3];
       intake = values[4];
+      park = values[5];
     }
   }
 
@@ -142,38 +161,23 @@ public class Mechanisms extends Controller {
 
   //Automate Arm Method:
   public void automateArm() {
-    //End Time Calculations:
-    double rotationsEnd = robot.getAngleRotations(armDown);
-    int timeEnd = calculateTime(rotationsEnd, robot.slowPower);
-
-    //Mid Time Calculations:
-    double rotationsMid = robot.getAngleRotations(armMid);
-    int timeMid = calculateTime(rotationsMid, robot.slowPower);
-
-    //Second Time Calculations:
-    double rotationsSecond = robot.getAngleRotations(armSecond);
-    int timeSecond = calculateTime(rotationsSecond, robot.slowPower);
-
     //Checks the Case:
     if (arm == 0) {
       //Operates the Arm:
       arm++;
       operateArm();
-      completeCycle(timeMid);
     }
 
     else if (arm == 1) {
       //Operates the Arm:
       arm++;
       operateArm();
-      completeCycle(timeSecond);
     }
 
     else {
       //Operates the Arm:
       arm -= 2;
       operateArm();
-      completeCycle(timeEnd);
     }
   }
 
@@ -212,14 +216,14 @@ public class Mechanisms extends Controller {
   //Automate Shooter Method:
   public void automateShooter(int start) {
     //Waits for the Ring to Shoot:
-    completeCycle(start);
+    sleep(start);
 
     //Shoots Ring:
     shot = 1;
     operateShooter();
 
     //Waits for Ring to Reset:
-    completeCycle(shooterWait);
+    sleep(shooterWait);
 
     //Resets the Shooter:
     shot = 0;
@@ -242,18 +246,26 @@ public class Mechanisms extends Controller {
     }
   }
 
-  /* MECHANISM OPERATION METHODS */
+  //Automate Park Method:
+  public void automatePark() {
+    //Checks the Case:
+    if (park == 0) {
+      //Sets the Position:
+      park++;
+      operatePark();
+    }
 
-  //Mechanism Finish Run Method:
-  public static void mechanismsFinishRun() {
-    //Resets Motors:
-    baseArmMotor.setPower(robot.zeroPower);
-    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    else {
+      //Sets the Position:
+      park--;
+      operatePark();
+    }
   }
 
+  /* MECHANISM OPERATION METHODS */
+
   //Operates the Flywheel:
-  public static void operateFlywheel(boolean auto) {
+  public void operateFlywheel(boolean auto) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor:
@@ -278,7 +290,7 @@ public class Mechanisms extends Controller {
   }
 
   //Operates the Arm:
-  public static void operateArm() {
+  public void operateArm() {
     //Target Variables:
     int endTarget = robot.getParts(robot.getAngleRotations(armDown));
     int midTarget = robot.getParts(robot.getAngleRotations(armMid));
@@ -286,17 +298,19 @@ public class Mechanisms extends Controller {
 
     //Checks the Case:
     if (arm == 0) {
-      //Runs the Target Positions:
+      //Runs Motor to Position:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
+      sleep(armWait);
     }
 
     else if (arm == 1) {
-      //Runs the Target Positions:
+      //Runs Motor to Position:
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - midTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
+      sleep(armWait);
     }
 
     else if (arm == 2) {
@@ -304,11 +318,17 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - secondTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
+      sleep(armWait);
     }
+
+    //Resets Motor:
+    baseArmMotor.setPower(robot.zeroPower);
+    baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
   //Operates the Intake Arm:
-  public static void operateIntake() {
+  public void operateIntake() {
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
@@ -322,7 +342,7 @@ public class Mechanisms extends Controller {
   }
 
   //Operate Shooter:
-  public static void operateShooter() {
+  public void operateShooter() {
     //Checks the Case:
     if (shot == 0) {
       //Sets the Servo:
@@ -336,7 +356,7 @@ public class Mechanisms extends Controller {
   }
 
   //Operate Claw:
-  public static void operateClaw() {
+  public void operateClaw() {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
@@ -350,7 +370,7 @@ public class Mechanisms extends Controller {
   }
 
   //Operate Claw TeleOp:
-  public static void operateClawTele() {
+  public void operateClawTele() {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
@@ -360,6 +380,20 @@ public class Mechanisms extends Controller {
     else if (claw == 1) {
       //Sets the Servo:
       clawServo.setPosition(clawEndPosition);
+    }
+  }
+
+  //Operate Park:
+  public void operatePark() {
+    //Checks the Case:
+    if (park == 0) {
+      //Sets the Position:
+      parkServo.setPosition(parkStartPosition);
+    }
+
+    else if (park == 1) {
+      //Sets the Position:
+      parkServo.setPosition(parkEndPosition);
     }
   }
 
