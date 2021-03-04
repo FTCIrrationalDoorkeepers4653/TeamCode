@@ -50,7 +50,7 @@ public class Mechanisms extends Controller {
   public static int shooter = 0;
   public static double flywheelTicks = 28;
   public static double mainRPM = 3800.0;
-  public static double autoRPM = 3800.0;
+  public static double autoRPM = 3820.0;
 
   /* MECHANISM PARK CONTROL VARIABLES */
 

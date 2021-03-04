@@ -118,8 +118,8 @@ public class Main extends LinearOpMode {
 
       //Moves, Drops, Parks:
       robot.mechanisms.automateIntake();
-      robot.mechanisms.turnGyro(170.0, robot.uncoPower, true);
-      robot.mechanisms.runToPosition(640.0, 120.0, 1, robot.uncoPower, false);
+      robot.mechanisms.turnGyro(166.0, robot.uncoPower, true);
+      robot.mechanisms.runToPosition(640.0, 140.0, 1, robot.uncoPower, true);
       robot.mechanisms.automateClaw(teleOp);
     }
 
