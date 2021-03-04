@@ -29,7 +29,6 @@ public class Mechanisms extends Controller {
   public static double armDown = 220.0;
   public static double armMid = (armDown / 3.0);
   public static double armSecond = (armDown - armMid);
-  public static int armWait = 1000;
   public static int arm = 0;
 
   //Mechanism Claw Variables:
@@ -291,10 +290,15 @@ public class Mechanisms extends Controller {
 
   //Operates the Arm:
   public void operateArm() {
+    //Rotation Variables:
+    double endRotations = robot.getAngleRotations(armDown);
+    double midRotations = robot.getAngleRotations(armMid);
+    double secondRotations = robot.getAngleRotations(armSecond);
+
     //Target Variables:
-    int endTarget = robot.getParts(robot.getAngleRotations(armDown));
-    int midTarget = robot.getParts(robot.getAngleRotations(armMid));
-    int secondTarget = robot.getParts(robot.getAngleRotations(armSecond));
+    int endTarget = robot.getParts(endRotations);
+    int midTarget = robot.getParts(midRotations);
+    int secondTarget = robot.getParts(secondRotations);
 
     //Checks the Case:
     if (arm == 0) {
@@ -302,7 +306,7 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
-      sleep(armWait);
+      sleep(robot.calculateTime(endRotations, robot.slowPower));
     }
 
     else if (arm == 1) {
@@ -310,7 +314,7 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - midTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
-      sleep(armWait);
+      sleep(robot.calculateTime(midRotations, robot.slowPower));
     }
 
     else if (arm == 2) {
@@ -318,7 +322,7 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() - secondTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
-      sleep(armWait);
+      sleep(robot.calculateTime(secondRotations, robot.slowPower));
     }
 
     //Resets Motor:
