@@ -27,13 +27,13 @@ public class Mechanisms extends Controller {
 
   //Mechanism Arm Variables:
   public static double armDown = 220.0;
-  public static double armMid = (armDown / 3.0);
+  public static double armMid = (armDown / 2.5);
   public static double armSecond = (armDown - armMid);
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 0.2;
-  public static double clawTeleStartPosition = 0.6;
+  public static double clawStartPosition = 0.0;
+  public static double clawTeleStartPosition = 0.4;
   public static double clawEndPosition = 1.0;
   public static int claw = 0;
 
@@ -306,7 +306,7 @@ public class Mechanisms extends Controller {
       baseArmMotor.setTargetPosition(baseArmMotor.getCurrentPosition() + endTarget);
       baseArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
       baseArmMotor.setPower(robot.slowPower);
-      sleep(robot.calculateTime(endRotations, robot.slowPower));
+      sleep(robot.calculateTime(endRotations, robot.movePower));
     }
 
     else if (arm == 1) {
@@ -341,7 +341,7 @@ public class Mechanisms extends Controller {
 
     else if (intake == 1) {
       //Runs the Intake:
-      intakeMotor.setPower(-robot.firePower);
+      intakeMotor.setPower(-robot.uncoPower);
     }
   }
 
