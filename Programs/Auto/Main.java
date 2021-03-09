@@ -12,6 +12,7 @@ public class Main extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
+  private double RPM = 3925.0;
   private int position = 0;
   private int values[] = {1, 0, 0, 0, 0, 0};
   private boolean auto = true;
@@ -70,15 +71,12 @@ public class Main extends LinearOpMode {
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-96.0, robot.firePower, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.automateIntake();
       robot.mechanisms.runToPosition(640.0, 610.0, 1, robot.firePower, true);
       robot.mechanisms.automateClaw(teleOp);
 
       //Moves and Turns Back to Drop:
-      robot.mechanisms.automateIntake();
       robot.mechanisms.turnGyro(153.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 400.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(teleOp);
     }
 
     else if (position == 2) {
@@ -88,18 +86,26 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
 
-      //Turns and Moves to Second Wobble:
+      //Turns to Second Wobble:
       robot.mechanisms.turnGyro(-138.0, robot.firePower, true);
       robot.mechanisms.automateArm();
       robot.mechanisms.automateIntake();
+
+      //Moves to Second Wobble Goal:
+      robot.mechanisms.automateCustomFlywheel(RPM);
       robot.mechanisms.runToPosition(640.0, 640.0, 1, robot.firePower, true);
       robot.mechanisms.automateClaw(teleOp);
 
-      //Moves and Turns Back to Drop:
+      //Turns and Shoots Ring:
+      robot.mechanisms.turnGyro(95.0, robot.firePower, true);
+      sleep(robot.mechanisms.shooterWait);
+      robot.mechanisms.automateShooter(0);
+      robot.mechanisms.turnGyro(72.0, robot.firePower, true);
+
+      //Moves to Drop Second Wobble Goal:
+      robot.mechanisms.automateCustomFlywheel(RPM);
       robot.mechanisms.automateIntake();
-      robot.mechanisms.turnGyro(167.0, robot.firePower, true);
       robot.mechanisms.runToPosition(600.0, 320.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(teleOp);
     }
 
     else {
@@ -112,15 +118,12 @@ public class Main extends LinearOpMode {
       //Turns and Moves to Second Wobble:
       robot.mechanisms.turnGyro(-147.0, robot.uncoPower, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.automateIntake();
       robot.mechanisms.runToPosition(640.0, 600.0, 1, robot.uncoPower, true);
       robot.mechanisms.automateClaw(teleOp);
 
       //Moves, Drops, Parks:
-      robot.mechanisms.automateIntake();
       robot.mechanisms.turnGyro(166.0, robot.uncoPower, true);
       robot.mechanisms.runToPosition(640.0, 140.0, 1, robot.uncoPower, true);
-      robot.mechanisms.automateClaw(teleOp);
     }
 
     /* Stop */

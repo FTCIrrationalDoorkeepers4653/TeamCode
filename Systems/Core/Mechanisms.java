@@ -235,13 +235,39 @@ public class Mechanisms extends Controller {
     if (shooter == 0) {
       //Sets the Shooter:
       shooter++;
-      operateFlywheel(auto);
+
+      //Checks the Case:
+      if (auto) {
+        //Sets the Flywheel:
+        operateFlywheel(autoRPM);
+      }
+
+      else {
+        //Sets the Flywheel:
+        operateFlywheel(mainRPM);
+      }
     }
 
     else {
       //Sets the Shooter:
       shooter--;
-      operateFlywheel(auto);
+      operateFlywheel(robot.zeroPower);
+    }
+  }
+
+  //Automate Custom Flywheel Method:
+  public void automateCustomFlywheel(double RPM) {
+    //Checks the Case:
+    if (shooter == 0) {
+      //Sets the Shooter:
+      shooter++;
+      operateFlywheel(RPM);
+    }
+
+    else {
+      //Sets the Shooter:
+      shooter--;
+      operateFlywheel(robot.zeroPower);
     }
   }
 
@@ -264,7 +290,7 @@ public class Mechanisms extends Controller {
   /* MECHANISM OPERATION METHODS */
 
   //Operates the Flywheel:
-  public void operateFlywheel(boolean auto) {
+  public void operateFlywheel(double RPM) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor:
@@ -273,18 +299,9 @@ public class Mechanisms extends Controller {
     }
 
     else if (shooter == 1) {
-      //Checks the Case:
-      if (auto) {
-        //Sets the Motor:
-        double ticks = calculateTicks(autoRPM);
-        shooterMotor.setVelocity(ticks);
-      }
-
-      else {
-        //Sets the Motor:
-        double ticks = calculateTicks(mainRPM);
-        shooterMotor.setVelocity(ticks);
-      }
+      //Sets the Motor:
+      double ticks = calculateTicks(RPM);
+      shooterMotor.setVelocity(ticks);
     }
   }
 

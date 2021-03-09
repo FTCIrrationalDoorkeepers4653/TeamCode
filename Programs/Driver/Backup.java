@@ -133,7 +133,7 @@ public class Backup extends OpMode {
     //Checks the Case:
     if (operatorPad.isBReleased()) {
       //Operates the Flywheel:
-      robot.mechanisms.automateFlywheel(false);
+      robot.mechanisms.automateFlywheel(true);
     }
 
     //Checks the Case:
@@ -171,6 +171,10 @@ public class Backup extends OpMode {
 
     //Checks the Case:
     if (driverPad.isDpadUpReleased()) {
+      //Optimizes Flywheel:
+      robot.mechanisms.shooter = 0;
+      robot.mechanisms.automateFlywheel(false);
+
       //Robot Moves Forward and Shoots:
       robot.mechanisms.runToPosition(0.0, 15.0, 1, robot.firePower, false);
       robot.mechanisms.automateShooter(0);
