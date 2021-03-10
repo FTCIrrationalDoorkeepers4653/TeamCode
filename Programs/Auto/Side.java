@@ -14,8 +14,12 @@ public class Side extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
+
+  //Positioning Variables:
   private int position = 0;
   private int values[] = {1, 0, 0, 0, 0, 0};
+
+  //Setup Variables:
   private boolean auto = true;
   private boolean teleOp = false;
 

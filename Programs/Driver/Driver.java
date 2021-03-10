@@ -15,6 +15,8 @@ public class Driver extends OpMode {
   private Robot robot = new Robot();
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
+
+  //Setup Variables:
   private int values[] = {0, 2, 0, 0, 0, 0};
   private boolean auto = false;
 

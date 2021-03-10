@@ -12,9 +12,17 @@ public class Main extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
-  private double RPM = 3925.0;
+
+  //Flywheel Variables:
+  private double RPM = 3930.0;
+  private double secondRPM = 3900.0;
+  private double thirdRPM = 3830.0;
+
+  //Positioning Variables:
   private int position = 0;
   private int values[] = {1, 0, 0, 0, 0, 0};
+
+  //Setup Variables:
   private boolean auto = true;
   private boolean teleOp = false;
 
@@ -115,15 +123,31 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
 
-      //Turns and Moves to Second Wobble:
-      robot.mechanisms.turnGyro(-147.0, robot.uncoPower, true);
-      robot.mechanisms.automateArm();
-      robot.mechanisms.runToPosition(640.0, 600.0, 1, robot.uncoPower, true);
-      robot.mechanisms.automateClaw(teleOp);
+      //Turns to Starter Stack:
+      robot.mechanisms.turnGyro(-153.0, robot.uncoPower, true);
+      robot.mechanisms.automateIntake();
+      robot.mechanisms.automateCustomFlywheel(secondRPM);
 
-      //Moves, Drops, Parks:
-      robot.mechanisms.turnGyro(166.0, robot.uncoPower, true);
-      robot.mechanisms.runToPosition(640.0, 140.0, 1, robot.uncoPower, true);
+      //Moves to Starter Stack:
+      robot.mechanisms.runToPosition(517.0, 407.0, 1, robot.uncoPower, true);
+      robot.mechanisms.runToPosition(517.0, 597.0, 1, robot.gyroPower, true);
+      robot.mechanisms.turnGyro(109.0, robot.uncoPower, true);
+      sleep(robot.mechanisms.shooterWait);
+
+      //Shoots Ring and Revs:
+      robot.mechanisms.automateShooter(0);
+      robot.mechanisms.shooter = 0;
+      robot.mechanisms.automateCustomFlywheel(thirdRPM);
+
+      //Shoots Other Rings:
+      robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
+      robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
+
+      //Parks on Line:
+      robot.mechanisms.shiftToPosition(517.0, 320.0, 1, robot.uncoPower, true);
+      robot.mechanisms.automateArm();
+      robot.mechanisms.automateIntake();
+      robot.mechanisms.automateCustomFlywheel(thirdRPM);
     }
 
     /* Stop */

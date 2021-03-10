@@ -19,6 +19,8 @@ public class Backup extends OpMode {
   private ElapsedTime time = new ElapsedTime();
   private GamePad driverPad;
   private GamePad operatorPad;
+
+  //Setup Variables:
   private int values[] = {0, 2, 0, 0, 0, 0};
   private boolean auto = false;
 
