@@ -89,7 +89,7 @@ public class Positions extends LinearOpMode {
     }
   }
 
-  //Shift to Position Method:
+  //Shift to Position Method (ONLY USE IF NEEDED):
   public void shiftToPosition(double targetX, double targetY, double direction, double power,
     boolean correct) {
     //Gets the Triangle:
@@ -120,7 +120,7 @@ public class Positions extends LinearOpMode {
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(theta, power);
+      gyroCorrect(theta);
     }
 
     //Sets the Current Theta:
@@ -137,14 +137,14 @@ public class Positions extends LinearOpMode {
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(expected, power);
+      gyroCorrect(expected);
     }
 
     //Sets the Current Theta:
     theta = robot.getTheta();
   }
 
-  //Shifts with Gyro Corrects:
+  //Shifts with Gyro Corrects (ONLY USE IF NEEDED):
   public void shiftGyro(double rotations, double power, boolean correct) {
     //Shifts:
     robot.shiftRobot(rotations, power);
@@ -152,7 +152,7 @@ public class Positions extends LinearOpMode {
     //Checks the Case:
     if (correct) {
       //Corrects the Motion:
-      gyroCorrect(theta, power);
+      gyroCorrect(theta);
     }
 
     //Sets the Current Theta:
@@ -160,13 +160,12 @@ public class Positions extends LinearOpMode {
   }
 
   //Gyro Correction Method (Reset Gyro Before):
-  public void gyroCorrect(double expectedAngle, double power) {
+  public void gyroCorrect(double expectedAngle) {
     //Checks the Case:
     if (robot.isWithinRange(robot.getTheta(), expectedAngle, robot.gyroStabilization)) {
       //Gyro Correction:
       double gyroValue = robot.getGyroCorrection(expectedAngle);
-      double correctPower = ((robot.gyroPower/power) * power);
-      robot.turnRobot(gyroValue, correctPower);
+      robot.turnRobot(gyroValue, robot.gyroPower);
     }
 
     //Sets the Current Theta:

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-public class Mechanisms extends Controller {
+public class Mechanisms extends Positions {
   /* MECHANISMS SETUP VARIABLES */
 
   //Robot Object:
@@ -26,8 +26,9 @@ public class Mechanisms extends Controller {
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
+  public static double fullArmDown = 260.0;
   public static double armDown = 220.0;
-  public static double armMid = (armDown / 2.5);
+  public static double armMid = (armDown / 3.5);
   public static double armSecond = (armDown - armMid);
   public static int arm = 0;
 
@@ -56,15 +57,14 @@ public class Mechanisms extends Controller {
 
   //Mechanism Park Servo Variables:
   public static int park = 0;
-  public static double parkStartPosition = 0.0;
-  public static double parkEndPosition = 0.8;
+  public static double parkStartPosition = 0.5;
+  public static double parkEndPosition = 1.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
   //Constructor:
-  public Mechanisms(double Kc, double power, double time) {
-    //Passes the Value:
-    super(Kc, power, time);
+  public Mechanisms() {
+    super();
   }
 
   //Initializes the Mechanisms:
@@ -308,7 +308,7 @@ public class Mechanisms extends Controller {
   //Operates the Arm:
   public void operateArm() {
     //Rotation Variables:
-    double endRotations = robot.getAngleRotations(armDown);
+    double endRotations = robot.getAngleRotations(fullArmDown);
     double midRotations = robot.getAngleRotations(armMid);
     double secondRotations = robot.getAngleRotations(armSecond);
 

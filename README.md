@@ -97,9 +97,12 @@ Improvements.
 
 - 2/19/2021 - Fixed New Configurations for Autonomous Values for the Robot Rebuild from 2/12 - 2/19. Also, Made Minor Improvements to Intake and Wobble Goal Controls.
 
-- 2/21/2021 - Fixed Flywheel Revving Issues with New REV FLywheel and 6mm Compression for Optimal Performance. Also, Changed FLywheel Speed Controls in Autonomous and TeleOp 
+- 2/21/2021 - Fixed Flywheel Revving Issues with New REV FLywheel and 6mm Compression for Optimal Performance. Also, Changed Flywheel Speed Controls in Autonomous and TeleOp
 to Match New Flywheel Design. Also, Changed Auto to Comply with Rule G10 About Robot Contact.
 
 - 2/27/2021 - Added Autonomous Powershot Shooting for Endgame Integrated with Odometry and Autonomous Shooting. 
 
-- 3/3/2021 - Optimized Shooting and Parking in Autonomous and Automated Powershot hitting in Endgame. 
+- 3/3/2021 - Optimized Shooting and Parking in Autonomous and Automated Powershot hitting in Endgame.
+
+- 3/24/2021 - Added 80-Point Autonomous for Four Stack and Updated 83-Point Autonomous for One Stack. Also, Augmented Mecanum Drive Functions for TeleOp.
+Also, Updated Automatic Powershot System to Hit All Powershots more Consistently. Finally, Cleaned Up Project Structure and Comments.

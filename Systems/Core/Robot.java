@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Systems.Vision.TensorVision;
 
+import java.util.Arrays;
+
 import lib.Positioning;
 
 public class Robot extends LinearOpMode {
@@ -31,7 +33,6 @@ public class Robot extends LinearOpMode {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 10.0;
-  public static double speedControl = 3.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
@@ -43,9 +44,7 @@ public class Robot extends LinearOpMode {
 
   /* POSITION VARIABLES */
 
-  //Position Profiling Variables:
-  private static double Kc = 1.0;
-  private static double timeOut = 15.0;
+  //Position Variables:
   private static double roadblockX[] = {0.0, 760.0, 0.0, 760.0};
   private static double roadblockY[] = {0.0, 0.0, 760.0, 760.0};
 
@@ -80,7 +79,7 @@ public class Robot extends LinearOpMode {
   public static DcMotor rightBackMotor;
 
   //Hardware Objects:
-  public static Mechanisms mechanisms = new Mechanisms(Kc, firePower, timeOut);
+  public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
 
   //IMU Sensor:
@@ -270,6 +269,21 @@ public class Robot extends LinearOpMode {
 
   /* ROBOT MOVEMENT METHODS */
 
+  //Robot Driver Control Movement:
+  public void driveRobot(double x, double y, double turn) {
+    //Gets the Motor Calculations:
+    double frontLeft = (y + x + turn);
+    double frontRight = (y - x - turn);
+    double backLeft = (y - x + turn);
+    double backRight = (y + x - turn);
+
+    //Sets the Motor Powers:
+    leftFrontMotor.setPower(frontLeft);
+    leftBackMotor.setPower(backLeft);
+    rightFrontMotor.setPower(frontRight);
+    rightBackMotor.setPower(backRight);
+  }
+
   //Robot Move with Rotations:
   public void runRobot(double rotations, double power) {
     //Movement Values:
@@ -338,7 +352,7 @@ public class Robot extends LinearOpMode {
     applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
   }
 
-  //Robot Strafe Motion:
+  //Robot Strafe Motion (ONLY USE IF NEEDED):
   public void shiftRobot(double rotations, double power) {
     //Movement Values:
     double localRotations = Math.abs(rotations);
@@ -418,17 +432,17 @@ public class Robot extends LinearOpMode {
     return rotations;
   }
 
-  //Gets the Speed Based on Slow Parameters:
-  public static double getSpeedControl(double speed, boolean control) {
+  //Sets the Robot Strafe:
+  public static double getStrafeValue(double t1, double t2) {
     //Checks the Case:
-    if (control) {
-      //Returns the Speed:
-      return (speed / speedControl);
+    if (t1 != 0 && t2 == 0) {
+      //Sets the X Value:
+      return -t1;
     }
 
     else {
-      //Returns the Speed:
-      return speed;
+      //Sets the X Value:
+      return t2;
     }
   }
 }

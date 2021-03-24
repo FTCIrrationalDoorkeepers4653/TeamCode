@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.Programs.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
 @Autonomous(name="Side")
-@Disabled
 public class Side extends LinearOpMode {
   /* SIDE AUTO VARIABLES */
 
@@ -28,10 +26,6 @@ public class Side extends LinearOpMode {
   @Override
   public void runOpMode() {
     /* Initialization */
-
-    //Status Updates:
-    telemetry.addData("Status", "Initialized");
-    telemetry.update();
 
     //Hardware Initialization:
     robot.init(hardwareMap, true, true);
@@ -63,16 +57,16 @@ public class Side extends LinearOpMode {
     robot.mechanisms.automateFlywheel(auto);
     robot.mechanisms.automatePark();
 
-    /* Wobble Goal Drop */
+    /* Wobble Goal Drop and Park */
 
     //Checks the Case:
     if (position == 1) {
       //Moves Wobble:
       robot.mechanisms.turnGyro(5.0, robot.firePower, true);
       robot.mechanisms.runToPosition(660.0, 380.0, 1, robot.firePower, true);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.automateArm();
     }
@@ -81,9 +75,9 @@ public class Side extends LinearOpMode {
       //Moves Wobble:
       robot.mechanisms.turnGyro(55.0, robot.firePower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, 1, robot.firePower, true);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.automateArm();
     }
@@ -91,19 +85,13 @@ public class Side extends LinearOpMode {
     else {
       //Moves Wobble:
       robot.mechanisms.turnGyro(52.0, robot.firePower, true);
-      robot.mechanisms.runToPosition(640.0, 160.0, 1, robot.firePower, true);
+      robot.mechanisms.runToPosition(640.0, 180.0, 1, robot.firePower, true);
+      robot.mechanisms.automateClaw(teleOp);
 
       //Drops Wobble and Parks:
-      robot.mechanisms.automateClaw(teleOp);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -1, robot.firePower, true);
       robot.mechanisms.automateArm();
     }
-
-    /* Stop */
-
-    //Status Update:
-    telemetry.addData("Status", "Stopped");
-    telemetry.update();
   }
 }
