@@ -19,7 +19,7 @@ public class Main extends LinearOpMode {
 
   //Positioning Variables:
   private int position = 0;
-  private int values[] = {1, 0, 0, 0, 0, 0};
+  private int values[] = {1, 0, 0, 0, 0};
 
   //Setup Variables:
   private boolean auto = true;
@@ -56,10 +56,7 @@ public class Main extends LinearOpMode {
     robot.mechanisms.automateShooter(0);
     robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
     robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
-
-    //Resets:
     robot.mechanisms.automateFlywheel(auto);
-    robot.mechanisms.automatePark();
 
     /* Wobble Goal Drop, Shooting, Park */
 
@@ -100,7 +97,7 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateClaw(teleOp);
 
       //Turns and Shoots Ring:
-      robot.mechanisms.turnGyro(94.0, robot.firePower, true);
+      robot.mechanisms.turnGyro(93.0, robot.firePower, true);
       sleep(robot.mechanisms.shooterWait);
       robot.mechanisms.automateShooter(0);
       robot.mechanisms.turnGyro(73.0, robot.firePower, true);

@@ -15,7 +15,7 @@ public class Side extends LinearOpMode {
 
   //Positioning Variables:
   private int position = 0;
-  private int values[] = {1, 0, 0, 0, 0, 0};
+  private int values[] = {1, 0, 0, 0, 0};
 
   //Setup Variables:
   private boolean auto = true;
@@ -52,10 +52,7 @@ public class Side extends LinearOpMode {
     robot.mechanisms.automateShooter(0);
     robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
     robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
-
-    //Resets:
     robot.mechanisms.automateFlywheel(auto);
-    robot.mechanisms.automatePark();
 
     /* Wobble Goal Drop and Park */
 

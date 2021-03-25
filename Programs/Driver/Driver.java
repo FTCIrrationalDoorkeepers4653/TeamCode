@@ -16,7 +16,7 @@ public class Driver extends OpMode {
   private GamePad driverPad;
 
   //Setup Variables:
-  private int values[] = {0, 2, 0, 0, 0, 0};
+  private int values[] = {0, 2, 0, 0, 0};
   private boolean auto = false;
 
   /* OPMODE METHODS */
@@ -113,9 +113,19 @@ public class Driver extends OpMode {
 
     //Checks the Case:
     if (driverPad.isLeftBumperReleased()) {
+      //Initial Startup:
+      robot.mechanisms.intake = 1;
+      robot.mechanisms.shooter = 0;
+      robot.mechanisms.automateIntake();
+      robot.mechanisms.automateFlywheel(true);
+
       //Robot Moves Forward and Shoots:
       robot.mechanisms.runToPosition(0.0, 12.0, 1, robot.firePower, false);
       robot.mechanisms.automateShooter(0);
+
+      //Resets Shooter RPM:
+      robot.mechanisms.shooter = 0;
+      robot.mechanisms.automateFlywheel(false);
 
       //Robot Turns Left and Shoots:
       robot.mechanisms.turnGyro(4.0, robot.firePower, false);

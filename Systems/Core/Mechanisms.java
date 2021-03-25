@@ -21,7 +21,6 @@ public class Mechanisms extends Positions {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
-  public static Servo parkServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
@@ -53,13 +52,6 @@ public class Mechanisms extends Positions {
   public static double mainRPM = 3800.0;
   public static double autoRPM = 3820.0;
 
-  /* MECHANISM PARK CONTROL VARIABLES */
-
-  //Mechanism Park Servo Variables:
-  public static int park = 0;
-  public static double parkStartPosition = 0.5;
-  public static double parkEndPosition = 1.0;
-
   /* MECHANISMS INITIALIZATION METHODS */
 
   //Constructor:
@@ -80,21 +72,18 @@ public class Mechanisms extends Positions {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
-    parkServo = hardwareMap.servo.get("parkServo");
 
     //Checks the Case:
     if (auto) {
       //Servo Mechanism Setup:
       clawServo.setPosition(clawEndPosition);
       shooterServo.setPosition(shooterStartPosition);
-      parkServo.setPosition(parkStartPosition);
     }
 
     else {
       //Servo Mechanism Setup:
       clawServo.setPosition(clawStartPosition);
       shooterServo.setPosition(shooterStartPosition);
-      parkServo.setPosition(parkStartPosition);
     }
 
     /* Setup */
@@ -128,14 +117,13 @@ public class Mechanisms extends Positions {
   //Custom Values Initialization Method:
   public static void initCustomValues(int values[]) {
     //Checks the Case:
-    if (values.length == 6) {
+    if (values.length == 5) {
       //Sets the Values:
       claw = values[0];
       arm = values[1];
       shooter = values[2];
       shot = values[3];
       intake = values[4];
-      park = values[5];
     }
   }
 
@@ -271,22 +259,6 @@ public class Mechanisms extends Positions {
     }
   }
 
-  //Automate Park Method:
-  public void automatePark() {
-    //Checks the Case:
-    if (park == 0) {
-      //Sets the Position:
-      park++;
-      operatePark();
-    }
-
-    else {
-      //Sets the Position:
-      park--;
-      operatePark();
-    }
-  }
-
   /* MECHANISM OPERATION METHODS */
 
   //Operates the Flywheel:
@@ -358,7 +330,7 @@ public class Mechanisms extends Positions {
 
     else if (intake == 1) {
       //Runs the Intake:
-      intakeMotor.setPower(-robot.uncoPower);
+      intakeMotor.setPower(-robot.firePower);
     }
   }
 
@@ -401,20 +373,6 @@ public class Mechanisms extends Positions {
     else if (claw == 1) {
       //Sets the Servo:
       clawServo.setPosition(clawEndPosition);
-    }
-  }
-
-  //Operate Park:
-  public void operatePark() {
-    //Checks the Case:
-    if (park == 0) {
-      //Sets the Position:
-      parkServo.setPosition(parkStartPosition);
-    }
-
-    else if (park == 1) {
-      //Sets the Position:
-      parkServo.setPosition(parkEndPosition);
     }
   }
 
