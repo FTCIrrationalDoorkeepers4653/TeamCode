@@ -44,10 +44,11 @@ public class Vision extends Analyze {
   }
 
   //Vision Positioning Setup:
-  public static void initPositioning(int width, int height, double depth, double x, double y) {
+  public static void initPositioning(int width, int height, double ratioDist, double ratioOffset,
+    double offsetX, double offsetY) {
     try {
       //Positioning Setup:
-      positioning.initVisionPosition(width, height, depth, x, y);
+      positioning.initVisionPosition(width, height, ratioDist, ratioOffset, offsetX, offsetY);
     }
 
     catch (Exception e) {

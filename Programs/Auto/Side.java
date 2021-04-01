@@ -19,7 +19,7 @@ public class Side extends LinearOpMode {
 
   //Setup Variables:
   private boolean auto = true;
-  private boolean teleOp = false;
+  private boolean camera = true;
 
   /* OPMODE METHODS */
 
@@ -28,7 +28,7 @@ public class Side extends LinearOpMode {
     /* Initialization */
 
     //Hardware Initialization:
-    robot.init(hardwareMap, true, true);
+    robot.init(hardwareMap, auto, camera);
     robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
@@ -61,7 +61,7 @@ public class Side extends LinearOpMode {
       //Moves Wobble:
       robot.mechanisms.turnGyro(5.0, robot.firePower, true);
       robot.mechanisms.runToPosition(660.0, 380.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(teleOp);
+      robot.mechanisms.automateClaw(!auto);
 
       //Drops Wobble and Parks:
       robot.mechanisms.automateArm();
@@ -72,7 +72,7 @@ public class Side extends LinearOpMode {
       //Moves Wobble:
       robot.mechanisms.turnGyro(55.0, robot.firePower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(teleOp);
+      robot.mechanisms.automateClaw(!auto);
 
       //Drops Wobble and Parks:
       robot.mechanisms.automateArm();
@@ -83,7 +83,7 @@ public class Side extends LinearOpMode {
       //Moves Wobble:
       robot.mechanisms.turnGyro(52.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 180.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(teleOp);
+      robot.mechanisms.automateClaw(!auto);
 
       //Drops Wobble and Parks:
       robot.mechanisms.automateArm();

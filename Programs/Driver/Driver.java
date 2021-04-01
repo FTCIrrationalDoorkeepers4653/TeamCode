@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Programs.Driver;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.GamePad;
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
@@ -11,23 +10,28 @@ import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 public class Driver extends OpMode {
   /* DRIVE VARIABLES */
 
-  //Objects:
+  //Drive Variables:
   private Robot robot = new Robot();
   private GamePad driverPad;
 
   //Setup Variables:
   private int values[] = {0, 2, 0, 0, 0};
   private boolean auto = false;
+  private boolean camera = false;
 
   /* OPMODE METHODS */
 
   @Override
   public void init() {
     //Initialize Robot:
-    robot.init(hardwareMap, false, false);
+    robot.init(hardwareMap, auto, camera);
     robot.mechanisms.initMechanisms(hardwareMap, auto);
     robot.mechanisms.initCustomValues(values);
     driverPad = new GamePad(gamepad1);
+
+    //Startup Mechanisms:
+    robot.mechanisms.automateFlywheel(true);
+    robot.mechanisms.automateIntake(robot.gyroPower);
   }
 
   @Override
@@ -64,7 +68,7 @@ public class Driver extends OpMode {
     //Checks the Case:
     if (driverPad.isXReleased()) {
       //Operates the Intake Arm:
-      robot.mechanisms.automateIntake();
+      robot.mechanisms.automateIntake(robot.gyroPower);
     }
   }
 
@@ -112,27 +116,17 @@ public class Driver extends OpMode {
     driverPad.setGamePad();
 
     //Checks the Case:
-    if (driverPad.isLeftBumperReleased()) {
-      //Initial Startup:
-      robot.mechanisms.intake = 1;
-      robot.mechanisms.shooter = 0;
-      robot.mechanisms.automateIntake();
-      robot.mechanisms.automateFlywheel(true);
-
+    if (driverPad.isDpadUpReleased()) {
       //Robot Moves Forward and Shoots:
-      robot.mechanisms.runToPosition(0.0, 12.0, 1, robot.firePower, false);
+      robot.mechanisms.runToPosition(0.0, 10.0, 1, robot.gyroPower, false);
       robot.mechanisms.automateShooter(0);
 
-      //Resets Shooter RPM:
-      robot.mechanisms.shooter = 0;
-      robot.mechanisms.automateFlywheel(false);
-
       //Robot Turns Left and Shoots:
-      robot.mechanisms.turnGyro(4.0, robot.firePower, false);
+      robot.mechanisms.turnGyro(5.0, robot.gyroPower, false);
       robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
 
       //Robot Turns Left and Shoots:
-      robot.mechanisms.turnGyro(4.0, robot.firePower, false);
+      robot.mechanisms.turnGyro(5.0, robot.gyroPower, false);
       robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
       robot.mechanisms.resetCurrentPosition();
     }

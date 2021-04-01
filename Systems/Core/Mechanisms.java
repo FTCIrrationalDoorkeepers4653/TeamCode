@@ -32,9 +32,9 @@ public class Mechanisms extends Positions {
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 0.0;
+  public static double clawStartPosition = 0.8;
   public static double clawTeleStartPosition = 0.4;
-  public static double clawEndPosition = 1.0;
+  public static double clawEndPosition = 0.0;
   public static int claw = 0;
 
   /* MECHANISM SHOOTER CONTROL VARIABLES */
@@ -50,7 +50,7 @@ public class Mechanisms extends Positions {
   public static int shooter = 0;
   public static double flywheelTicks = 28;
   public static double mainRPM = 3800.0;
-  public static double autoRPM = 3820.0;
+  public static double autoRPM = 3850.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -100,12 +100,11 @@ public class Mechanisms extends Positions {
 
     //Mechanism Motors Encoders Reset:
     baseArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     //Mechanism Motors Encoders:
     baseArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     //Mechanism Motors Powers:
@@ -130,7 +129,7 @@ public class Mechanisms extends Positions {
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
-  public void automateIntake() {
+  public void automateIntake(double power) {
     //Checks the Case:
     if (intake == 0) {
       //Sets the Intake:
@@ -143,7 +142,7 @@ public class Mechanisms extends Positions {
     }
 
     //Operates the Intake:
-    operateIntake();
+    operateIntake(power);
   }
 
   //Automate Arm Method:
@@ -321,7 +320,7 @@ public class Mechanisms extends Positions {
   }
 
   //Operates the Intake Arm:
-  public void operateIntake() {
+  public void operateIntake(double power) {
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
@@ -330,7 +329,7 @@ public class Mechanisms extends Positions {
 
     else if (intake == 1) {
       //Runs the Intake:
-      intakeMotor.setPower(-robot.firePower);
+      intakeMotor.setPower(-power);
     }
   }
 

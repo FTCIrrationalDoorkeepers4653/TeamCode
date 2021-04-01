@@ -246,7 +246,7 @@ public class Positions extends LinearOpMode {
     double yDirection = (y / Math.abs(y));
 
     //Gets the Angle of Triangle:
-    double angle = Math.abs(robot.convertAngle(Math.atan(y / x), true));
+    double angle = Math.abs(robot.convertAngle(Math.atan(x / y), true));
     angle = transformAngle(angle, x, y);
 
     //Formats Triangle:

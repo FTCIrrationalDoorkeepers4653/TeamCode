@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Systems.Vision.TensorVision;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import lib.Positioning;
@@ -53,6 +54,7 @@ public class Robot extends LinearOpMode {
   //Detector Settings:
   private static int detector[] = {253, 168, 53};
   private static int offset[] = {100, 100, 100};
+  private static int FSD_OFFSET[] = {25, 25, 25};
   private static boolean flash = true;
   private static int zoom = 20;
   private static int x = 0, y = 0, width = 50, height = 15;
@@ -66,9 +68,11 @@ public class Robot extends LinearOpMode {
 
   //Vision Positioning Settings:
   private static int frameWidth = 1280, frameHeight = 720;
-  private static double offsetX = 10.0, offSetY = 14.0;
-  private static double distanceOfField = 13.0, camZoom = 1.0;
-  private static double fieldDistance = (distanceOfField * camZoom);
+  private static double distanceRatio = 0.1, offsetRatio = 0.05;
+  private static double camOffsetX = 4.0, camOffsetY = 0.0;
+  private static int realFrameWidth = (int)(frameWidth * resizeRatio);
+  private static int realFrameHeight = (int)(frameHeight * resizeRatio);
+  private static int distanceThreshold = 100;
 
   /* HARDWARE VARIABLES */
 
@@ -81,6 +85,7 @@ public class Robot extends LinearOpMode {
   //Hardware Objects:
   public static Mechanisms mechanisms = new Mechanisms();
   public static TensorVision vision = new TensorVision();
+  public static Positioning positioning = new Positioning();
 
   //IMU Sensor:
   private static BNO055IMU imu;
@@ -94,7 +99,7 @@ public class Robot extends LinearOpMode {
   }
 
   //Initialization Method:
-  public static void init(HardwareMap hardwareMap, boolean type, boolean camera) {
+  public static void init(HardwareMap hardwareMap, boolean auto, boolean camera) {
     /* Hardware */
 
     //Wheel Maps:
@@ -112,7 +117,7 @@ public class Robot extends LinearOpMode {
     rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
 
     //Checks the Case:
-    if (type) {
+    if (auto) {
       //Motor Behavior Setup:
       applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -138,8 +143,9 @@ public class Robot extends LinearOpMode {
     if (camera) {
       //Vision Initialization:
       vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
-      vision.initDetector("ringDetector", detector);
-      vision.initPositioning(frameWidth, frameHeight, fieldDistance, offsetX, offSetY);
+      vision.initDetector("detector", detector);
+      vision.initPositioning(realFrameWidth, realFrameHeight, distanceRatio, offsetRatio,
+        camOffsetX, camOffsetY);
     }
 
     /* Positions */
@@ -152,39 +158,57 @@ public class Robot extends LinearOpMode {
 
   /* VISION METHODS */
 
-  //Gets the Universal Vision Information:
-  public static int getVision() {
-    //Analyzes and Returns the Boolean Count:
-    Bitmap image = vision.getImage(resizeRatio);
-    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
-    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
-    return booleanCount;
-  }
-
   //Gets the Position Pixel Count:
   public static int getPixelsPosition() {
     //Vision Positions:
-    int position = 1;
-    int booleanCount = getVision();
+    Bitmap image = vision.getImage(resizeRatio);
+    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
+    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
 
     //Checks the Case:
     if (booleanCount <= firstCount) {
       //Sets the Position:
-      position = 1;
+      return 1;
     }
 
     else if (booleanCount > firstCount && booleanCount <= secondCount) {
       //Sets the Position:
-      position = 2;
+      return 2;
     }
 
     else {
       //Sets the Position:
-      position = 3;
+      return 3;
+    }
+  }
+
+  //Gets the Position of First Ring on Field:
+  public static double[] getObjects() {
+    //Gets the Blob Count:
+    double info[] = new double[3];
+    Bitmap image = vision.getImage(resizeRatio);
+    int rgb[][] = vision.getBitmapRGB(image, x, y, realFrameWidth, realFrameHeight);
+    int count = vision.detectBlobs(rgb, FSD_OFFSET, distanceThreshold);
+
+    try {
+      //Gets Data and Positions:
+      ArrayList<Integer> x = vision.getBlobX();
+      ArrayList<Integer> y = vision.getBlobY();
+      double positions[] = positioning.getPointPosition(x.get(0), y.get(0));
+
+      //Sets the Array:
+      info[0] = positions[0];
+      info[1] = positions[1];
+      info[2] = count;
     }
 
-    //Returns the Position:
-    return position;
+    catch (Exception e) {
+      //Error Debugs:
+      e.printStackTrace();
+    }
+
+    //Returns the Array:
+    return info;
   }
 
   /* IMU METHODS */
@@ -415,7 +439,7 @@ public class Robot extends LinearOpMode {
     rightBackMotor.setZeroPowerBehavior(behavior);
   }
 
-  /* ROBOT ENCODER UTILITY METHODS */
+  /* ROBOT UTILITY METHODS */
 
   //Gets Parts Based on Rotations:
   public static int getParts(double rotations) {
