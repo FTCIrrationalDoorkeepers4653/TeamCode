@@ -34,6 +34,7 @@ public class Robot extends LinearOpMode {
   public static double wheelRPS = (wheelRPM / 60.0);
   public static double degreesPerTick = (TicksPerRev / 360.0);
   public static double gyroStabilization = 10.0;
+  public static double powerControl = 2.0;
 
   //Motor Powers:
   public static double zeroPower = 0.0;
@@ -52,9 +53,9 @@ public class Robot extends LinearOpMode {
   /* VISION VARIABLES */
 
   //Detector Settings:
-  private static int detector[] = {253, 168, 53};
-  private static int offset[] = {100, 100, 100};
-  private static int FSD_OFFSET[] = {25, 25, 25};
+  private static int detector[] = {255, 120, 0};
+  private static int margin[] = {100, 100, 100};
+  private static int FSD_MARGIN[] = {50, 50, 50};
   private static boolean flash = true;
   private static int zoom = 20;
   private static int x = 0, y = 0, width = 50, height = 15;
@@ -99,7 +100,7 @@ public class Robot extends LinearOpMode {
   }
 
   //Initialization Method:
-  public static void init(HardwareMap hardwareMap, boolean auto, boolean camera) {
+  public static void init(HardwareMap hardwareMap, boolean camera) {
     /* Hardware */
 
     //Wheel Maps:
@@ -116,20 +117,10 @@ public class Robot extends LinearOpMode {
     rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
     rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
 
-    //Checks the Case:
-    if (auto) {
-      //Motor Behavior Setup:
-      applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
-    else {
-      //Motor Behavior Setup:
-      applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      applyAllModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-      applyAllZero(DcMotor.ZeroPowerBehavior.FLOAT);
-    }
+    //Motor Behavior Setup:
+    applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    applyAllZero(DcMotor.ZeroPowerBehavior.BRAKE);
 
     /* Sensors */
 
@@ -163,7 +154,7 @@ public class Robot extends LinearOpMode {
     //Vision Positions:
     Bitmap image = vision.getImage(resizeRatio);
     int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
-    int booleanCount = vision.detectPixelCount(rgb, offset, 0);
+    int booleanCount = vision.detectPixelCount(rgb, margin, 0);
 
     //Checks the Case:
     if (booleanCount <= firstCount) {
@@ -188,13 +179,16 @@ public class Robot extends LinearOpMode {
     double info[] = new double[3];
     Bitmap image = vision.getImage(resizeRatio);
     int rgb[][] = vision.getBitmapRGB(image, x, y, realFrameWidth, realFrameHeight);
-    int count = vision.detectBlobs(rgb, FSD_OFFSET, distanceThreshold);
+    int count = vision.detectBlobs(rgb, FSD_MARGIN, distanceThreshold);
 
     try {
-      //Gets Data and Positions:
+      //Gets Data:
       ArrayList<Integer> x = vision.getBlobX();
       ArrayList<Integer> y = vision.getBlobY();
+
+      //Gets Positioning:
       double positions[] = positioning.getPointPosition(x.get(0), y.get(0));
+      positions[1] = positioning.getVisionOffsetCorrection(positions[1]);
 
       //Sets the Array:
       info[0] = positions[0];
@@ -265,6 +259,18 @@ public class Robot extends LinearOpMode {
     return driveRotations;
   }
 
+  //Calculates Turn Angle from Arc Length:
+  public static double calculateTurnAngle(double arc) {
+    //Finds Radius of Circle:
+    double d = Math.sqrt((robotDimensions * robotDimensions) + (robotDimensions * robotDimensions));
+    double r = d / 2.0;
+
+    //Finds and Returns Theta:
+    double thetaRadians = (arc / r);
+    double thetaDegrees = convertAngle(thetaRadians, true);
+    return thetaDegrees;
+  }
+
   //Converts from Radians to Degrees:
   public static double convertAngle(double angle, boolean degrees) {
     //Degrees Double:
@@ -294,12 +300,21 @@ public class Robot extends LinearOpMode {
   /* ROBOT MOVEMENT METHODS */
 
   //Robot Driver Control Movement:
-  public void driveRobot(double x, double y, double turn) {
+  public void driveRobot(double x, double y, double turn, boolean control) {
     //Gets the Motor Calculations:
     double frontLeft = (y + x + turn);
     double frontRight = (y - x - turn);
     double backLeft = (y - x + turn);
     double backRight = (y + x - turn);
+
+    //Checks the Case:
+    if (control) {
+      //Sets the New Powers:
+      frontLeft /= powerControl;
+      frontRight /= powerControl;
+      backLeft /= powerControl;
+      backRight /= powerControl;
+    }
 
     //Sets the Motor Powers:
     leftFrontMotor.setPower(frontLeft);

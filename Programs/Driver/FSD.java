@@ -1,80 +1,67 @@
 package org.firstinspires.ftc.teamcode.Programs.Driver;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
+import lib.Capture;
+
 @TeleOp(name="FSD")
-public class FSD extends OpMode {
+public class FSD extends LinearOpMode {
   /* FSD VARIABLES */
 
-  //Positioning Variables:
+  //Movement Variables:
   private Robot robot = new Robot();
-  private double turnValue = 20.0;
-
-  //Setup Variables:
-  private int values[] = {0, 2, 0, 0, 0};
-  private boolean auto = true;
   private boolean camera = true;
+  private double turnValue = 20.0;
+  private int wait = (robot.mechanisms.shooterWait * 4);
 
   /* FSD RUN METHODS */
 
   @Override
-  public void init() {
+  public void runOpMode() {
     //Initialize Robot:
-    robot.init(hardwareMap, auto, camera);
-    robot.mechanisms.initMechanisms(hardwareMap, auto);
-    robot.mechanisms.initCustomValues(values);
+    robot.init(hardwareMap, camera);
+    robot.mechanisms.initMechanisms(hardwareMap);
+
+    //Mechanisms Startup:
+    robot.mechanisms.automateIntake();
+    robot.mechanisms.automateFlywheel(robot.mechanisms.mainRPM);
+    robot.mechanisms.automateClaw();
+
+    //Waits for Start:
+    waitForStart();
+
+    //Loops:
+    mainLoop: while (opModeIsActive()) {
+      //FSD:
+      double objects[] = robot.getObjects();
+      FSD(objects);
+    }
   }
 
-  @Override
-  public void loop() {
-    //Runs the FSD:
-    FSD();
-  }
-
-  /* FSD METHODS */
-
-  //Full Self Driving Method:
-  public void FSD() {
-    //Gets the Detection:
-    double info[] = robot.getObjects();
-
+  //FSD Method:
+  public void FSD(double objects[]) {
     //Checks the Case:
-    if (info[2] == 0) {
-      //Turns Robot:
+    if (objects[2] == 0) {
+      //Turns to See Objects:
       robot.mechanisms.turnGyro(turnValue, robot.firePower, true);
-
-      telemetry.clear();
     }
 
     else {
-//      //Operates Mechanisms:
-//      robot.mechanisms.automateIntake(robot.gyroPower);
-//      robot.mechanisms.automateFlywheel(true);
+      //Gets the Motion Values:
+      double inchesToCoordinates = (objects[0] / robot.POSITION_RATIO);
+      double turnAngle = robot.calculateTurnAngle(objects[1]);
 
-      //Gets the Distances:
-      double inchesToCoordinates = (info[0] / robot.POSITION_RATIO);
-      double turnAngle = 0;
+      //Runs Robot to Intake:
+      robot.mechanisms.turnGyro(turnAngle, robot.gyroPower, true);
+      robot.mechanisms.runToPosition(0, inchesToCoordinates, 1, robot.gyroPower, true);
+      sleep(wait);
 
-      telemetry.addData("Distance", inchesToCoordinates);
-      telemetry.addData("Offset", info[1]);
-      telemetry.addData("Blobs", info[2]);
-      telemetry.update();
-
-//      //Runs Robot to Intake:
-//      robot.mechanisms.turnGyro(turnAngle, robot.gyroPower, true);
-//      robot.mechanisms.runToPosition(0, inchesToCoordinates, 1, robot.gyroPower, true);
-//
-//      //Runs Robot Back to Shoot:
-//      robot.mechanisms.runToPosition(0, 0, -1, robot.gyroPower, true);
-//      robot.mechanisms.turnGyro(-robot.getTheta(), robot.gyroPower, true);
-//      robot.mechanisms.automateShooter(0);
-//
-//      //Operates Mechanisms:
-//      robot.mechanisms.automateIntake(robot.gyroPower);
-//      robot.mechanisms.automateFlywheel(true);
+      //Runs Robot Back to Shoot:
+      robot.mechanisms.runToPosition(0, 0, -1, robot.gyroPower, true);
+      robot.mechanisms.turnGyro(-robot.getTheta(), robot.gyroPower, true);
+      robot.mechanisms.automateShooter(false);
     }
   }
 }

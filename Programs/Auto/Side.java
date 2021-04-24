@@ -12,13 +12,10 @@ public class Side extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
+  private double RPM = 3820.0;
 
   //Positioning Variables:
   private int position = 0;
-  private int values[] = {1, 0, 0, 0, 0};
-
-  //Setup Variables:
-  private boolean auto = true;
   private boolean camera = true;
 
   /* OPMODE METHODS */
@@ -28,10 +25,10 @@ public class Side extends LinearOpMode {
     /* Initialization */
 
     //Hardware Initialization:
-    robot.init(hardwareMap, auto, camera);
-    robot.mechanisms.initMechanisms(hardwareMap, auto);
-    robot.mechanisms.initCustomValues(values);
+    robot.init(hardwareMap, camera);
+    robot.mechanisms.initMechanisms(hardwareMap);
     robot.mechanisms.setCurrentPosition(startX, startY, robot.getTheta());
+    robot.mechanisms.automateClaw();
 
     //Waits for Start:
     waitForStart();
@@ -39,56 +36,64 @@ public class Side extends LinearOpMode {
     /* Detection */
 
     //Gets the Ring Position and Setup:
-    robot.mechanisms.automateFlywheel(auto);
+    robot.mechanisms.automateFlywheel(robot.mechanisms.mainRPM);
     position = robot.getPixelsPosition();
 
     //Moves to Shooting Position:
-    robot.mechanisms.runToPosition(560.0, 410.0, 1, robot.firePower, true);
-    robot.mechanisms.turnGyro(-85.0, robot.firePower, true);
+    robot.mechanisms.runToPosition(560.0, 415.0, 1, robot.firePower, true);
+    robot.mechanisms.turnGyro(-93.0, robot.firePower, true);
 
     /* Shooting */
 
     //Shoots Rings:
-    robot.mechanisms.automateShooter(0);
-    robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
-    robot.mechanisms.automateShooter(robot.mechanisms.shooterWait);
-    robot.mechanisms.automateFlywheel(auto);
+    robot.mechanisms.automateShooter(false);
+    robot.mechanisms.automateShooter(true);
+    robot.mechanisms.automateShooter(true);
+    robot.mechanisms.automateFlywheel(robot.mechanisms.mainRPM);
 
     /* Wobble Goal Drop and Park */
 
     //Checks the Case:
     if (position == 1) {
-      //Moves Wobble:
-      robot.mechanisms.turnGyro(5.0, robot.firePower, true);
-      robot.mechanisms.runToPosition(660.0, 380.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(!auto);
-
       //Drops Wobble and Parks:
-      robot.mechanisms.automateArm();
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.turnGyro(13.0, robot.firePower, true);
+      robot.mechanisms.runToPosition(660.0, 380.0, 1, robot.firePower, true);
       robot.mechanisms.automateArm();
     }
 
     else if (position == 2) {
-      //Moves Wobble:
-      robot.mechanisms.turnGyro(55.0, robot.firePower, true);
-      robot.mechanisms.runToPosition(600.0, 360.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(!auto);
-
       //Drops Wobble and Parks:
+      robot.mechanisms.turnGyro(63.0, robot.firePower, true);
+      robot.mechanisms.runToPosition(600.0, 360.0, 1, robot.firePower, true);
       robot.mechanisms.automateArm();
+
+      //Moves to Intake Ring:
+      robot.mechanisms.turnGyro(-138.0, robot.firePower, true);
+      robot.mechanisms.automateIntake();
+      robot.mechanisms.automateFlywheel(RPM);
+
+      //Intakes Ring:
+      robot.mechanisms.runToPosition(640.0, 640.0, 1, robot.firePower, true);
+      robot.mechanisms.turnGyro(89.0, robot.firePower, true);
+      robot.mechanisms.automateMagazine();
+
+      //Shoots Ring and Parks:
+      robot.mechanisms.automateShooter(true);
+      robot.mechanisms.automateShooter(true);
+      robot.mechanisms.shiftToPosition(640.0, 320.0, 1, robot.uncoPower, true);
       robot.mechanisms.automateArm();
     }
 
     else {
-      //Moves Wobble:
-      robot.mechanisms.turnGyro(52.0, robot.firePower, true);
+      //Drops Wobble:
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.turnGyro(60.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 180.0, 1, robot.firePower, true);
-      robot.mechanisms.automateClaw(!auto);
 
-      //Drops Wobble and Parks:
+      //Parks:
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -1, robot.firePower, true);
-      robot.mechanisms.automateArm();
     }
   }
 }

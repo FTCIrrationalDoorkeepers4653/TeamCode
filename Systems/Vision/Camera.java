@@ -7,8 +7,7 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import vision.Vision;
 
 @SuppressWarnings("unused")
 public class Camera extends Vision {
@@ -16,7 +15,7 @@ public class Camera extends Vision {
 
   //Vuforia Elements:
   private static VuforiaLocalizer vuforia;
-  private static VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+  private static VuforiaLocalizer.CameraDirection CAMERA_CHOICE = VuforiaLocalizer.CameraDirection.BACK;
   public static int globalWidth = 0, globalHeight = 0;
 
   /* VUFORIA METHODS */

@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.ArrayList;
 import java.util.List;
 
+import vision.Camera;
+
 public class TensorVision extends Camera {
   /* TENSORFLOW VARIABLES */
 

@@ -21,36 +21,40 @@ public class Mechanisms extends Positions {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
+  public static Servo magazineServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
   //Mechanism Arm Variables:
   public static double fullArmDown = 260.0;
   public static double armDown = 220.0;
-  public static double armMid = (armDown / 3.5);
+  public static double armMid = (armDown / 3.25);
   public static double armSecond = (armDown - armMid);
   public static int arm = 0;
 
   //Mechanism Claw Variables:
-  public static double clawStartPosition = 0.8;
-  public static double clawTeleStartPosition = 0.4;
-  public static double clawEndPosition = 0.0;
+  public static double clawStartPosition = 1.0;
+  public static double clawEndPosition = 0.4;
   public static int claw = 0;
 
   /* MECHANISM SHOOTER CONTROL VARIABLES */
 
   //Mechanism Shooter Variables:
-  public static double shooterStartPosition = 0.9;
-  public static double shooterEndPosition = 0.5;
+  public static double shooterStartPosition = 0.3;
+  public static double shooterEndPosition = 0.1;
   public static int shooterWait = 500;
   public static int shot = 0;
   public static int intake = 0;
 
+  //Mechanism Magazine Control Variables:
+  public static double magazineStartPosition = 0.0;
+  public static double magazineEndPosition = 0.4;
+  public static int magazine = 0;
+
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
   public static double flywheelTicks = 28;
-  public static double mainRPM = 3800.0;
-  public static double autoRPM = 3850.0;
+  public static double mainRPM = 3780.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
 
@@ -60,7 +64,7 @@ public class Mechanisms extends Positions {
   }
 
   //Initializes the Mechanisms:
-  public static void initMechanisms(HardwareMap hardwareMap, boolean auto) {
+  public static void initMechanisms(HardwareMap hardwareMap) {
     /* Initialization */
 
     //Motor Mechanism Maps:
@@ -72,19 +76,12 @@ public class Mechanisms extends Positions {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
+    magazineServo = hardwareMap.servo.get("magazineServo");
 
-    //Checks the Case:
-    if (auto) {
-      //Servo Mechanism Setup:
-      clawServo.setPosition(clawEndPosition);
-      shooterServo.setPosition(shooterStartPosition);
-    }
-
-    else {
-      //Servo Mechanism Setup:
-      clawServo.setPosition(clawStartPosition);
-      shooterServo.setPosition(shooterStartPosition);
-    }
+    //Servo Mechanism Setup:
+    clawServo.setPosition(clawStartPosition);
+    shooterServo.setPosition(shooterStartPosition);
+    magazineServo.setPosition(magazineStartPosition);
 
     /* Setup */
 
@@ -111,38 +108,34 @@ public class Mechanisms extends Positions {
     baseArmMotor.setPower(robot.zeroPower);
     intakeMotor.setPower(robot.zeroPower);
     shooterMotor.setPower(robot.zeroPower);
-  }
 
-  //Custom Values Initialization Method:
-  public static void initCustomValues(int values[]) {
-    //Checks the Case:
-    if (values.length == 5) {
-      //Sets the Values:
-      claw = values[0];
-      arm = values[1];
-      shooter = values[2];
-      shot = values[3];
-      intake = values[4];
-    }
+    /* Control Setup */
+
+    //Sets the Values:
+    claw = 1;
+    arm = 1;
+    shooter = 1;
+    magazine = 1;
+    shot = 1;
+    intake = 1;
   }
 
   /* MECHANISM AUTOMATION METHODS */
 
   //Automate Intake Method:
-  public void automateIntake(double power) {
+  public void automateIntake() {
     //Checks the Case:
     if (intake == 0) {
       //Sets the Intake:
+      operateIntake();
       intake++;
     }
 
     else {
       //Sets the Intake:
+      operateIntake();
       intake--;
     }
-
-    //Operates the Intake:
-    operateIntake(power);
   }
 
   //Automate Arm Method:
@@ -150,59 +143,46 @@ public class Mechanisms extends Positions {
     //Checks the Case:
     if (arm == 0) {
       //Operates the Arm:
-      arm++;
       operateArm();
+      arm++;
     }
 
     else if (arm == 1) {
       //Operates the Arm:
-      arm++;
       operateArm();
+      arm++;
     }
 
     else {
       //Operates the Arm:
-      arm -= 2;
       operateArm();
+      arm -= 2;
     }
   }
 
   //Automate Claw Method:
-  public void automateClaw(boolean teleOp) {
+  public void automateClaw() {
     //Checks the Case:
-    if (!teleOp) {
-      //Checks the Case:
-      if (claw == 0) {
-        //Sets the Claw:
-        claw++;
-        operateClaw();
-      } else {
-        //Sets the Claw:
-        claw--;
-        operateClaw();
-      }
+    if (claw == 0) {
+      //Sets the Claw:
+      operateClaw();
+      claw++;
     }
 
     else {
-      //Checks the Case:
-      if (claw == 0) {
-        //Sets the Claw:
-        claw++;
-        operateClawTele();
-      }
-
-      else {
-        //Sets the Claw:
-        claw--;
-        operateClawTele();
-      }
+      //Sets the Claw:
+      operateClaw();
+      claw--;
     }
   }
 
   //Automate Shooter Method:
-  public void automateShooter(int start) {
-    //Waits for the Ring to Shoot:
-    sleep(start);
+  public void automateShooter(boolean start) {
+    //Checks the Case:
+    if (start) {
+      //Sets the Sleep:
+      sleep(shooterWait);
+    }
 
     //Shoots Ring:
     shot = 1;
@@ -216,45 +196,35 @@ public class Mechanisms extends Positions {
     operateShooter();
   }
 
-  //Automate Flywheel Method:
-  public void automateFlywheel(boolean auto) {
+  //Automate Magazine Method:
+  public void automateMagazine() {
     //Checks the Case:
-    if (shooter == 0) {
-      //Sets the Shooter:
-      shooter++;
-
-      //Checks the Case:
-      if (auto) {
-        //Sets the Flywheel:
-        operateFlywheel(autoRPM);
-      }
-
-      else {
-        //Sets the Flywheel:
-        operateFlywheel(mainRPM);
-      }
+    if (magazine == 0) {
+      //Sets the Magazine:
+      operateMagazine();
+      magazine++;
     }
 
     else {
-      //Sets the Shooter:
-      shooter--;
-      operateFlywheel(robot.zeroPower);
+      //Sets the Magazine:
+      operateMagazine();
+      magazine--;
     }
   }
 
   //Automate Custom Flywheel Method:
-  public void automateCustomFlywheel(double RPM) {
+  public void automateFlywheel(double RPM) {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Shooter:
-      shooter++;
       operateFlywheel(RPM);
+      shooter++;
     }
 
     else {
       //Sets the Shooter:
+      operateFlywheel(RPM);
       shooter--;
-      operateFlywheel(robot.zeroPower);
     }
   }
 
@@ -320,7 +290,7 @@ public class Mechanisms extends Positions {
   }
 
   //Operates the Intake Arm:
-  public void operateIntake(double power) {
+  public void operateIntake() {
     //Checks the Case:
     if (intake == 0) {
       //Runs the Intake:
@@ -329,7 +299,7 @@ public class Mechanisms extends Positions {
 
     else if (intake == 1) {
       //Runs the Intake:
-      intakeMotor.setPower(-power);
+      intakeMotor.setPower(-robot.gyroPower);
     }
   }
 
@@ -347,26 +317,26 @@ public class Mechanisms extends Positions {
     }
   }
 
+  //Operate Magazine:
+  public void operateMagazine() {
+    //Checks the Case:
+    if (magazine == 0) {
+      //Sets the Servo:
+      magazineServo.setPosition(magazineStartPosition);
+    }
+
+    else if (magazine == 1) {
+      //Sets the Servo:
+      magazineServo.setPosition(magazineEndPosition);
+    }
+  }
+
   //Operate Claw:
   public void operateClaw() {
     //Checks the Case:
     if (claw == 0) {
       //Sets the Servo:
       clawServo.setPosition(clawStartPosition);
-    }
-
-    else if (claw == 1) {
-      //Sets the Servo:
-      clawServo.setPosition(clawEndPosition);
-    }
-  }
-
-  //Operate Claw TeleOp:
-  public void operateClawTele() {
-    //Checks the Case:
-    if (claw == 0) {
-      //Sets the Servo:
-      clawServo.setPosition(clawTeleStartPosition);
     }
 
     else if (claw == 1) {
