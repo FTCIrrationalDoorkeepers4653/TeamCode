@@ -21,7 +21,6 @@ public class Mechanisms extends Positions {
   //Servo Mechanisms:
   public static Servo clawServo;
   public static Servo shooterServo;
-  public static Servo magazineServo;
 
   /* MECHANISMS ARM CONTROL VARIABLES */
 
@@ -76,12 +75,10 @@ public class Mechanisms extends Positions {
     //Servo Mechanism Maps:
     clawServo = hardwareMap.servo.get("clawServo");
     shooterServo = hardwareMap.servo.get("shooterServo");
-    magazineServo = hardwareMap.servo.get("magazineServo");
 
     //Servo Mechanism Setup:
     clawServo.setPosition(clawStartPosition);
     shooterServo.setPosition(shooterStartPosition);
-    magazineServo.setPosition(magazineStartPosition);
 
     /* Setup */
 
@@ -196,22 +193,6 @@ public class Mechanisms extends Positions {
     operateShooter();
   }
 
-  //Automate Magazine Method:
-  public void automateMagazine() {
-    //Checks the Case:
-    if (magazine == 0) {
-      //Sets the Magazine:
-      operateMagazine();
-      magazine++;
-    }
-
-    else {
-      //Sets the Magazine:
-      operateMagazine();
-      magazine--;
-    }
-  }
-
   //Automate Custom Flywheel Method:
   public void automateFlywheel(double RPM) {
     //Checks the Case:
@@ -314,20 +295,6 @@ public class Mechanisms extends Positions {
     else if (shot == 1) {
       //Sets the Servo:
       shooterServo.setPosition(shooterEndPosition);
-    }
-  }
-
-  //Operate Magazine:
-  public void operateMagazine() {
-    //Checks the Case:
-    if (magazine == 0) {
-      //Sets the Servo:
-      magazineServo.setPosition(magazineStartPosition);
-    }
-
-    else if (magazine == 1) {
-      //Sets the Servo:
-      magazineServo.setPosition(magazineEndPosition);
     }
   }
 

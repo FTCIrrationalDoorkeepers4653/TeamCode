@@ -106,3 +106,5 @@ to Match New Flywheel Design. Also, Changed Auto to Comply with Rule G10 About R
 
 - 3/24/2021 - Added 80-Point Autonomous for Four Stack and Updated 83-Point Autonomous for One Stack. Also, Augmented Mecanum Drive Functions for TeleOp.
 Also, Updated Automatic Powershot System to Hit All Powershots more Consistently. Finally, Cleaned Up Project Structure and Comments.
+
+- 5/2/2021 - Reset Autonomous and Made Software Consistent for the Next Season and New Programmers Next Season. 

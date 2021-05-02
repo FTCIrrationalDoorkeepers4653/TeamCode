@@ -12,7 +12,6 @@ public class Side extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
-  private double RPM = 3820.0;
 
   //Positioning Variables:
   private int position = 0;
@@ -64,34 +63,17 @@ public class Side extends LinearOpMode {
 
     else if (position == 2) {
       //Drops Wobble and Parks:
+      robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(63.0, robot.firePower, true);
       robot.mechanisms.runToPosition(600.0, 360.0, 1, robot.firePower, true);
-      robot.mechanisms.automateArm();
-
-      //Moves to Intake Ring:
-      robot.mechanisms.turnGyro(-138.0, robot.firePower, true);
-      robot.mechanisms.automateIntake();
-      robot.mechanisms.automateFlywheel(RPM);
-
-      //Intakes Ring:
-      robot.mechanisms.runToPosition(640.0, 640.0, 1, robot.firePower, true);
-      robot.mechanisms.turnGyro(89.0, robot.firePower, true);
-      robot.mechanisms.automateMagazine();
-
-      //Shoots Ring and Parks:
-      robot.mechanisms.automateShooter(true);
-      robot.mechanisms.automateShooter(true);
-      robot.mechanisms.shiftToPosition(640.0, 320.0, 1, robot.uncoPower, true);
       robot.mechanisms.automateArm();
     }
 
     else {
-      //Drops Wobble:
+      //Drops Wobble and Parks:
       robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(60.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 180.0, 1, robot.firePower, true);
-
-      //Parks:
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 340.0, -1, robot.firePower, true);
     }

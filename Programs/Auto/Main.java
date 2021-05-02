@@ -12,7 +12,6 @@ public class Main extends LinearOpMode {
   private Robot robot = new Robot();
   private double startX = 560.0;
   private double startY = 760.0;
-  private double RPM = 3820.0;
 
   //Positioning Variables:
   private int position = 0;
@@ -65,9 +64,9 @@ public class Main extends LinearOpMode {
       robot.mechanisms.turnGyro(-96.0, robot.firePower, true);
       robot.mechanisms.automateArm();
       robot.mechanisms.runToPosition(640.0, 610.0, 1, robot.firePower, true);
+      robot.mechanisms.automateClaw();
 
       //Moves and Turns Back to Drop and Park:
-      robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(154.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 400.0, 1, robot.firePower, true);
     }
@@ -82,22 +81,11 @@ public class Main extends LinearOpMode {
       //Turns to Second Wobble:
       robot.mechanisms.turnGyro(-138.0, robot.firePower, true);
       robot.mechanisms.automateArm();
-      robot.mechanisms.automateIntake();
-
-      //Moves to Second Wobble Goal:
-      robot.mechanisms.automateFlywheel(RPM);
       robot.mechanisms.runToPosition(640.0, 640.0, 1, robot.firePower, true);
       robot.mechanisms.automateClaw();
 
-      //Turns and Shoots Ring:
-      robot.mechanisms.turnGyro(89.0, robot.firePower, true);
-      robot.mechanisms.automateMagazine();
-      robot.mechanisms.automateShooter(true);
-      robot.mechanisms.automateShooter(true);
-
-      //Moves to Drop Second Wobble Goal and Park:
-      robot.mechanisms.automateIntake();
-      robot.mechanisms.turnGyro(77.0, robot.firePower, true);
+      //Drops Second Wobble:
+      robot.mechanisms.turnGyro(166.0, robot.firePower, true);
       robot.mechanisms.runToPosition(600.0, 330.0, 1, robot.firePower, true);
     }
 
@@ -117,6 +105,10 @@ public class Main extends LinearOpMode {
       robot.mechanisms.automateClaw();
       robot.mechanisms.turnGyro(172.0, robot.firePower, true);
       robot.mechanisms.runToPosition(640.0, 160.0, 1, robot.firePower, true);
+
+      //Parks:
+      robot.mechanisms.automateClaw();
+      robot.mechanisms.runToPosition(640.0, 360.0, -1, robot.firePower, true);
     }
   }
 }
