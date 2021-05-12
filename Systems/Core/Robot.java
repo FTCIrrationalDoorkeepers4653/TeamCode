@@ -185,9 +185,11 @@ public class Robot extends LinearOpMode {
       //Gets Data:
       ArrayList<Integer> x = vision.getBlobX();
       ArrayList<Integer> y = vision.getBlobY();
+      ArrayList<Integer> lastX = vision.getLastBlobX();
+      ArrayList<Integer> lastY = vision.getLastBlobY();
 
       //Gets Positioning:
-      double positions[] = positioning.getPointPosition(x.get(0), y.get(0));
+      double positions[] = positioning.getPointPosition(x.get(0), y.get(0), lastX.get(0), lastY.get(0));
       positions[1] = positioning.getVisionOffsetCorrection(positions[1]);
 
       //Sets the Array:
