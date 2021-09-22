@@ -51,7 +51,6 @@ public class Robot extends LinearOpMode {
   private static double roadblockY[] = {0.0, 0.0, 760.0, 760.0};
 
   /* VISION VARIABLES */
-
   //Detector Settings:
   private static int detector[] = {255, 120, 0};
   private static int margin[] = {100, 100, 100};

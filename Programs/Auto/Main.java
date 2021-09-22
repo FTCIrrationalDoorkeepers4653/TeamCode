@@ -32,6 +32,7 @@ public class Main extends LinearOpMode {
     //Waits for Start:
     waitForStart();
 
+    //Change everything past this point
     /* Detection */
 
     //Gets the Ring Position and Setup:
