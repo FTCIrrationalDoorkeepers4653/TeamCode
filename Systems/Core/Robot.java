@@ -26,7 +26,7 @@ public class Robot extends LinearOpMode {
   public static double gearRatio = 1.0;
   public static double wheelDiam = 3.9;
   public static double wheelCirc = (Math.PI * wheelDiam);
-  public static double TicksPerRev = 1120.0;
+  public static double TicksPerRev = 560.0;
   public static double POSITION_RATIO = (144.0 / 760.0);
 
   //Drive Train Augmentation Variables:
@@ -61,10 +61,10 @@ public class Robot extends LinearOpMode {
   private static int firstCount = 10, secondCount = 500;
   private static double resizeRatio = 0.2;
   private static String vuforiaKey =
-  "AR7KPuz/////AAABmSKvAg58mkBSqvvfxvaYqxMN8S2CvbOIzcpLyLVqb9hLPXQf3hPCERtF9azaj5sBUezFRBqdVA53ZAsNmlWW/" +
-  "ThqkaHtmpKNqXneP6p8VhN4liG3ofA7Cidx234PKNIhalLvby0jdmuxT5Uhh4dJjST6taoZGArAQz7Df8hzPG26Nd92L1A" +
-  "TW3mO4qzNAny2UK5YrzG92bUIxqvpDLkjeq8UNTLHYD4ulI1i+Jl/dPzU2PdeNPEqlsykdshGvcuRWRz8qeMXfpKVZ9TXmLxqvu" +
-  "Te6K291gxuKtfWXJ11rYJHTJlUAvooMpPaAh2/isv6LUy83+3UhIyl1kNxaNeMHK52iqEjpswOiOmVkniWTblp";
+          "AR7KPuz/////AAABmSKvAg58mkBSqvvfxvaYqxMN8S2CvbOIzcpLyLVqb9hLPXQf3hPCERtF9azaj5sBUezFRBqdVA53ZAsNmlWW/" +
+                  "ThqkaHtmpKNqXneP6p8VhN4liG3ofA7Cidx234PKNIhalLvby0jdmuxT5Uhh4dJjST6taoZGArAQz7Df8hzPG26Nd92L1A" +
+                  "TW3mO4qzNAny2UK5YrzG92bUIxqvpDLkjeq8UNTLHYD4ulI1i+Jl/dPzU2PdeNPEqlsykdshGvcuRWRz8qeMXfpKVZ9TXmLxqvu" +
+                  "Te6K291gxuKtfWXJ11rYJHTJlUAvooMpPaAh2/isv6LUy83+3UhIyl1kNxaNeMHK52iqEjpswOiOmVkniWTblp";
 
   //Vision Positioning Settings:
   private static int frameWidth = 1280, frameHeight = 720;
@@ -77,10 +77,8 @@ public class Robot extends LinearOpMode {
   /* HARDWARE VARIABLES */
 
   //Wheels:
-  public static DcMotor leftFrontMotor;
-  public static DcMotor leftBackMotor;
-  public static DcMotor rightFrontMotor;
-  public static DcMotor rightBackMotor;
+  public static DcMotor leftDriveMotor;
+  public static DcMotor rightDriveMotor;
 
   //Hardware Objects:
   public static Mechanisms mechanisms = new Mechanisms();
@@ -103,18 +101,14 @@ public class Robot extends LinearOpMode {
     /* Hardware */
 
     //Wheel Maps:
-    leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
-    leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
-    rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
-    rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
+    leftDriveMotor = hardwareMap.dcMotor.get("leftDriveMotor");
+    rightDriveMotor = hardwareMap.dcMotor.get("rightDriveMotor");
 
     /* Motors */
 
     //Wheel Directions:
-    leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-    rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+    leftDriveMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    rightDriveMotor.setDirection(DcMotor.Direction.REVERSE);
 
     //Motor Behavior Setup:
     applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -135,7 +129,7 @@ public class Robot extends LinearOpMode {
       vision.initVuforia(hardwareMap, vuforiaKey, zoom, flash);
       vision.initDetector("detector", detector);
       vision.initPositioning(realFrameWidth, realFrameHeight, distanceRatio, offsetRatio,
-        camOffsetX, camOffsetY);
+      camOffsetX, camOffsetY);
     }
 
     /* Positions */
@@ -148,62 +142,13 @@ public class Robot extends LinearOpMode {
 
   /* VISION METHODS */
 
-  //Gets the Position Pixel Count:
-  public static int getPixelsPosition() {
-    //Vision Positions:
-    Bitmap image = vision.getImage(resizeRatio);
-    int rgb[][] = vision.getBitmapRGB(image, x, y, width, height);
-    int booleanCount = vision.detectPixelCount(rgb, margin, 0);
+  //Gets the Duck in the Frame:
+  public static double getDuckPosition() {
+    //Position Variable:
+    int position = 1;
 
-    //Checks the Case:
-    if (booleanCount <= firstCount) {
-      //Sets the Position:
-      return 1;
-    }
-
-    else if (booleanCount > firstCount && booleanCount <= secondCount) {
-      //Sets the Position:
-      return 2;
-    }
-
-    else {
-      //Sets the Position:
-      return 3;
-    }
-  }
-
-  //Gets the Position of First Ring on Field:
-  public static double[] getObjects() {
-    //Gets the Blob Count:
-    double info[] = new double[3];
-    Bitmap image = vision.getImage(resizeRatio);
-    int rgb[][] = vision.getBitmapRGB(image, x, y, realFrameWidth, realFrameHeight);
-    int count = vision.detectBlobs(rgb, FSD_MARGIN, distanceThreshold);
-
-    try {
-      //Gets Data:
-      ArrayList<Integer> x = vision.getBlobX();
-      ArrayList<Integer> y = vision.getBlobY();
-      ArrayList<Integer> lastX = vision.getLastBlobX();
-      ArrayList<Integer> lastY = vision.getLastBlobY();
-
-      //Gets Positioning:
-      double positions[] = positioning.getPointPosition(x.get(0), y.get(0), lastX.get(0), lastY.get(0));
-      positions[1] = positioning.getVisionOffsetCorrection(positions[1]);
-
-      //Sets the Array:
-      info[0] = positions[0];
-      info[1] = positions[1];
-      info[2] = count;
-    }
-
-    catch (Exception e) {
-      //Error Debugs:
-      e.printStackTrace();
-    }
-
-    //Returns the Array:
-    return info;
+    //Returns the Position:
+    return position;
   }
 
   /* IMU METHODS */
@@ -300,28 +245,32 @@ public class Robot extends LinearOpMode {
 
   /* ROBOT MOVEMENT METHODS */
 
-  //Robot Driver Control Movement:
-  public void driveRobot(double x, double y, double turn, boolean control) {
-    //Gets the Motor Calculations:
-    double frontLeft = (y + x + turn);
-    double frontRight = (y - x - turn);
-    double backLeft = (y - x + turn);
-    double backRight = (y + x - turn);
-
-    //Checks the Case:
+  public void driveRobot(double drive, double turn, boolean control) {
+    //Slow Mode:
     if (control) {
       //Sets the New Powers:
-      frontLeft /= powerControl;
-      frontRight /= powerControl;
-      backLeft /= powerControl;
-      backRight /= powerControl;
+      drive /= powerControl;
+      turn /= powerControl;
     }
 
-    //Sets the Motor Powers:
-    leftFrontMotor.setPower(frontLeft);
-    leftBackMotor.setPower(backLeft);
-    rightFrontMotor.setPower(frontRight);
-    rightBackMotor.setPower(backRight);
+    //Move Robot:
+    if (drive != 0.0 && turn == 0.0) {
+      //Moves Robot:
+      leftDriveMotor.setPower(-drive);
+      rightDriveMotor.setPower(-drive);
+    }
+
+    else if (drive == 0.0 && turn != 0.0) {
+      //Turns Robot:
+      leftDriveMotor.setPower(-turn);
+      rightDriveMotor.setPower(turn);
+    }
+
+    else {
+      //Stops Robot:
+      leftDriveMotor.setPower(zeroPower);
+      rightDriveMotor.setPower(zeroPower);
+    }
   }
 
   //Robot Move with Rotations:
@@ -333,18 +282,14 @@ public class Robot extends LinearOpMode {
     //Checks the Case:
     if (rotations > 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
+      leftDriveMotor.setTargetPosition(leftDriveMotor.getCurrentPosition() + parts);
+      rightDriveMotor.setTargetPosition(rightDriveMotor.getCurrentPosition() + parts);
     }
 
     else if (rotations < 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
+      leftDriveMotor.setTargetPosition(leftDriveMotor.getCurrentPosition() - parts);
+      rightDriveMotor.setTargetPosition(rightDriveMotor.getCurrentPosition() - parts);
     }
 
     //Sets the Motor Powers:
@@ -367,52 +312,14 @@ public class Robot extends LinearOpMode {
     //Checks the Case:
     if (rotations > 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
+      leftDriveMotor.setTargetPosition(leftDriveMotor.getCurrentPosition() - parts);
+      rightDriveMotor.setTargetPosition(rightDriveMotor.getCurrentPosition() + parts);
     }
 
     else if (rotations < 0) {
       //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
-    }
-
-    //Sets the Motor Powers and Resets:
-    applyAllModes(DcMotor.RunMode.RUN_TO_POSITION);
-    applyAllPowers(power);
-    sleep(calculateTime(rotations, power));
-
-    //Resets:
-    applyAllPowers(zeroPower);
-    applyAllModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    applyAllModes(DcMotor.RunMode.RUN_USING_ENCODER);
-  }
-
-  //Robot Strafe Motion (ONLY USE IF NEEDED):
-  public void shiftRobot(double rotations, double power) {
-    //Movement Values:
-    double localRotations = Math.abs(rotations);
-    int parts = getParts(localRotations);
-
-    //Checks the Case:
-    if (rotations > 0) {
-      //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() - parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() + parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() + parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() - parts);
-    }
-
-    else if (rotations < 0) {
-      //Sets the Target Positions:
-      leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition() + parts);
-      leftBackMotor.setTargetPosition(leftBackMotor.getCurrentPosition() - parts);
-      rightFrontMotor.setTargetPosition(rightFrontMotor.getCurrentPosition() - parts);
-      rightBackMotor.setTargetPosition(rightBackMotor.getCurrentPosition() + parts);
+      leftDriveMotor.setTargetPosition(leftDriveMotor.getCurrentPosition() + parts);
+      rightDriveMotor.setTargetPosition(rightDriveMotor.getCurrentPosition() - parts);
     }
 
     //Sets the Motor Powers and Resets:
@@ -431,28 +338,22 @@ public class Robot extends LinearOpMode {
   //Apply Power to All Motors:
   public static void applyAllPowers(double power) {
     //Applies the Motor Powers:
-    leftFrontMotor.setPower(power);
-    leftBackMotor.setPower(power);
-    rightFrontMotor.setPower(power);
-    rightBackMotor.setPower(power);
+    leftDriveMotor.setPower(power);
+    rightDriveMotor.setPower(power);
   }
 
   //Apply Mode to All Motors:
   public static void applyAllModes(DcMotor.RunMode mode) {
     //Applies the Motor Modes:
-    leftFrontMotor.setMode(mode);
-    leftBackMotor.setMode(mode);
-    rightFrontMotor.setMode(mode);
-    rightBackMotor.setMode(mode);
+    leftDriveMotor.setMode(mode);
+    rightDriveMotor.setMode(mode);
   }
 
   //Apply Zero Power Behavior to All Motors:
   public static void applyAllZero(DcMotor.ZeroPowerBehavior behavior) {
     //Applies the Motor Behaviors:
-    leftFrontMotor.setZeroPowerBehavior(behavior);
-    leftBackMotor.setZeroPowerBehavior(behavior);
-    rightFrontMotor.setZeroPowerBehavior(behavior);
-    rightBackMotor.setZeroPowerBehavior(behavior);
+    leftDriveMotor.setZeroPowerBehavior(behavior);
+    rightDriveMotor.setZeroPowerBehavior(behavior);
   }
 
   /* ROBOT UTILITY METHODS */
@@ -470,19 +371,5 @@ public class Robot extends LinearOpMode {
     int parts = (int)(angle * degreesPerTick);
     double rotations = (parts / TicksPerRev);
     return rotations;
-  }
-
-  //Sets the Robot Strafe:
-  public static double getStrafeValue(double t1, double t2) {
-    //Checks the Case:
-    if (t1 != 0 && t2 == 0) {
-      //Sets the X Value:
-      return -t1;
-    }
-
-    else {
-      //Sets the X Value:
-      return t2;
-    }
   }
 }

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Systems.Core;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Positions extends LinearOpMode {
   /* POSITION SETUP VARIABLES */
@@ -89,27 +88,6 @@ public class Positions extends LinearOpMode {
     }
   }
 
-  //Shift to Position Method (ONLY USE IF NEEDED):
-  public void shiftToPosition(double targetX, double targetY, double direction, double power,
-    boolean correct) {
-    //Gets the Triangle:
-    double start[] = {positionX, positionY};
-    double end [] = {targetX, targetY};
-    double triangle[] = getTriangle(start, end);
-
-    //Checks the Case:
-    if (isRoadClear(targetX, targetY)) {
-      //Shifts to Position:
-      double rotations = (direction * getConvertedRotations(triangle[2]));
-      shiftGyro(rotations, power, correct);
-
-      //Sets the New Position:
-      positionX = targetX;
-      positionY = targetY;
-      theta = robot.getTheta();
-    }
-  }
-
   /* POSITION CORE METHODS */
 
   //Runs with Gyro Corrects:
@@ -138,21 +116,6 @@ public class Positions extends LinearOpMode {
     if (correct) {
       //Corrects the Motion:
       gyroCorrect(expected);
-    }
-
-    //Sets the Current Theta:
-    theta = robot.getTheta();
-  }
-
-  //Shifts with Gyro Corrects (ONLY USE IF NEEDED):
-  public void shiftGyro(double rotations, double power, boolean correct) {
-    //Shifts:
-    robot.shiftRobot(rotations, power);
-
-    //Checks the Case:
-    if (correct) {
-      //Corrects the Motion:
-      gyroCorrect(theta);
     }
 
     //Sets the Current Theta:
