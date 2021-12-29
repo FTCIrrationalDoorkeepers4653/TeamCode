@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Systems.Core.Robot;
 
-@Autonomous(name="Blue")
-public class Blue extends LinearOpMode {
+@Autonomous(name="Park_Red")
+public class Park_Red extends LinearOpMode {
     /* MAIN AUTO VARIABLES */
 
     //Movement Variables:
     private Robot robot = new Robot();
-    private double startX = 16.0;
+    private double startX = 744.0;
     private double startY = 320.0;
     private boolean camera = true;
 
@@ -27,5 +27,10 @@ public class Blue extends LinearOpMode {
 
         //Waits for Start:
         waitForStart();
+
+        //Moves forward to park, Turns, and Parks:
+        robot.mechanisms.runToPosition(700.0, 320.0, 1, robot.firePower, false);
+        robot.mechanisms.turnGyro(90.0, robot.firePower, false);
+        robot.mechanisms.runToPosition(700.0, 100.0, 1, robot.firePower, false);
     }
 }

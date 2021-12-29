@@ -15,7 +15,7 @@ public class Mechanisms extends Positions {
 
   //Motor Mechanisms:
   public static DcMotor slideMotor;
-  public static DcMotorEx carouselMotor;
+  public static DcMotor carouselMotor;
 
   //Servo Mechanisms:
   public static Servo basketServo;
@@ -49,8 +49,6 @@ public class Mechanisms extends Positions {
 
   //Mechanism Flywheel Variables:
   public static int shooter = 0;
-  public static double flywheelTicks = 28;
-  public static double mainRPM = -450.0;
 
   /* MECHANISMS INITIALIZATION METHODS */
   //Constructor:
@@ -64,8 +62,7 @@ public class Mechanisms extends Positions {
 
     //Motor Mechanism Maps:
     slideMotor = hardwareMap.dcMotor.get("slideMotor");
-    carouselMotor = hardwareMap.get(DcMotorEx.class, "carouselMotor");
-    setupFlywheel(robot.uncoPower);
+    carouselMotor = hardwareMap.get(DcMotor.class, "carouselMotor");
 
     //Servo Mechanism Maps:
     basketServo = hardwareMap.servo.get("basketServo");
@@ -102,19 +99,17 @@ public class Mechanisms extends Positions {
   /* MECHANISM OPERATION METHODS */
 
   //Operates the Flywheel:
-  public void operateFlywheel(double RPM) {
+  public void operateFlywheel() {
     //Checks the Case:
     if (shooter == 0) {
       //Sets the Motor:
-      double ticks = calculateTicks(robot.zeroPower);
-      carouselMotor.setVelocity(ticks);
+      carouselMotor.setPower(robot.zeroPower);
       shooter++;
     }
 
     else if (shooter == 1) {
       //Sets the Motor:
-      double ticks = calculateTicks(RPM);
-      carouselMotor.setVelocity(ticks);
+      carouselMotor.setPower(robot.slowPower);
       shooter--;
     }
   }
@@ -184,23 +179,5 @@ public class Mechanisms extends Positions {
       levelsServo.setPosition(levelsLow);
       levels -= 2;
     }
-  }
-
-  /* MECHANISMS UTILITY METHODS */
-
-  //Flywheel Initialization Method:
-  public static void setupFlywheel(double maxRPMValue) {
-    //Sets the Motor Configuration Type:
-    MotorConfigurationType motorConfigurationType = carouselMotor.getMotorType().clone();
-    motorConfigurationType.setAchieveableMaxRPMFraction(maxRPMValue);
-    carouselMotor.setMotorType(motorConfigurationType);
-  }
-
-  //Calculate Ticks from RPM Method:
-  public static double calculateTicks(double RPM) {
-    //Calculates and Returns the Values:
-    double RPS = (RPM / 60.0);
-    double TPS = (RPS * flywheelTicks);
-    return TPS;
   }
 }
