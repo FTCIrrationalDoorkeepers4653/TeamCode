@@ -47,10 +47,10 @@ public class Robot extends LinearOpMode {
   /* VISION VARIABLES */
 
   //Detector Settings:
-  private static final int detector[] = {255, 120, 0};
+  private static final int detector[] = {255, 255, 0};
   private static final int margin[] = {100, 100, 100};
   private static final boolean flash = true;
-  private static final int zoom = 20;
+  private static final int zoom = 6; //was 20
   private static final double resizeRatio = 0.2;
   private static final String vuforiaKey =
           "AR7KPuz/////AAABmSKvAg58mkBSqvvfxvaYqxMN8S2CvbOIzcpLyLVqb9hLPXQf3hPCERtF9azaj5sBUezFRBqdVA53ZAsNmlWW/" +
@@ -137,9 +137,17 @@ public class Robot extends LinearOpMode {
   public static int getBlockPosition() {
     //Position Variables:
     Bitmap image = vision.getImage(resizeRatio);
-    int squareOne[] = {},
-        squareTwo[] = {},
-        squareThree[] = {};
+    //actual width and height: .2* 1280 = 256; .2*720 = 144 / 3 = 48;
+    //startX, startY, width, height
+    int squareOne[] = {
+            200, 48, 50, 48
+      },
+      squareTwo[] = {
+            100, 48, 50, 48
+      },
+      squareThree[] = {
+            0, 48, 50, 48
+      };
 
     //First Object:
     int rgbOne[][] = vision.getBitmapRGB(image, squareOne[0], squareOne[1], squareOne[2], squareOne[3]);
@@ -158,11 +166,10 @@ public class Robot extends LinearOpMode {
       return 1;
     } else if (countTwo > countOne && countTwo > countThree) {
       return 2;
-    } else if (countThree > countOne && countThree > countOne) {
+    } else if (countThree > countOne && countThree > countTwo) {
       return 3;
-    } else {
-      return 1;
     }
+    return 0;
   }
 
   /* IMU METHODS */
@@ -261,8 +268,8 @@ public class Robot extends LinearOpMode {
 
   public void driveRobot(double drive, double turn, boolean control) {
     //Make sure not to flip the robot :)
-    drive *= 0.8;
-    turn *= 0.8;
+//    drive *= 0.8;
+//    turn *= 0.8;
 
     //Slow Mode:
     if (control) {

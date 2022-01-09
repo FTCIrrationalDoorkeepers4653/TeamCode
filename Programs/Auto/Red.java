@@ -30,7 +30,20 @@ public class Red extends LinearOpMode {
 
         //Detect the Ducks location
         int pos = robot.getBlockPosition();
+        telemetry.addData("Position: ", pos);
+        telemetry.update();
 
+//        robot.mechanisms.runToPosition(700.0, 320.0, 1, robot.firePower, false);
+//
+//        if (pos == 1){
+//            robot.mechanisms.turnGyro(-90.0, robot.firePower, false);
+//            robot.mechanisms.runToPosition(700.0, 100.0, 1, robot.firePower, false);
+//        } else if (pos == 2){
+//            robot.mechanisms.runToPosition(730.0, 320.0, 1, robot.firePower, false);
+//        } else if (pos == 3){
+//            robot.mechanisms.turnGyro(90.0, robot.firePower, false);
+//            robot.mechanisms.runToPosition(700.0, 400.0, 1, robot.firePower, false);
+//        }
 
         //Dropping element into correct shipping hub level
 
