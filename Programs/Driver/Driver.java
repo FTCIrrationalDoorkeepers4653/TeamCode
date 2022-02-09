@@ -15,7 +15,7 @@ public class Driver extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap, true);
+        robot.init(hardwareMap, false);
         robot.mechanisms.initMechanisms(hardwareMap);
         driverPad = new GamePad(gamepad1);
 
@@ -30,9 +30,11 @@ public class Driver extends LinearOpMode {
             moveBasket();
             moveIntake();
             moveLevels();
+            moveEverything();
         }
     }
 
+    //Moves the Robot:
     public void moveRobot() {
         //Sets the GamePad Values:
         driverPad.setGamePad();
@@ -46,16 +48,18 @@ public class Driver extends LinearOpMode {
 
     }
 
-    public void moveCarousel(){
+    //Moves the Carousel:
+    public void moveCarousel() {
         driverPad.setGamePad();
 
-        if (driverPad.isRightBumperReleased()) {
+        if (driverPad.isDpadDownReleased()) {
             //Operates the Intake Arm:
             robot.mechanisms.operateFlywheel();
         }
     }
 
-    public void moveIntake(){
+    //Moves the Intake:
+    public void moveIntake() {
         driverPad.setGamePad();
 
         if (driverPad.isXReleased()) {
@@ -64,7 +68,8 @@ public class Driver extends LinearOpMode {
         }
     }
 
-    public void moveBasket(){
+    //Moves the Basket:
+    public void moveBasket() {
         driverPad.setGamePad();
 
         if (driverPad.isAReleased()) {
@@ -73,8 +78,8 @@ public class Driver extends LinearOpMode {
         }
     }
 
-    public void moveSlides(){
-        //eventually using a color/distance sensor to automate the intake
+    //Moves the Slides:
+    public void moveSlides() {
         //the robot will hold the cube or sphere in the basket until the user wants to drop it
         //the operator will still need to tell the robot when it should drop the game element so it lands in the correct spot
         driverPad.setGamePad();
@@ -85,12 +90,22 @@ public class Driver extends LinearOpMode {
         }
     }
 
-    public void moveLevels(){
+    //Moves the Levels:
+    public void moveLevels() {
         driverPad.setGamePad();
 
         if (driverPad.isYReleased()) {
             //Operates the servo which will indicate which level the game element will fall into
             robot.mechanisms.operateLevels();
+        }
+    }
+
+    //Driver automation method:
+    public void moveEverything() {
+        driverPad.setGamePad();
+
+        if (driverPad.isRightBumperReleased()) {
+            robot.mechanisms.operateEverything();
         }
     }
 }

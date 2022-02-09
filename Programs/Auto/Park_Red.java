@@ -10,9 +10,11 @@ public class Park_Red extends LinearOpMode {
 
     //Movement Variables:
     private Robot robot = new Robot();
-    private double startX = 744.0;
+    //Front of the Robot Variables
+    //745-665 = 80 from front to back
+    private double startX = 665.0;
     private double startY = 320.0;
-    private boolean camera = true;
+    private boolean camera = false;
 
     /* OPMODE METHODS */
 
@@ -28,9 +30,10 @@ public class Park_Red extends LinearOpMode {
         //Waits for Start:
         waitForStart();
 
+        //broken now
         //Moves forward to park, Turns, and Parks:
-        robot.mechanisms.runToPosition(700.0, 320.0, 1, robot.firePower, false);
+        robot.mechanisms.runToPosition(620.0, 320.0, 1, robot.firePower, false);
         robot.mechanisms.turnGyro(90.0, robot.firePower, false);
-        robot.mechanisms.runToPosition(700.0, 100.0, 1, robot.firePower, false);
+        robot.mechanisms.runToPosition(620.0, 100.0, 1, robot.firePower, false);
     }
 }

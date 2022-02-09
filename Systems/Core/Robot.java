@@ -34,6 +34,7 @@ public class Robot extends LinearOpMode {
 
   //Motor Powers:
   public static final double zeroPower = 0.0;
+  public static final double flywheelPower = 0.075;
   public static final double slowPower = 0.3;
   public static final double gyroPower = 0.6;
   public static final double firePower = 0.8;
